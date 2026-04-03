@@ -6,12 +6,20 @@
   *Learn Better. Prompt Smarter. Share Freely.*
 
   <br>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 66e8c8f0ed2bff18cc4b1d9fa2d527af9ec34021
 
   <div align="center">
     <a href="https://github.com/suresurya/SURE-PROMPT/stargazers">
       <img src="https://media1.tenor.com/m/DGSRu7GisIoAAAAC/emoji-emojis.gif" width="120" alt="Mario Star GIF">
     </a>
     <br>
+<<<<<<< HEAD
+=======
+    <br><br>
+>>>>>>> 66e8c8f0ed2bff18cc4b1d9fa2d527af9ec34021
     <a href="https://github.com/suresurya/SURE-PROMPT/stargazers">
       <img src="https://img.shields.io/github/stars/suresurya/SURE-PROMPT?style=for-the-badge&color=yellow&label=DROP%20A%20STAR%20!%20%E2%AD%90" alt="Star Badge"/>
     </a>
