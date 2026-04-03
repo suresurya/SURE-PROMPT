@@ -1,142 +1,132 @@
 <div align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Git-logo.svg/512px-Git-logo.svg.png" alt="Logo" width="80" height="80">
-  <h1 align="center">SurePrompt</h1>
-  <p align="center">
-    <strong>The Free Technical Prompt Community for CS Students</strong>
-    <br />
-    <em>Learn Better. Prompt Smarter. Share Freely.</em>
-  </p>
+  <h1>🌟 SurePrompt</h1>
+  <p><strong>The Free Technical Prompt Community for CS Students</strong><br>
+  <em>Learn Better. Prompt Smarter. Share Freely.</em></p>
+
+  <a href="https://github.com/suresurya/SURE-PROMPT/stargazers">
+    <img src="https://img.shields.io/github/stars/suresurya/SURE-PROMPT?style=social&label=Drop%20a%20Star!%20%E2%AD%90" alt="Star Badge"/>
+  </a>
+  <br>
+  <em>If you find this project interesting, please drop a star! It helps us a lot. ✨</em>
 </div>
 
 ---
 
-## 📖 About The Project
+## 🚀 The Problem SurePrompt Solves
 
-Every engineering and CS student uses ChatGPT, Claude, or Gemini every single day to understand DSA concepts, debug code, design systems, and prepare for interviews. However, the best prompts that produce the most accurate and helpful results are often lost in personal chat histories.
+Every engineering and CS student uses **ChatGPT, Claude, or Gemini** every single day. They use it to understand DSA concepts, debug code, solve math problems, design systems, and prepare for interviews. 
 
-**SurePrompt** is an open-source, free-forever community platform designed specifically for students to discover, verify, and share the most effective technical AI prompts. 
+**But here is the problem:** The best prompts that produce the best AI responses disappear immediately after use.
+A student at VIT crafts a perfect prompt that explains Dynamic Programming with a dry run, step-by-step code, and time complexity. The AI gives an excellent response. The student shares it in a WhatsApp group of 20 friends. In 48 hours it is buried under memes. A student at NIT struggling with the exact same topic never finds it.
 
-### Why SurePrompt?
-- 🚫 **No Paywalls, No Ads:** 100% free and open-source forever.
-- ✅ **AI Verified Prompts:** High-quality prompts verified for effectiveness.
-- 🎯 **CS Focused:** Tailored for algorithms, debugging, system design, and more.
-- 📱 **Cross-Platform:** Beautiful web app and upcoming Android client.
+**SurePrompt** is the permanent, searchable, social home for technical AI prompts made by students, for students.
 
 ---
 
-## 🛠️ Technology Stack
+## 🌐 What SurePrompt Does
 
-### Backend
-- **Java 21 LTS**
-- **Spring Boot 3.4.4**
-- **Spring Data JPA & Hibernate**
-- **Spring Security & OAuth2** (Google/GitHub Login)
-- **Flyway** (Database Migrations)
+SurePrompt is a hybrid ecosystem consisting of both a **Web Platform** and an **Android App** where CS students share, discover, and save technical AI prompts. 
 
-### Database
-- **PostgreSQL** hosted on **Supabase**
+Every post on SurePrompt has three parts:
+1. The **exact prompt text** the student used.
+2. The **AI-generated output** it produced.
+3. Metadata like **topic tags, difficulty level**, and the **AI platform used**.
 
-### Frontend (Server-Side Rendered)
-- **Thymeleaf**
-- **Vanilla JS & CSS3** (Custom Premium Dark Theme with Glassmorphism)
-- **Highlight.js** (Code Snippet Highlighting)
+Think of it like Instagram but only for technical prompts. Scroll a feed from people you follow, explore trending prompts, like, save, comment, and copy any prompt to your clipboard in one click!
 
 ---
 
-## 🚀 Getting Started
+## 🤖 The Unique AI Layer
 
-To get a local copy up and running, follow these simple steps.
+SurePrompt features a powerful AI layer built on top of social features. Users can securely connect their own Gemini, OpenAI, or Claude API keys to unlock:
 
-### Prerequisites
-
-- **Java 21**: Make sure JDK 21 is installed.
-- **Maven**: Ensure Apache Maven is installed and added to your `PATH`.
-- **Supabase Account**: You will need a PostgreSQL database instance.
-
-### Installation
-
-1. **Clone the repo**
-   ```sh
-   git clone https://github.com/yourusername/sureprompt.git
-   cd sureprompt/sureprompt-web
-   ```
-
-2. **Set up Environment Variables**
-   Create a `.env` file in the root of `sureprompt-web` and add your database and OAuth credentials:
-   ```properties
-   # Supabase DB Connection
-   SPRING_DATASOURCE_URL=jdbc:postgresql://<your_supabase_url>:5432/postgres
-   SPRING_DATASOURCE_USERNAME=postgres
-   SPRING_DATASOURCE_PASSWORD=your_supabase_password
-
-   # OAuth2 Credentials
-   GOOGLE_CLIENT_ID=your_google_id
-   GOOGLE_CLIENT_SECRET=your_google_secret
-   GITHUB_CLIENT_ID=your_github_id
-   GITHUB_CLIENT_SECRET=your_github_secret
-
-   # Security
-   AI_ENCRYPTION_KEY=generate_a_random_32_char_string
-   ```
-
-3. **Run the Application**
-   Run the Spring Boot application using Maven. Flyway will automatically run the SQL migrations and create all necessary tables in your Supabase database.
-   ```sh
-   mvn spring-boot:run
-   ```
-
-4. **Access the App**
-   Open your browser and navigate to: `http://localhost:8080`
+| AI Feature | What it does | Who sees the result? |
+| :--- | :--- | :--- |
+| **Prompt Verification** | Tests if the prompt actually produces a useful response. | Everyone — *Verified badge shown publicly!* |
+| **Quality Scoring** | Rates prompt 1 to 10 based on clarity, structure, and usefulness. | Everyone — *Score shown on card & profile!* |
+| **AI Improvement** | AI rewrites the prompt to be clearer and more effective. | Only the poster *(before they publish)* |
+| **Auto Tag Generation** | Automatically suggests the correct topic tags and difficulty level. | Only the poster *(pre-fills the form)* |
+| **Try This Prompt** | Runs the prompt live using the user's API key. | The executor |
 
 ---
 
-## 📂 Project Structure
+## 🛠️ Hybrid Tech Stack
 
-```
-sureprompt-web/
-├── src/main/java/com/sureprompt/
-│   ├── config/       # Global configs (CORS, ModelMapper)
-│   ├── controller/   # Web & REST Controllers (Thymeleaf + API)
-│   ├── dto/          # Data Transfer Objects
-│   ├── entity/       # JPA Entities (User, Prompt, Comments, etc.)
-│   ├── exception/    # Global Exception Handlers
-│   ├── repository/   # Spring Data JPA Repositories
-│   ├── security/     # OAuth2 Authentication setup
-│   └── service/      # Core Business Logic
-├── src/main/resources/
-│   ├── db.migration/ # Flyway SQL Schema Migrations (V1 to V13)
-│   ├── static/       # CSS, JS, Images (Premium UI)
-│   ├── templates/    # Thymeleaf HTML Views
-│   └── application.properties # Spring configuration
-└── pom.xml           # Maven dependencies
+<div align="center">
+  <table>
+    <tr>
+      <th>Backend (Spring Boot)</th>
+      <th>Web Frontend (Thymeleaf)</th>
+      <th>Android Native (Java)</th>
+    </tr>
+    <tr>
+      <td>Java 21 LTS<br>Spring Boot 3.5.13<br>Spring Data JPA<br>PostgreSQL (Supabase)<br>Google + GitHub OAuth2</td>
+      <td>Thymeleaf<br>HTML / CSS3 / JS<br>Premium Glassmorphism<br>Highlight.js</td>
+      <td>Android SDK 26+<br>MVVM Architecture<br>Retrofit2<br>Navigation Component<br>Glide</td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 📂 Complete File Structure
+
+This repository is a hybrid containing both the Spring Boot Web Application and the Native Android App.
+
+```text
+📁 SURE-PROMPT/        (Root — contains both web and Android projects)
+│
+├── 📁 sureprompt-web/ (Spring Boot Maven project — website and API)
+│   ├── 📄 pom.xml              (ALL Java dependencies)
+│   ├── 📄 .env                 (Secret keys — DB password, OAuth. Never commit)
+│   ├── 📄 Dockerfile           (Packages app for deployment)
+│   │
+│   ├── 📁 src/main/java/com/sureprompt/
+│   │   ├── 📁 entity/          (JPA entities: User, Prompt, Tag, Follow, etc.)
+│   │   ├── 📁 repository/      (Spring Data JPA interfaces)
+│   │   ├── 📁 service/         (Business logic: FeedService, UserService, etc.)
+│   │   │   └── 📁 ai/          (AI services: Verification, Scoring, AutoTag)
+│   │   ├── 📁 controller/      (REST + Web controllers, Android API /api/v1/)
+│   │   ├── 📁 dto/             (Data transfer objects)
+│   │   ├── 📁 security/        (OAuth2 Security Config)
+│   │   └── 📁 exception/       (Global exception handlers)
+│   │
+│   ├── 📁 src/main/resources/
+│   │   ├── 📄 application.properties (Config)
+│   │   ├── 📁 db/migration/    (Flyway SQL: V1__create_users to V13__seed_tags)
+│   │   ├── 📁 templates/       (Thymeleaf HTML: index, explore, profile, admin)
+│   │   └── 📁 static/          (Premium CSS Design System & JS behaviors)
+│
+└── 📁 sureprompt-android/ (Android Studio project)
+    ├── 📄 build.gradle         (Project-level dependencies)
+    ├── 📁 app/src/main/java/com/sureprompt/
+    │   ├── 📁 activity/        (LoginActivity, MainActivity)
+    │   ├── 📁 fragment/        (Feed, Explore, Profile, Detail, Post fragments)
+    │   ├── 📁 viewmodel/       (MVVM ViewModels for state retention)
+    │   ├── 📁 repository/      (Remote data fetching)
+    │   ├── 📁 api/             (Retrofit Client & Auth interceptors)
+    │   ├── 📁 model/           (POJOs for API responses)
+    │   └── 📁 di/              (Dagger Hilt Modules)
+    └── 📁 app/src/main/res/    (XML layouts, navigation graphs, drawables)
 ```
 
 ---
 
-## 🎯 Features Developed (Phase 1)
+## 🤝 Contributing
 
-- [x] **Secure Authentication:** Seamless login using Google and GitHub OAuth2.
-- [x] **Prompt Creation:** Users can post prompts, categorizing them by difficulty, platform (ChatGPT, Claude, Gemini), and custom tags.
-- [x] **Social Interactions:** Like, Save, Follow users, and comment on prompts asynchronously.
-- [x] **Feed Discovery:** Browse through `Trending`, `Following`, and `All` feeds.
-- [x] **Robust Search:** Filter prompts by keywords, topics, difficulty, and AI Verification status.
-- [x] **Collections:** Users can organize saved prompts into custom collections.
-- [x] **Mobile Ready API:** Fully fleshed-out `/api/v1/` REST endpoints to support the upcoming Android Native client.
+We welcome all contributions from the community! Whether you are a student learning Spring Boot or an experienced Android Developer, we'd love your help to make this the best platform for CS students.
 
----
+1. **Drop a Star!** ⭐
+2. **Fork the Project**
+3. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+4. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+5. Push to the Branch (`git push origin feature/AmazingFeature`)
+6. **Open a Pull Request** or raise an **Issue**!
 
-## 👥 Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+All contributors are welcome! 🎉
 
 ---
 
-## 📜 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
+<p align="center">
+  <b>Free Forever  |  Open Source MIT  |  No Ads  |  No Paywalls  |  Community Owned</b>
+</p>
