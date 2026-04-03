@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" th:fragment="html(title, headExtras, content, scripts)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SurePrompt - The Technical Prompt Community</title>
+    <title th:replace="${title}">SurePrompt</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <th:block th:fragment="head-extras"></th:block>
+    <th:block th:replace="${headExtras}"></th:block>
 </head>
 <body>
 
@@ -21,12 +21,12 @@
     </div>
 
     <main class="container">
-        <th:block th:fragment="content"></th:block>
+        <th:block th:replace="${content}"></th:block>
     </main>
 
     <div th:replace="~{layout/footer :: footer}"></div>
 
     <script th:src="@{/js/main.js}"></script>
-    <th:block th:fragment="scripts"></th:block>
+    <th:block th:replace="${scripts}"></th:block>
 </body>
 </html>
