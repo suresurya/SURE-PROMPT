@@ -48,6 +48,9 @@ public class User {
     @Builder.Default
     private Integer streakCount = 0;
 
+    @Column(name = "last_prompt_date")
+    private java.time.LocalDate lastPromptDate;
+
     @Column(nullable = false)
     @Builder.Default
     private boolean banned = false;

@@ -33,7 +33,7 @@ public class PromptService {
     @Transactional
     public Long createPrompt(Long userId, CreatePromptRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new com.sureprompt.exception.ResourceNotFoundException("User not found"));
 
         Prompt prompt = Prompt.builder()
                 .user(user)
@@ -55,8 +55,18 @@ public class PromptService {
             promptTagRepository.save(pt);
             prompt.getPromptTags().add(pt);
         }
+        java.time.LocalDate today = java.time.LocalDate.now();
+        if (user.getLastPromptDate() == null) {
+            user.setStreakCount(1);
+            user.setLastPromptDate(today);
+        } else if (user.getLastPromptDate().equals(today.minusDays(1))) {
+            user.setStreakCount(user.getStreakCount() + 1);
+            user.setLastPromptDate(today);
+        } else if (user.getLastPromptDate().isBefore(today.minusDays(1))) {
+            user.setStreakCount(1);
+            user.setLastPromptDate(today);
+        }
         
-        user.setStreakCount(user.getStreakCount() + 1); // Simplistic streak update
         userRepository.save(user);
 
         return prompt.getId();
@@ -64,10 +74,10 @@ public class PromptService {
 
     public PromptDetailDto getPromptDetail(Long promptId, Long currentUserId) {
         Prompt prompt = promptRepository.findById(promptId)
-                .orElseThrow(() -> new RuntimeException("Prompt not found"));
+                .orElseThrow(() -> new com.sureprompt.exception.ResourceNotFoundException("Prompt not found"));
 
         if (prompt.isDeleted()) {
-            throw new RuntimeException("Prompt has been deleted");
+            throw new com.sureprompt.exception.ResourceNotFoundException("Prompt has been deleted");
         }
 
         List<String> tags = prompt.getPromptTags().stream()
@@ -108,10 +118,10 @@ public class PromptService {
     @Transactional
     public void deletePrompt(Long promptId, Long userId) {
         Prompt prompt = promptRepository.findById(promptId)
-                .orElseThrow(() -> new RuntimeException("Prompt not found"));
+                .orElseThrow(() -> new com.sureprompt.exception.ResourceNotFoundException("Prompt not found"));
 
         if (!prompt.getUser().getId().equals(userId)) {
-            throw new RuntimeException("Not authorized");
+            throw new com.sureprompt.exception.UnauthorizedException("Not authorized");
         }
 
         prompt.setDeleted(true);

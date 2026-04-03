@@ -59,7 +59,7 @@ public class UserService {
 
     public UserProfileDto getUserProfile(String username, Long currentUserId) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+                .orElseThrow(() -> new com.sureprompt.exception.ResourceNotFoundException("User not found: " + username));
 
         long totalPrompts = promptRepository.countByUserIdAndDeletedFalse(user.getId());
         
@@ -95,7 +95,7 @@ public class UserService {
     @Transactional
     public void updateProfile(Long userId, UpdateProfileRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new com.sureprompt.exception.ResourceNotFoundException("User not found"));
 
         user.setDisplayName(request.getDisplayName());
         user.setBio(request.getBio());
@@ -109,6 +109,6 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new com.sureprompt.exception.ResourceNotFoundException("User not found"));
     }
 }

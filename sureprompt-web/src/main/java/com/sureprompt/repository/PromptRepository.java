@@ -32,10 +32,10 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
     @Query("""
         SELECT p FROM Prompt p 
         WHERE p.deleted = false 
-        AND p.createdAt >= CURRENT_TIMESTAMP - 7 DAY
+        AND p.createdAt >= :since
         ORDER BY (p.likeCount + p.saveCount) DESC
         """)
-    Page<Prompt> findTrending(Pageable pageable);
+    Page<Prompt> findTrending(@Param("since") java.time.LocalDateTime since, Pageable pageable);
 
     // User profile posts
     Page<Prompt> findByUserIdAndDeletedFalseOrderByCreatedAtDesc(Long userId, Pageable pageable);
@@ -63,7 +63,7 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
         """)
     Page<Prompt> searchWithFilters(
         @Param("keyword") String keyword,
-        @Param("difficulty") String difficulty,
+        @Param("difficulty") com.sureprompt.entity.Difficulty difficulty,
         @Param("platform") String platform,
         @Param("verifiedOnly") boolean verifiedOnly,
         Pageable pageable

@@ -21,10 +21,20 @@ public class SearchService {
     public SearchResponseDto searchPrompts(String query, String tags, String difficulty, String platform, boolean verifiedOnly, int page, Long currentUserId) {
         Pageable pageable = PageRequest.of(page, 20);
         
+        // Parse difficulty string to Enum
+        com.sureprompt.entity.Difficulty enumDifficulty = null;
+        if (difficulty != null && !difficulty.isEmpty()) {
+            try {
+                enumDifficulty = com.sureprompt.entity.Difficulty.valueOf(difficulty.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // Ignore invalid difficulty
+            }
+        }
+
         // This is a simplified search. Usually you'd use Specifications or full-text native query.
         Page<Prompt> promptPage = promptRepository.searchWithFilters(
             query != null ? query : "",
-            difficulty == null || difficulty.isEmpty() ? null : difficulty,
+            enumDifficulty,
             platform == null || platform.isEmpty() ? null : platform,
             verifiedOnly,
             pageable

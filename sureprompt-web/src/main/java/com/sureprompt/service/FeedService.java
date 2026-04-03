@@ -41,7 +41,8 @@ public class FeedService {
     @Transactional(readOnly = true)
     public FeedResponseDto getTrendingFeed(int page, Long currentUserId) {
         Pageable pageable = PageRequest.of(page, 20);
-        Page<Prompt> promptPage = promptRepository.findTrending(pageable);
+        java.time.LocalDateTime since = java.time.LocalDateTime.now().minusDays(7);
+        Page<Prompt> promptPage = promptRepository.findTrending(since, pageable);
         return mapToFeedResponse(promptPage, currentUserId);
     }
 
