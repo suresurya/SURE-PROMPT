@@ -1,16 +1,20 @@
 <div align="center">
-  <img src="./assets/logo.png" alt="Logo" width="80" height="80">
-  <h1 align="center">SurePrompt</h1>
-  <p><strong>The Free Technical Prompt Community for CS Students</strong><br>
-  <em>Learn Better. Prompt Smarter. Share Freely.</em></p>
+  <img src="./assets/logo.png" alt="Logo" width="120" height="120" style="border-radius: 20px;">
+  
+  # ⚡ SurePrompt ⚡
+  **The Free Technical Prompt Community for CS Students**
+  *Learn Better. Prompt Smarter. Share Freely.*
+
+  <br>
 
   <a href="https://github.com/suresurya/SURE-PROMPT/stargazers">
-    <img src="https://img.shields.io/github/stars/suresurya/SURE-PROMPT?style=social&label=Drop%20a%20Star!%20%E2%AD%90" alt="Star Badge"/>
+    <img src="https://media1.tenor.com/m/DGSRu7GisIoAAAAC/emoji-emojis.gif" width="100" alt="Star GIF">
+    <br>
+    <img src="https://img.shields.io/github/stars/suresurya/SURE-PROMPT?style=for-the-badge&color=yellow&label=CLICK%20TO%20DROP%20A%20STAR%20!%20%E2%AD%90" alt="Star Badge"/>
   </a>
+  
   <br>
-  <img src="https://media1.tenor.com/m/DGSRu7GisIoAAAAC/emoji-emojis.gif" width="120" alt="Mario Star GIF">
-  <br>
-  <em>If you find this project interesting, please drop a star! It helps us a lot. ✨</em>
+  <em>Your support helps us build the future of technical education. ✨</em>
 </div>
 
 ---
@@ -39,7 +43,7 @@ Think of it like Instagram but only for technical prompts. Scroll a feed from pe
 
 ---
 
-## 🤖 The Unique AI Layer
+## 🤖 The Unique AI Layer (Web Platform)
 
 SurePrompt features a powerful AI layer built on top of social features. Users can securely connect their own Gemini, OpenAI, or Claude API keys to unlock:
 
@@ -76,42 +80,35 @@ SurePrompt features a powerful AI layer built on top of social features. Users c
 
 This repository is a hybrid containing both the Spring Boot Web Application and the Native Android App.
 
-```text
-📁 SURE-PROMPT/        (Root — contains both web and Android projects)
-│
-├── 📁 sureprompt-web/ (Spring Boot Maven project — website and API)
-│   ├── 📄 pom.xml              (ALL Java dependencies)
-│   ├── 📄 .env                 (Secret keys — DB password, OAuth. Never commit)
-│   ├── 📄 Dockerfile           (Packages app for deployment)
-│   │
-│   ├── 📁 src/main/java/com/sureprompt/
-│   │   ├── 📁 entity/          (JPA entities: User, Prompt, Tag, Follow, etc.)
-│   │   ├── 📁 repository/      (Spring Data JPA interfaces)
-│   │   ├── 📁 service/         (Business logic: FeedService, UserService, etc.)
-│   │   │   └── 📁 ai/          (AI services: Verification, Scoring, AutoTag)
-│   │   ├── 📁 controller/      (REST + Web controllers, Android API /api/v1/)
-│   │   ├── 📁 dto/             (Data transfer objects)
-│   │   ├── 📁 security/        (OAuth2 Security Config)
-│   │   └── 📁 exception/       (Global exception handlers)
-│   │
-│   ├── 📁 src/main/resources/
-│   │   ├── 📄 application.properties (Config)
-│   │   ├── 📁 db/migration/    (Flyway SQL: V1__create_users to V13__seed_tags)
-│   │   ├── 📁 templates/       (Thymeleaf HTML: index, explore, profile, admin)
-│   │   └── 📁 static/          (Premium CSS Design System & JS behaviors)
-│
-└── 📁 sureprompt-android/ (Android Studio project)
-    ├── 📄 build.gradle         (Project-level dependencies)
-    ├── 📁 app/src/main/java/com/sureprompt/
-    │   ├── 📁 activity/        (LoginActivity, MainActivity)
-    │   ├── 📁 fragment/        (Feed, Explore, Profile, Detail, Post fragments)
-    │   ├── 📁 viewmodel/       (MVVM ViewModels for state retention)
-    │   ├── 📁 repository/      (Remote data fetching)
-    │   ├── 📁 api/             (Retrofit Client & Auth interceptors)
-    │   ├── 📁 model/           (POJOs for API responses)
-    │   └── 📁 di/              (Dagger Hilt Modules)
-    └── 📁 app/src/main/res/    (XML layouts, navigation graphs, drawables)
+```mermaid
+graph TD
+    Root[📁 SURE-PROMPT]
+    Root --> Web[📁 sureprompt-web]
+    Root --> App[📁 sureprompt-android]
+    Web --> Ent[Entity/Repos/Services]
+    Web --> UI[Thymeleaf/CSS/JS]
+    Web --> AI[AI Gateway/Verification]
+    App --> VM[MVVM ViewModels]
+    App --> Frag[Fragments/Activities]
 ```
+
+<details>
+<summary><b>📂 VIEW FULL DIRECTORY TREE</b></summary>
+
+```text
+📁 Root/
+├── 📁 sureprompt-web/    (Spring Boot Maven project — website and API)
+│   ├── 📁 entity/        (JPA entities: User, Prompt, Tag, Follow, etc.)
+│   ├── 📁 repository/      (Spring Data JPA interfaces)
+│   ├── 📁 service/ai/    (AI services: Verification, Scoring, AutoTag)
+│   ├── 📁 templates/     (Thymeleaf HTML: index, explore, profile, admin)
+│   └── 📁 static/        (Design Tokens)
+└── 📁 sureprompt-android/ (Android Studio project)
+    ├── 📁 viewmodel/     (State Control)
+    ├── 📁 fragment/      (UI Components)
+    └── 📁 api/           (Retrofit Logic)
+```
+</details>
 
 ---
 
