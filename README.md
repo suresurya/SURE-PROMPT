@@ -1,13 +1,28 @@
 <div align="center">
-  <img src="./assets/logo.png" alt="Logo" width="80" height="80">
-  <h1 align="center">SurePrompt</h1>
-  <p><strong>The Free Technical Prompt Community for CS Students</strong><br>
-  <em>Learn Better. Prompt Smarter. Share Freely.</em></p>
+  <img src="./assets/logo.png" alt="Logo" width="120" height="120" style="border-radius: 20px;">
+  
+  # ⚡ SurePrompt ⚡
+  **The Free Technical Prompt Community for CS Students**
+  *Learn Better. Prompt Smarter. Share Freely.*
 
-  <a href="https://github.com/suresurya/SURE-PROMPT/stargazers">
-    <img src="https://img.shields.io/github/stars/suresurya/SURE-PROMPT?style=social&label=Drop%20a%20Star!%20%E2%AD%90" alt="Star Badge"/>
-  </a>
   <br>
+<<<<<<< HEAD
+=======
+
+  <div align="center">
+    <a href="https://github.com/suresurya/SURE-PROMPT/stargazers">
+      <img src="https://media1.tenor.com/m/DGSRu7GisIoAAAAC/emoji-emojis.gif" width="120" alt="Mario Star GIF">
+    </a>
+    <br>
+    <a href="https://tenor.com/view/emoji-emojis-mario-star-gif-892998861451341962">Emoji Emojis Sticker</a> from <a href="https://tenor.com/search/emoji-stickers">Emoji Stickers</a>
+    <br><br>
+    <a href="https://github.com/suresurya/SURE-PROMPT/stargazers">
+      <img src="https://img.shields.io/github/stars/suresurya/SURE-PROMPT?style=for-the-badge&color=yellow&label=DROP%20A%20STAR%20!%20%E2%AD%90" alt="Star Badge"/>
+    </a>
+  </div>
+  
+  <br>
+>>>>>>> 1632d19 (Update README.md)
   <em>Your support helps us build the future of technical education. ✨</em>
 </div>
 
