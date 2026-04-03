@@ -96,17 +96,48 @@ graph TD
 <summary><b>📂 VIEW FULL DIRECTORY TREE</b></summary>
 
 ```text
-📁 Root/
-├── 📁 sureprompt-web/    (Spring Boot Maven project — website and API)
-│   ├── 📁 entity/        (JPA entities: User, Prompt, Tag, Follow, etc.)
-│   ├── 📁 repository/      (Spring Data JPA interfaces)
-│   ├── 📁 service/ai/    (AI services: Verification, Scoring, AutoTag)
-│   ├── 📁 templates/     (Thymeleaf HTML: index, explore, profile, admin)
-│   └── 📁 static/        (Design Tokens)
+
+## 📂 Complete File Structure
+
+This repository is a hybrid containing both the Spring Boot Web Application and the Native Android App.
+
+```text
+📁 SURE-PROMPT/        (Root — contains both web and Android projects)
+│
+├── 📁 sureprompt-web/ (Spring Boot Maven project — website and API)
+│   ├── 📄 pom.xml              (ALL Java dependencies)
+│   ├── 📄 .env                 (Secret keys — DB password, OAuth. Never commit)
+│   ├── 📄 Dockerfile           (Packages app for deployment)
+│   │
+│   ├── 📁 src/main/java/com/sureprompt/
+│   │   ├── 📁 entity/          (JPA entities: User, Prompt, Tag, Follow, etc.)
+│   │   ├── 📁 repository/      (Spring Data JPA interfaces)
+│   │   ├── 📁 service/         (Business logic: FeedService, UserService, etc.)
+│   │   │   └── 📁 ai/          (AI services: Verification, Scoring, AutoTag)
+│   │   ├── 📁 controller/      (REST + Web controllers, Android API /api/v1/)
+│   │   ├── 📁 dto/             (Data transfer objects)
+│   │   ├── 📁 security/        (OAuth2 Security Config)
+│   │   └── 📁 exception/       (Global exception handlers)
+│   │
+│   ├── 📁 src/main/resources/
+│   │   ├── 📄 application.properties (Config)
+│   │   ├── 📁 db/migration/    (Flyway SQL: V1__create_users to V13__seed_tags)
+│   │   ├── 📁 templates/       (Thymeleaf HTML: index, explore, profile, admin)
+│   │   └── 📁 static/          (Premium CSS Design System & JS behaviors)
+│
 └── 📁 sureprompt-android/ (Android Studio project)
-    ├── 📁 viewmodel/     (State Control)
-    ├── 📁 fragment/      (UI Components)
-    └── 📁 api/           (Retrofit Logic)
+    ├── 📄 build.gradle         (Project-level dependencies)
+    ├── 📁 app/src/main/java/com/sureprompt/
+    │   ├── 📁 activity/        (LoginActivity, MainActivity)
+    │   ├── 📁 fragment/        (Feed, Explore, Profile, Detail, Post fragments)
+    │   ├── 📁 viewmodel/       (MVVM ViewModels for state retention)
+    │   ├── 📁 repository/      (Remote data fetching)
+    │   ├── 📁 api/             (Retrofit Client & Auth interceptors)
+    │   ├── 📁 model/           (POJOs for API responses)
+    │   └── 📁 di/              (Dagger Hilt Modules)
+    └── 📁 app/src/main/res/    (XML layouts, navigation graphs, drawables)
+```
+
 ```
 </details>
 
