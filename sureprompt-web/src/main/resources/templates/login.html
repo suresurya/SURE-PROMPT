@@ -60,7 +60,10 @@
 <body>
     <th:block th:fragment="content">
         <div class="login-container">
-            <div class="login-logo">Sure<span class="logo-accent">Prompt</span></div>
+            <div class="login-logo" style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+                <img th:src="@{/assets/logo.png}" alt="SurePrompt Logo" width="48" height="48" style="border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                <span>Sure<span class="logo-accent">Prompt</span></span>
+            </div>
             <p class="login-subtitle">The Free Technical Prompt Community</p>
             
             <a th:href="@{/login/oauth2/code/google}" class="oauth-btn google-btn">

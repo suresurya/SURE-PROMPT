@@ -1,6 +1,7 @@
 <nav class="navbar" th:fragment="navbar" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <div class="nav-container">
-        <a th:href="@{/}" class="brand-logo">
+        <a th:href="@{/}" class="brand-logo" style="display: flex; align-items: center; gap: 10px;">
+            <img th:src="@{/assets/logo.png}" alt="SurePrompt Logo" width="32" height="32" style="border-radius: 8px;">
             <span class="logo-text">Sure<span class="logo-accent">Prompt</span></span>
         </a>
         

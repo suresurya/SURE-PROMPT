@@ -1,5 +1,6 @@
 <div align="center">
-  <h1>🌟 SurePrompt</h1>
+  <img src="./assets/logo.png" alt="Logo" width="80" height="80">
+  <h1 align="center">SurePrompt</h1>
   <p><strong>The Free Technical Prompt Community for CS Students</strong><br>
   <em>Learn Better. Prompt Smarter. Share Freely.</em></p>
 
