@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/logo.png" alt="Logo" width="120" height="120" style="border-radius: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.1);">
+  <img src="./assets/logo.png" alt="Logo" width="120" height="120" style="border-radius: 20px;">
   
   # ⚡ SurePrompt ⚡
   **The Free Technical Prompt Community for CS Students**
@@ -7,11 +7,15 @@
 
   <br>
 
-  <a href="https://github.com/suresurya/SURE-PROMPT/stargazers">
-    <img src="https://media1.tenor.com/m/DGSRu7GisIoAAAAC/emoji-emojis.gif" width="100" alt="Star GIF">
+  <div align="center">
+    <a href="https://github.com/suresurya/SURE-PROMPT/stargazers">
+      <img src="https://media1.tenor.com/m/DGSRu7GisIoAAAAC/emoji-emojis.gif" width="120" alt="Mario Star GIF">
+    </a>
     <br>
-    <img src="https://img.shields.io/github/stars/suresurya/SURE-PROMPT?style=for-the-badge&color=yellow&label=CLICK%20TO%20DROP%20A%20STAR%20!%20%E2%AD%90" alt="Star Badge"/>
-  </a>
+    <a href="https://github.com/suresurya/SURE-PROMPT/stargazers">
+      <img src="https://img.shields.io/github/stars/suresurya/SURE-PROMPT?style=for-the-badge&color=yellow&label=DROP%20A%20STAR%20!%20%E2%AD%90" alt="Star Badge"/>
+    </a>
+  </div>
   
   <br>
   <em>Your support helps us build the future of technical education. ✨</em>
