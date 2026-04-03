@@ -6,8 +6,7 @@
   *Learn Better. Prompt Smarter. Share Freely.*
 
   <br>
-<<<<<<< HEAD
-=======
+
 
   <div align="center">
     <a href="https://github.com/suresurya/SURE-PROMPT/stargazers">
@@ -22,7 +21,6 @@
   </div>
   
   <br>
->>>>>>> 1632d19 (Update README.md)
   <em>Your support helps us build the future of technical education. ✨</em>
 </div>
 
