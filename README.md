@@ -8,6 +8,8 @@
     <img src="https://img.shields.io/github/stars/suresurya/SURE-PROMPT?style=social&label=Drop%20a%20Star!%20%E2%AD%90" alt="Star Badge"/>
   </a>
   <br>
+  <img src="https://media1.tenor.com/m/DGSRu7GisIoAAAAC/emoji-emojis.gif" width="120" alt="Mario Star GIF">
+  <br>
   <em>If you find this project interesting, please drop a star! It helps us a lot. ✨</em>
 </div>
 
