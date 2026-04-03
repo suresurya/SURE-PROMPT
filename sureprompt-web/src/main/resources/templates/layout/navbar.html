@@ -1,0 +1,45 @@
+<nav class="navbar" th:fragment="navbar" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <div class="nav-container">
+        <a th:href="@{/}" class="brand-logo">
+            <span class="logo-text">Sure<span class="logo-accent">Prompt</span></span>
+        </a>
+        
+        <div class="search-bar">
+            <form th:action="@{/explore}" method="get">
+                <i class="fas fa-search"></i>
+                <input type="text" name="q" placeholder="Search prompts, topics..." autocomplete="off">
+            </form>
+        </div>
+
+        <div class="nav-links">
+            <a th:href="@{/explore}" class="nav-link"><i class="fas fa-compass"></i> Explore</a>
+            
+            <!-- Authenticated User Menu -->
+            <div sec:authorize="isAuthenticated()" class="user-menu">
+                <a th:href="@{/prompts/new}" class="btn btn-primary"><i class="fas fa-plus"></i> Post</a>
+                <a th:href="@{/saved}" class="nav-link icon-only" title="Saved"><i class="fa-regular fa-bookmark"></i></a>
+                
+                <div class="dropdown">
+                    <button class="avatar-btn">
+                        <img th:if="${currentUser.avatarUrl}" th:src="${currentUser.avatarUrl}" alt="Avatar">
+                        <div th:unless="${currentUser.avatarUrl}" class="avatar-placeholder" th:text="${#strings.substring(currentUser.username,0,1).toUpperCase()}"></div>
+                    </button>
+                    <div class="dropdown-content">
+                        <a th:href="@{/users/{username}(username=${currentUser.username})}"><i class="fas fa-user"></i> Profile</a>
+                        <a th:href="@{/profile/edit}"><i class="fas fa-cog"></i> Settings</a>
+                        <hr>
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Guest Menu -->
+            <div sec:authorize="!isAuthenticated()" class="guest-menu">
+                <a th:href="@{/login}" class="btn btn-outline">Log in</a>
+                <a th:href="@{/login}" class="btn btn-primary">Sign up</a>
+            </div>
+        </div>
+    </div>
+</nav>

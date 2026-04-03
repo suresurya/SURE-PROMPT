@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: html(
+    ~{::title},
+    ~{::head-extras},
+    ~{::content},
+    ~{::scripts}
+)}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>500 Internal Error - SurePrompt</title>
+    <th:block th:fragment="head-extras"></th:block>
+</head>
+<body>
+    <th:block th:fragment="content">
+        <div class="error-container text-center" style="padding: 100px 20px;">
+            <h1 style="font-size: 5rem; color: var(--danger-color);">500</h1>
+            <h2>Oops, something went wrong.</h2>
+            <p class="text-muted" th:text="${error != null ? error : 'We are having some technical issues. Please try again later.'}"></p>
+            <a th:href="@{/}" class="btn btn-primary mt-4">Go Home</a>
+        </div>
+    </th:block>
+    <th:block th:fragment="scripts"></th:block>
+</body>
+</html>

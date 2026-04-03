@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: html(
+    ~{::title},
+    ~{::head-extras},
+    ~{::content},
+    ~{::scripts}
+)}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Prompt Details - SurePrompt</title>
+    <th:block th:fragment="head-extras">
+        <link rel="stylesheet" th:href="@{/css/prompt.css}">
+        <!-- Highlight.js for code formatting in prompts/outputs -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    </th:block>
+</head>
+<body>
+    <th:block th:fragment="content">
+        <div class="prompt-detail-container">
+            <!-- Header Section -->
+            <div class="pd-header">
+                <h1 class="pd-title" th:text="${prompt.title}">Title</h1>
+                <div class="pd-meta">
+                    <div class="pd-author">
+                        <img th:if="${prompt.authorAvatar}" th:src="${prompt.authorAvatar}" class="avatar-sm">
+                        <div th:unless="${prompt.authorAvatar}" class="avatar-placeholder-sm" th:text="${#strings.substring(prompt.authorUsername,0,1).toUpperCase()}"></div>
+                        <a th:href="@{/users/{username}(username=${prompt.authorUsername})}" th:text="${prompt.authorName}">Name</a>
+                    </div>
+                    <span>•</span>
+                    <span th:text="${#temporals.format(prompt.createdAt, 'MMM dd, yyyy')}">Date</span>
+                    
+                    <button th:if="${prompt.isOwnPrompt}" class="btn-icon text-danger pd-delete-btn" title="Delete Prompt" th:data-id="${prompt.id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <form th:if="${prompt.isOwnPrompt}" th:id="'delete-form-' + ${prompt.id}" th:action="@{/prompts/{id}/delete(id=${prompt.id})}" method="post" style="display: none;"></form>
+                </div>
+                
+                <div class="tags-container mt-3">
+                    <span th:each="tag : ${prompt.tags}" class="tag" th:text="${tag}"></span>
+                    <span class="difficulty-badge" th:classappend="'diff-' + ${#strings.toLowerCase(prompt.difficulty)}" th:text="${prompt.difficulty}"></span>
+                    <span class="platform-badge" th:text="${prompt.platform}"></span>
+                </div>
+            </div>
+
+            <!-- AI Status Section -->
+            <div class="pd-ai-card" th:if="${prompt.aiVerified || prompt.aiScore != null}">
+                <div th:if="${prompt.aiVerified}" class="ai-verified-full">
+                    <i class="fas fa-check-circle text-success"></i> This prompt has been AI Verified.
+                    <p class="ai-reason" th:if="${prompt.aiVerificationReason}" th:text="${prompt.aiVerificationReason}"></p>
+                </div>
+                <div class="ai-score-full" th:if="${prompt.aiScore != null}">
+                    <div class="score-circle">
+                        <span th:text="${prompt.aiScore}"></span>
+                    </div>
+                    <div class="score-text">AI Quality Score</div>
+                </div>
+            </div>
+
+            <!-- Actions Bar -->
+            <div class="pd-actions-bar">
+                <div class="actions-left">
+                    <button class="action-btn like-btn" th:classappend="${prompt.isLiked ? 'active' : ''}" th:data-id="${prompt.id}">
+                        <i th:class="${prompt.isLiked ? 'fas fa-heart' : 'far fa-heart'}"></i> Like (<span class="count" th:text="${prompt.likeCount}">0</span>)
+                    </button>
+                    <button class="action-btn copy-btn primary" th:data-id="${prompt.id}" id="copyPromptBtn">
+                        <i class="far fa-copy"></i> Copy Prompt
+                    </button>
+                </div>
+                <div class="actions-right">
+                    <button class="action-btn save-btn" th:classappend="${prompt.isSaved ? 'active' : ''}" th:data-id="${prompt.id}">
+                        <i th:class="${prompt.isSaved ? 'fas fa-bookmark' : 'far fa-bookmark'}"></i> Save
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="pd-content">
+                <div class="content-section">
+                    <h3>The Prompt</h3>
+                    <div class="code-window">
+                        <div class="window-header">
+                            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                        </div>
+                        <pre><code class="language-plaintext" id="promptText" th:text="${prompt.promptBody}"></code></pre>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h3>AI Output Preview</h3>
+                    <div class="code-window ai-output-window">
+                        <div class="window-header">
+                            Output from <span th:text="${prompt.platform}"></span>
+                        </div>
+                        <pre><code class="language-markdown" th:text="${prompt.aiOutput}"></code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <hr>
+            
+            <!-- Comments Section -->
+            <div id="comments" class="comments-section">
+                <h3>Comments</h3>
+                
+                <div class="add-comment" sec:authorize="isAuthenticated()">
+                    <img th:if="${currentUser.avatarUrl}" th:src="${currentUser.avatarUrl}" class="avatar-sm">
+                    <div th:unless="${currentUser.avatarUrl}" class="avatar-placeholder-sm" th:text="${#strings.substring(currentUser.username,0,1).toUpperCase()}"></div>
+                    <div class="comment-input-group">
+                        <input type="text" id="commentInput" placeholder="Add a comment..." th:data-id="${prompt.id}">
+                        <button id="postCommentBtn" class="btn btn-primary sm">Post</button>
+                    </div>
+                </div>
+                <div class="guest-comment-box" sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/login}">Log in to add a comment</a>
+                </div>
+                
+                <div class="comments-list" id="commentsList">
+                    <div class="comment-item" th:each="comment : ${prompt.comments}" th:id="'comment-' + ${comment.id}">
+                        <img th:if="${comment.avatarUrl}" th:src="${comment.avatarUrl}" class="avatar-sm">
+                        <div th:unless="${comment.avatarUrl}" class="avatar-placeholder-sm" th:text="${#strings.substring(comment.authorUsername,0,1).toUpperCase()}"></div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <a th:href="@{/users/{un}(un=${comment.authorUsername})}" class="comment-author" th:text="${comment.authorName}">Name</a>
+                                <span class="comment-time" th:text="${#temporals.format(comment.createdAt, 'MMM dd')}">Date</span>
+                                <button th:if="${comment.isOwnComment}" class="btn-icon delete-comment-btn" th:data-comment-id="${comment.id}" th:data-prompt-id="${prompt.id}"><i class="fas fa-trash"></i></button>
+                            </div>
+                            <div class="comment-text" th:text="${comment.body}">Body</div>
+                        </div>
+                    </div>
+                    <div th:if="${prompt.comments.empty}" class="no-comments">
+                        No comments yet. Be the first!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+    
+    <th:block th:fragment="scripts">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
+        <script th:src="@{/js/prompt.js}"></script>
+    </th:block>
+</body>
+</html>

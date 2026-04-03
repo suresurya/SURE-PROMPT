@@ -1,0 +1,6 @@
+CREATE TABLE saves (
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    prompt_id BIGINT NOT NULL REFERENCES prompts(id) ON DELETE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, prompt_id)
+);

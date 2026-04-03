@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: html(
+    ~{::title},
+    ~{::head-extras},
+    ~{::content},
+    ~{::scripts}
+)}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home - SurePrompt</title>
+    <th:block th:fragment="head-extras">
+        <link rel="stylesheet" th:href="@{/css/feed.css}">
+    </th:block>
+</head>
+<body>
+    <th:block th:fragment="content">
+        <div class="feed-layout">
+            <div class="sidebar-left">
+                <!-- Can have sticky trend topics later -->
+            </div>
+            
+            <div class="main-feed">
+                <div class="feed-tabs">
+                    <button class="tab-btn active" data-tab="all">All</button>
+                    <button class="tab-btn" data-tab="following">Following</button>
+                    <button class="tab-btn" data-tab="trending">Trending</button>
+                </div>
+                
+                <div id="feed-container" class="feed-container">
+                    <!-- Default loading state, JS will fetch actual feed -->
+                    <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading prompts...</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-right">
+                <div class="promo-card">
+                    <h3>Connect Your AI</h3>
+                    <p>Unlock auto-tagging, quality scoring, and prompt verification by adding your API key.</p>
+                    <a href="/settings/ai" class="btn btn-primary sm">Connect Key</a>
+                </div>
+            </div>
+        </div>
+    </th:block>
+    
+    <th:block th:fragment="scripts">
+        <script th:src="@{/js/feed.js}"></script>
+        <script th:src="@{/js/prompt.js}"></script>
+    </th:block>
+</body>
+</html>

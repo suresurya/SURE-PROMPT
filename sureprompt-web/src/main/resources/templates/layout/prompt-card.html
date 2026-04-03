@@ -1,0 +1,54 @@
+<div class="prompt-card" th:fragment="prompt-card(prompt)" xmlns:th="http://www.thymeleaf.org">
+    <div class="card-header">
+        <div class="author-info">
+            <a th:href="@{/users/{username}(username=${prompt.authorUsername})}">
+                <img th:if="${prompt.authorAvatar}" th:src="${prompt.authorAvatar}" class="avatar-sm">
+                <div th:unless="${prompt.authorAvatar}" class="avatar-placeholder-sm" th:text="${#strings.substring(prompt.authorUsername,0,1).toUpperCase()}"></div>
+            </a>
+            <div class="author-details">
+                <a th:href="@{/users/{username}(username=${prompt.authorUsername})}" class="author-name" th:text="${prompt.authorName}">Name</a>
+                <span class="college-badge" th:if="${prompt.college}"><i class="fas fa-university"></i> <span th:text="${prompt.college}"></span></span>
+            </div>
+        </div>
+        <div class="card-meta">
+            <span class="time-ago" th:text="${#temporals.format(prompt.createdAt, 'MMM dd')}"></span>
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <a th:href="@{/prompts/{id}(id=${prompt.id})}" class="card-title-link">
+            <h3 class="card-title" th:text="${prompt.title}">Title</h3>
+        </a>
+        
+        <div class="tags-container">
+            <span th:each="tag : ${prompt.tags}" class="tag" th:text="${tag}"></span>
+            <span class="difficulty-badge" th:classappend="'diff-' + ${#strings.toLowerCase(prompt.difficulty)}" th:text="${prompt.difficulty}"></span>
+            <span class="platform-badge" th:text="${prompt.platform}"></span>
+        </div>
+        
+        <div class="ai-status" th:if="${prompt.aiVerified || prompt.aiScore != null}">
+            <div th:if="${prompt.aiVerified}" class="verified-badge"><i class="fas fa-check-circle"></i> AI Verified</div>
+            <div th:if="${prompt.aiScore}" class="score-badge">AI Score: <span th:text="${prompt.aiScore}"></span>/10</div>
+        </div>
+    </div>
+    
+    <div class="card-footer">
+        <div class="actions-left">
+            <button class="action-btn like-btn" th:classappend="${prompt.isLiked ? 'active' : ''}" th:data-id="${prompt.id}">
+                <i th:class="${prompt.isLiked ? 'fas fa-heart' : 'far fa-heart'}"></i>
+                <span class="count" th:text="${prompt.likeCount}">0</span>
+            </button>
+            <button class="action-btn comment-btn" th:onclick="'window.location.href=\'/prompts/' + ${prompt.id} + '#comments\''">
+                <i class="far fa-comment"></i>
+            </button>
+            <button class="action-btn copy-btn" th:data-id="${prompt.id}" title="Copy Prompt">
+                <i class="far fa-copy"></i>
+            </button>
+        </div>
+        <div class="actions-right">
+            <button class="action-btn save-btn" th:classappend="${prompt.isSaved ? 'active' : ''}" th:data-id="${prompt.id}">
+                <i th:class="${prompt.isSaved ? 'fas fa-bookmark' : 'far fa-bookmark'}"></i>
+            </button>
+        </div>
+    </div>
+</div>

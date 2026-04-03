@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: html(
+    ~{::title},
+    ~{::head-extras},
+    ~{::content},
+    ~{::scripts}
+)}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Explore - SurePrompt</title>
+    <th:block th:fragment="head-extras">
+        <link rel="stylesheet" th:href="@{/css/feed.css}">
+    </th:block>
+</head>
+<body>
+    <th:block th:fragment="content">
+        <div class="explore-header">
+            <h1>Explore Prompts</h1>
+            
+            <div class="search-box-large">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search for algorithms, frameworks, concepts...">
+            </div>
+            
+            <div class="filters-container">
+                <div class="filter-group">
+                    <select id="diffFilter">
+                        <option value="">All Difficulties</option>
+                        <option value="EASY">Easy</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="HARD">Hard</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <select id="platformFilter">
+                        <option value="">All Platforms</option>
+                        <option value="ChatGPT (GPT-4)">ChatGPT</option>
+                        <option value="Claude 3 Opus">Claude</option>
+                        <option value="Gemini Advanced">Gemini</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group tag-chips">
+                    <button class="tag-chip active" data-tag="">All Topics</button>
+                    <button th:each="tag : ${availableTags}" class="tag-chip" th:data-tag="${tag}" th:text="${tag}"></button>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="verifiedOnlyToggle">
+                        <span class="slider"></span>
+                    </label>
+                    <span>AI Verified Only</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-meta" id="resultsMeta" style="display:none;">
+            Found <span id="totalResults">0</span> results 
+            <span id="appliedFilters" class="text-muted text-sm ml-2"></span>
+        </div>
+        
+        <div id="searchResults" class="prompts-grid mt-4">
+            <!-- Results injected here by JS -->
+            <div class="text-center w-100 py-5 text-muted">
+                Type something to search...
+            </div>
+        </div>
+    </th:block>
+    
+    <th:block th:fragment="scripts">
+        <script th:src="@{/js/search.js}"></script>
+        <script th:src="@{/js/prompt.js}"></script>
+    </th:block>
+</body>
+</html>

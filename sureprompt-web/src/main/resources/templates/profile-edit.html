@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: html(
+    ~{::title},
+    ~{::head-extras},
+    ~{::content},
+    ~{::scripts}
+)}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Profile - SurePrompt</title>
+    <th:block th:fragment="head-extras">
+        <link rel="stylesheet" th:href="@{/css/form.css}">
+    </th:block>
+</head>
+<body>
+    <th:block th:fragment="content">
+        <div class="form-container" style="max-width: 600px;">
+            <h2>Edit Profile</h2>
+            
+            <form th:action="@{/profile/edit}" th:object="${updateProfileRequest}" method="post">
+                
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <input type="text" th:field="*{displayName}">
+                    <div class="error-msg" th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Bio (About you)</label>
+                    <textarea th:field="*{bio}" rows="3" placeholder="I am a CS student interested in..."></textarea>
+                    <div class="error-msg" th:if="${#fields.hasErrors('bio')}" th:errors="*{bio}"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label>College / University</label>
+                    <input type="text" th:field="*{college}" placeholder="e.g. VIT Vellore">
+                    <div class="error-msg" th:if="${#fields.hasErrors('college')}" th:errors="*{college}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Avatar URL (Optional)</label>
+                    <input type="text" th:field="*{avatarUrl}" placeholder="https://...">
+                    <div class="error-msg" th:if="${#fields.hasErrors('avatarUrl')}" th:errors="*{avatarUrl}"></div>
+                </div>
+                
+                <div class="form-actions">
+                    <a th:href="@{/users/{un}(un=${currentUser.username})}" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </th:block>
+    
+    <th:block th:fragment="scripts"></th:block>
+</body>
+</html>

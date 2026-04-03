@@ -1,0 +1,32 @@
+# Maven build output
+target/
+*.class
+*.jar
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Environment secrets - NEVER COMMIT THESE
+.env
+.env.local
+.env.production
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Spring Boot specific
+spring-shell.log
+
+# Local override properties
+application-local.properties
