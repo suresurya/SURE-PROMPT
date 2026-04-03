@@ -13,7 +13,6 @@
       <img src="https://media1.tenor.com/m/DGSRu7GisIoAAAAC/emoji-emojis.gif" width="120" alt="Mario Star GIF">
     </a>
     <br>
-    <a href="https://tenor.com/view/emoji-emojis-mario-star-gif-892998861451341962">Emoji Emojis Sticker</a> from <a href="https://tenor.com/search/emoji-stickers">Emoji Stickers</a>
     <br><br>
     <a href="https://github.com/suresurya/SURE-PROMPT/stargazers">
       <img src="https://img.shields.io/github/stars/suresurya/SURE-PROMPT?style=for-the-badge&color=yellow&label=DROP%20A%20STAR%20!%20%E2%AD%90" alt="Star Badge"/>
