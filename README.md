@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/logo.png" alt="Logo" width="120" height="120" style="border-radius: 20px;">
+  <img src="./assets/logo.png" alt="Logo" width="120" height="120" style="border-radius: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.1);">
   
   # ⚡ SurePrompt ⚡
   **The Free Technical Prompt Community for CS Students**
@@ -76,9 +76,7 @@ SurePrompt features a powerful AI layer built on top of social features. Users c
 
 ---
 
-## 📂 Complete File Structure
-
-This repository is a hybrid containing both the Spring Boot Web Application and the Native Android App.
+## 📂 Hybrid Architecture
 
 ```mermaid
 graph TD
@@ -94,12 +92,6 @@ graph TD
 
 <details>
 <summary><b>📂 VIEW FULL DIRECTORY TREE</b></summary>
-
-```text
-
-## 📂 Complete File Structure
-
-This repository is a hybrid containing both the Spring Boot Web Application and the Native Android App.
 
 ```text
 📁 SURE-PROMPT/        (Root — contains both web and Android projects)
@@ -137,8 +129,6 @@ This repository is a hybrid containing both the Spring Boot Web Application and 
     │   └── 📁 di/              (Dagger Hilt Modules)
     └── 📁 app/src/main/res/    (XML layouts, navigation graphs, drawables)
 ```
-
-```
 </details>
 
 ---
@@ -158,6 +148,7 @@ All contributors are welcome! 🎉
 
 ---
 
-<p align="center">
-  <b>Free Forever  |  Open Source MIT  |  No Ads  |  No Paywalls  |  Community Owned</b>
-</p>
+<div align="center">
+  <p><b>Free Forever | Open Source MIT | No Ads | No Paywalls | Community Owned</b></p>
+  <img src="https://media1.tenor.com/m/DGSRu7GisIoAAAAC/emoji-emojis.gif" width="40" alt="Small Star">
+</div>
