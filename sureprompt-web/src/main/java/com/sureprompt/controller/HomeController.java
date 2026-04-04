@@ -9,11 +9,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
-    public String home(Model model, @AuthenticationPrincipal CustomOAuth2User user) {
-        if (user != null) {
-            model.addAttribute("currentUser", user.getDatabaseUser());
-        }
+    @GetMapping(value = {
+        "/",
+        "/explore",
+        "/prompts/**",
+        "/profile/**",
+        "/saved",
+        "/collections/**",
+        "/settings/**",
+        "/login"
+    })
+    public String index() {
         return "index";
     }
 }

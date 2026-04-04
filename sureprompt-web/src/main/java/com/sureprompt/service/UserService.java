@@ -31,7 +31,7 @@ public class UserService {
             if (user.getAvatarUrl() == null && avatarUrl != null) {
                 user.setAvatarUrl(avatarUrl);
             }
-            if (!user.getOauthProvider().equals(oauthProvider)) {
+            if (!oauthProvider.equals(user.getOauthProvider())) {
                 user.setOauthProvider(oauthProvider);
                 user.setOauthSubject(oauthSubject);
             }
