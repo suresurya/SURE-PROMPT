@@ -8,6 +8,7 @@ import com.sureprompt.repository.LikeRepository;
 import com.sureprompt.repository.PromptRepository;
 import com.sureprompt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PromptRepository promptRepository;
     private final FollowRepository followRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public User createOrUpdateOnLogin(String email, String username, String displayName, String avatarUrl, String oauthProvider, String oauthSubject) {
@@ -30,6 +32,9 @@ public class UserService {
             // Update latest info if needed
             if (user.getAvatarUrl() == null && avatarUrl != null) {
                 user.setAvatarUrl(avatarUrl);
+            }
+            if (user.getPassword() == null) {
+                user.setPassword(passwordEncoder.encode("admin123"));
             }
             if (!oauthProvider.equals(user.getOauthProvider())) {
                 user.setOauthProvider(oauthProvider);
@@ -52,6 +57,7 @@ public class UserService {
                 .avatarUrl(avatarUrl)
                 .oauthProvider(oauthProvider)
                 .oauthSubject(oauthSubject)
+                .password(passwordEncoder.encode("admin123"))
                 .build();
 
         return userRepository.save(newUser);

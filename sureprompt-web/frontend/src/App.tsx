@@ -1,11 +1,13 @@
 import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Home, Compass, User, Bookmark, Settings, PlusCircle, LogOut } from 'lucide-react'
+import { Home, Compass, User, LogOut } from 'lucide-react'
 import HomePage from './pages/HomePage'
 import ExplorePage from './pages/ExplorePage'
 import ProfilePage from './pages/ProfilePage'
 import PromptDetailPage from './pages/PromptDetailPage'
+
+import LoginPage from './pages/LoginPage'
 
 function App() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -50,7 +52,7 @@ function App() {
               </form>
             </>
           ) : (
-            <a href="/login" className="btn sm">Login</a>
+            <Link to="/login" className="btn sm">Login</Link>
           )}
         </div>
       </nav>
@@ -61,6 +63,7 @@ function App() {
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/prompts/:id" element={<PromptDetailPage />} />
           <Route path="/profile/:username" element={<ProfilePage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </main>
 

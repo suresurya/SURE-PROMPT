@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SURE PROMPT - React Edition</title>
+    <style>
+        body {
+            background-color: #0a0a0c;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            padding: 2rem;
+            border: 1px solid #27272a;
+            border-radius: 12px;
+            background: rgba(20, 20, 23, 0.7);
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            background: linear-gradient(135deg, #7c3aed, #f43f5e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #94a3b8;
+            margin-bottom: 2rem;
+        }
+        .btn {
+            background: #7c3aed;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="container">
+            <h1>SURE PROMPT</h1>
+            <p>The backend is running successfully! To see the new React frontend, please make sure you have started the Vite dev server.</p>
+            
+            <div style="margin-bottom: 2rem;">
+                <code>cd frontend</code><br>
+                <code>npm install</code><br>
+                <code>npm run dev</code>
+            </div>
+
+            <a href="http://localhost:5173" class="btn">Go to React Frontend (Port 5173)</a>
+        </div>
+    </div>
+</body>
+</html>

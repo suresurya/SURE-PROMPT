@@ -63,6 +63,9 @@ public class User {
     @Column(name = "oauth_subject")
     private String oauthSubject;
 
+    @Column(length = 255)
+    private String password;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

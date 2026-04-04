@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.springframework.security.web.SecurityFilterChain;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -19,9 +21,22 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/explore", "/prompts/**", "/profile/**", "/api/feed/**", "/api/search/**", "/login", "/css/**", "/js/**", "/images/**", "/error").permitAll()
+                .requestMatchers("/", "/explore", "/prompts/**", "/profile/**", "/api/feed/**", "/api/search/**", "/api/auth/**", "/login", "/css/**", "/js/**", "/images/**", "/error").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .successHandler((request, response, authentication) -> {
+                    response.setStatus(200);
+                    response.getWriter().write("{\"message\": \"Login successful\"}");
+                })
+                .failureHandler((request, response, exception) -> {
+                    response.setStatus(401);
+                    response.getWriter().write("{\"message\": \"Invalid username or password\"}");
+                })
+                .permitAll()
             )
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/login")
@@ -32,7 +47,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/")
                 .permitAll()
             )
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**")); // Ignore CSRF for Android API calls, usually we use token but for now ignoring
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/login", "/logout"));
 
         return http.build();
     }
