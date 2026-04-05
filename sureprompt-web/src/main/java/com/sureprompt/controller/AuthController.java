@@ -11,6 +11,7 @@ import com.sureprompt.repository.UserRepository;
 import com.sureprompt.entity.User;
 import com.sureprompt.entity.RefreshToken;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final UserService userService;
@@ -37,12 +39,18 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
+        log.info("REST request to login : {}", request.getUsername());
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(),
+                            request.getPassword()
+                    )
+            );
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            log.error("Authentication failed for user: {}. Error: {}", request.getUsername(), e.getMessage());
+            return ResponseEntity.status(401).build();
+        }
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
         final String jwt = jwtService.generateToken(userDetails);
@@ -52,6 +60,7 @@ public class AuthController {
         LocalDateTime expiry = LocalDateTime.now().plusDays(7); // matching 604800000ms
         refreshTokenService.createRefreshToken(user.getId(), refreshToken, expiry);
 
+        log.info("User {} logged in successfully", userDetails.getUsername());
         return ResponseEntity.ok(AuthResponse.builder()
                 .token(jwt)
                 .refreshToken(refreshToken)
