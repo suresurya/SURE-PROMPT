@@ -1,5 +1,6 @@
 package com.sureprompt.service;
 
+import com.sureprompt.dto.BadgeDto;
 import com.sureprompt.dto.UpdateProfileRequest;
 import com.sureprompt.dto.UserProfileDto;
 import com.sureprompt.entity.User;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,6 +23,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final PromptRepository promptRepository;
     private final FollowRepository followRepository;
+    private final LikeRepository likeRepository;
+    private final BadgeService badgeService;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -29,7 +33,6 @@ public class UserService {
 
         if (existingUser.isPresent()) {
             User user = existingUser.get();
-            // Update latest info if needed
             if (user.getAvatarUrl() == null && avatarUrl != null) {
                 user.setAvatarUrl(avatarUrl);
             }
@@ -43,7 +46,6 @@ public class UserService {
             return userRepository.save(user);
         }
 
-        // Generate unique username if taken
         String finalUsername = username;
         int counter = 1;
         while (userRepository.existsByUsername(finalUsername)) {
@@ -67,24 +69,27 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new com.sureprompt.exception.ResourceNotFoundException("User not found: " + username));
 
-        long totalPrompts = promptRepository.countByUserIdAndDeletedFalse(user.getId());
-        
-        // Sum total likes received across all user's prompts
-        // For simplicity, we can do a repository query, or just use a basic sum here if loaded
-        long totalLikes = user.getPrompts().stream()
-                .filter(p -> !p.isDeleted())
-                .mapToInt(p -> p.getLikeCount() != null ? p.getLikeCount() : 0)
-                .sum();
+        Long profileUserId = user.getId();
 
+        // Aggregated stats — one query each, no lazy-loading collections
+        long totalPrompts = promptRepository.countByUserIdAndDeletedFalse(profileUserId);
+        long totalLikes = likeRepository.countLikesReceivedByUserId(profileUserId);
+        int followersCount = (int) followRepository.countByFollowingId(profileUserId);
+        int followingCount = (int) followRepository.countByFollowerId(profileUserId);
+        double avgAiScore = promptRepository.findAverageAiScoreByUserId(profileUserId);
+
+        // Social flags
+        boolean isOwnProfile = currentUserId != null && currentUserId.equals(profileUserId);
         boolean isFollowing = false;
-        if (currentUserId != null && !currentUserId.equals(user.getId())) {
-            isFollowing = followRepository.existsByFollowerIdAndFollowingId(currentUserId, user.getId());
+        if (currentUserId != null && !isOwnProfile) {
+            isFollowing = followRepository.existsByFollowerIdAndFollowingId(currentUserId, profileUserId);
         }
 
-        boolean isOwnProfile = currentUserId != null && currentUserId.equals(user.getId());
+        // Dynamic badges
+        List<BadgeDto> badges = badgeService.getBadges(profileUserId);
 
         return UserProfileDto.builder()
-                .userId(user.getId())
+                .userId(profileUserId)
                 .username(user.getUsername())
                 .displayName(user.getDisplayName() != null ? user.getDisplayName() : user.getUsername())
                 .college(user.getCollege())
@@ -93,8 +98,13 @@ public class UserService {
                 .streakCount(user.getStreakCount())
                 .totalLikes(totalLikes)
                 .totalPrompts(totalPrompts)
+                .followersCount(followersCount)
+                .followingCount(followingCount)
+                .averageAiScore(Math.round(avgAiScore * 10.0) / 10.0) // 1 decimal
                 .isFollowing(isFollowing)
                 .isOwnProfile(isOwnProfile)
+                .badges(badges)
+                .memberSince(user.getCreatedAt())
                 .build();
     }
 

@@ -29,7 +29,7 @@ public class AndroidApiController {
             @RequestParam(defaultValue = "0") int page,
             @AuthenticationPrincipal CustomOAuth2User user) {
             
-        Long userId = user != null ? user.getId() : null;
+        Long userId = user != null ? user.getUserId() : null;
         
         if ("following".equals(tab) && userId != null) {
             return ResponseEntity.ok(feedService.getFollowingFeed(userId, page));
@@ -45,8 +45,8 @@ public class AndroidApiController {
         if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         
         try {
-            Long promptId = promptService.createPrompt(user.getId(), request);
-            return ResponseEntity.ok().body(promptService.getPromptDetail(promptId, user.getId()));
+            promptService.createPrompt(request, user.getUserId());
+            return ResponseEntity.ok().body("Prompt Created Successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -55,7 +55,7 @@ public class AndroidApiController {
     @GetMapping("/prompts/{id}")
     public ResponseEntity<?> getPrompt(@PathVariable Long id, @AuthenticationPrincipal CustomOAuth2User user) {
         try {
-            Long userId = user != null ? user.getId() : null;
+            Long userId = user != null ? user.getUserId() : null;
             return ResponseEntity.ok(promptService.getPromptDetail(id, userId));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();

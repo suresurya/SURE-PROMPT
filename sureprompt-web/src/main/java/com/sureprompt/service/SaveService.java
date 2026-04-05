@@ -22,31 +22,19 @@ public class SaveService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Map<String, Object> toggleSave(Long userId, Long promptId) {
-        Prompt prompt = promptRepository.findById(promptId)
-                .orElseThrow(() -> new RuntimeException("Prompt not found"));
-
-        boolean isSaved;
-        if (saveRepository.existsByUserIdAndPromptId(userId, promptId)) {
+    public boolean toggleSave(Long promptId, Long userId) {
+        boolean exists = saveRepository.existsByUserIdAndPromptId(userId, promptId);
+        Prompt prompt = promptRepository.findById(promptId).orElseThrow();
+        
+        if (exists) {
             saveRepository.deleteByUserIdAndPromptId(userId, promptId);
             prompt.setSaveCount(Math.max(0, prompt.getSaveCount() - 1));
-            isSaved = false;
+            return false;
         } else {
             User user = userRepository.findById(userId).orElseThrow();
-            Save save = Save.builder()
-                    .user(user)
-                    .prompt(prompt)
-                    .build();
-            saveRepository.save(save);
+            saveRepository.save(Save.builder().user(user).prompt(prompt).build());
             prompt.setSaveCount(prompt.getSaveCount() + 1);
-            isSaved = true;
+            return true;
         }
-
-        promptRepository.save(prompt);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("saved", isSaved);
-        response.put("saveCount", prompt.getSaveCount());
-        return response;
     }
 }

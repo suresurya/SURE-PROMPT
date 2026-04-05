@@ -24,7 +24,7 @@ public class CollectionController {
         String name = (String) payload.get("name");
         boolean isPublic = (Boolean) payload.getOrDefault("isPublic", true);
         
-        return ResponseEntity.ok(collectionService.createCollection(user.getId(), name, isPublic));
+        return ResponseEntity.ok(collectionService.createCollection(user.getUserId(), name, isPublic));
     }
 
     @PostMapping("/{collectionId}/prompts/{promptId}")
@@ -32,7 +32,8 @@ public class CollectionController {
         if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         
         try {
-            collectionService.addPromptToCollection(collectionId, promptId, user.getId());
+            Long userId = user.getUserId();
+            collectionService.addPromptToCollection(collectionId, promptId, userId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

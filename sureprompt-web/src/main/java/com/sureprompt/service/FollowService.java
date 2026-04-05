@@ -8,9 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 @RequiredArgsConstructor
 public class FollowService {
@@ -19,32 +16,19 @@ public class FollowService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Map<String, Object> toggleFollow(Long followerId, Long followingId) {
-        if (followerId.equals(followingId)) {
-            throw new RuntimeException("You cannot follow yourself");
-        }
+    public boolean toggleFollow(Long followingId, Long followerId) {
+        if (followerId.equals(followingId)) return false;
 
-        boolean isFollowing;
-        if (followRepository.existsByFollowerIdAndFollowingId(followerId, followingId)) {
+        boolean exists = followRepository.existsByFollowerIdAndFollowingId(followerId, followingId);
+        
+        if (exists) {
             followRepository.deleteByFollowerIdAndFollowingId(followerId, followingId);
-            isFollowing = false;
+            return false;
         } else {
             User follower = userRepository.findById(followerId).orElseThrow();
             User following = userRepository.findById(followingId).orElseThrow();
-
-            Follow follow = Follow.builder()
-                    .follower(follower)
-                    .following(following)
-                    .build();
-            followRepository.save(follow);
-            isFollowing = true;
+            followRepository.save(Follow.builder().follower(follower).following(following).build());
+            return true;
         }
-
-        long followerCount = followRepository.countByFollowingId(followingId);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("following", isFollowing);
-        response.put("followerCount", followerCount);
-        return response;
     }
 }

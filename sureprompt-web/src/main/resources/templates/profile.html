@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${profile.displayName} + ' — SurePrompt'">Profile — SurePrompt</title>
+    <meta name="description" th:content="${profile.bio != null ? profile.bio : profile.displayName + ' on SurePrompt'}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{layout/navbar :: navbar}"></div>
+
+    <div class="container">
+
+        <!-- ============== PROFILE HEADER ============== -->
+        <div class="profile-header">
+            <div class="profile-main">
+                <!-- Avatar -->
+                <div class="avatar-wrapper">
+                    <img th:if="${profile.avatarUrl}" th:src="${profile.avatarUrl}" alt="Avatar" class="avatar-lg">
+                    <div th:unless="${profile.avatarUrl}" class="avatar-placeholder-lg"
+                         th:text="${#strings.substring(profile.username,0,1).toUpperCase()}"></div>
+                </div>
+
+                <!-- Info -->
+                <div class="profile-info">
+                    <h1 th:text="${profile.displayName}">Display Name</h1>
+                    <div class="profile-meta">
+                        <span><i class="fas fa-at"></i> <span th:text="${profile.username}">username</span></span>
+                        <span th:if="${profile.college}"><i class="fas fa-graduation-cap"></i> <span th:text="${profile.college}">College</span></span>
+                        <span th:if="${profile.memberSince}"><i class="fas fa-calendar"></i> Joined <span th:text="${#temporals.format(profile.memberSince, 'MMM yyyy')}">Jan 2024</span></span>
+                    </div>
+                    <p th:if="${profile.bio}" class="bio" th:text="${profile.bio}">User bio goes here...</p>
+
+                    <!-- Follow / Edit Button -->
+                    <div class="profile-actions" th:if="${!profile.ownProfile}">
+                        <button class="btn follow-btn"
+                                th:classappend="${profile.following ? 'following' : 'btn-primary'}"
+                                th:data-userid="${profile.userId}"
+                                th:text="${profile.following ? 'Following' : 'Follow'}">
+                            Follow
+                        </button>
+                    </div>
+                    <div class="profile-actions" th:if="${profile.ownProfile}">
+                        <a th:href="@{/profile/edit}" class="btn btn-outline"><i class="fas fa-pen"></i> Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============== STATS ROW ============== -->
+            <div class="profile-stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="followersCount" th:text="${profile.followersCount}">0</div>
+                    <div class="stat-label">Followers</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" th:text="${profile.followingCount}">0</div>
+                    <div class="stat-label">Following</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" th:text="${profile.totalPrompts}">0</div>
+                    <div class="stat-label">Prompts</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" th:text="${profile.totalLikes}">0</div>
+                    <div class="stat-label">Likes</div>
+                </div>
+                <div class="stat-box accent-stat">
+                    <div class="stat-value" th:text="${profile.averageAiScore}">0</div>
+                    <div class="stat-label">Avg Score</div>
+                </div>
+            </div>
+
+            <!-- ============== BADGES ============== -->
+            <div class="profile-badges" th:if="${!#lists.isEmpty(profile.badges)}">
+                <h3><i class="fas fa-award"></i> Badges</h3>
+                <div class="badges-container">
+                    <span class="badge" th:each="badge : ${profile.badges}" th:style="'border-color:' + ${badge.color} + '; color:' + ${badge.color}">
+                        <i class="fas" th:classappend="${badge.icon}"></i>
+                        <span th:text="${badge.name}">Badge</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============== TABS ============== -->
+        <div class="profile-tabs">
+            <button class="profile-tab active" data-tab="posts"><i class="fas fa-th-large"></i> Posts</button>
+        </div>
+
+        <!-- ============== POSTS GRID ============== -->
+        <div id="postsGrid" class="prompts-grid">
+            <div th:if="${userPrompts != null}" th:each="p : ${userPrompts.content}">
+                <div class="prompt-card">
+                    <div class="card-header">
+                        <div class="author-info">
+                            <div class="author-details">
+                                <span class="author-name" th:text="${p.authorName}">Author</span>
+                                <span class="college-badge" th:if="${p.college}" th:text="${p.college}">College</span>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <span class="difficulty-badge" th:if="${p.difficulty}"
+                                  th:classappend="${p.difficulty.name() == 'EASY' ? 'diff-easy' : (p.difficulty.name() == 'MEDIUM' ? 'diff-medium' : 'diff-hard')}"
+                                  th:text="${p.difficulty}">EASY</span>
+                            <span class="platform-badge" th:if="${p.platform}" th:text="${p.platform}">ChatGPT</span>
+                        </div>
+                    </div>
+
+                    <a th:href="@{/prompts/{id}(id=${p.id})}" class="card-title-link">
+                        <h3 class="card-title" th:text="${p.title}">Prompt Title</h3>
+                    </a>
+
+                    <div class="tags-container" th:if="${p.tags != null && !p.tags.isEmpty()}">
+                        <span class="tag" th:each="tag : ${p.tags}" th:text="${tag}">tag</span>
+                    </div>
+
+                    <div class="ai-status" th:if="${p.aiVerified || p.aiScore != null}">
+                        <span class="verified-badge" th:if="${p.aiVerified}"><i class="fas fa-check-circle"></i> Verified</span>
+                        <span class="score-badge" th:if="${p.aiScore != null}" th:text="'Score: ' + ${p.aiScore}">Score: 8.5</span>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="actions-left">
+                            <button class="action-btn like-btn" th:data-id="${p.id}"
+                                    th:classappend="${p.liked ? 'active' : ''}">
+                                <i th:class="${p.liked ? 'fas fa-heart' : 'far fa-heart'}"></i>
+                                <span class="like-count" th:text="${p.likeCount}">0</span>
+                            </button>
+                            <button class="action-btn save-btn" th:data-id="${p.id}"
+                                    th:classappend="${p.saved ? 'active' : ''}">
+                                <i th:class="${p.saved ? 'fas fa-bookmark' : 'far fa-bookmark'}"></i>
+                            </button>
+                        </div>
+                        <div class="actions-right">
+                            <span class="text-muted" style="font-size:0.8rem;" th:text="${#temporals.format(p.createdAt, 'dd MMM yyyy')}">01 Jan 2024</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${userPrompts == null || userPrompts.content.isEmpty()}" class="empty-state">
+                <i class="fas fa-file-alt"></i>
+                <p>No prompts yet</p>
+                <a th:if="${profile.ownProfile}" th:href="@{/prompts/new}" class="btn btn-primary">Post your first prompt</a>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/profile.js}"></script>
+</body>
+</html>

@@ -22,7 +22,7 @@ public class CommentService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CommentDto addComment(Long promptId, Long userId, String body) {
+    public CommentDto addComment(Long promptId, String body, Long userId) {
         Prompt prompt = promptRepository.findById(promptId)
                 .orElseThrow(() -> new RuntimeException("Prompt not found"));
         User user = userRepository.findById(userId)

@@ -7,19 +7,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
+@lombok.RequiredArgsConstructor
 public class HomeController {
 
-    @GetMapping(value = {
-        "/",
-        "/explore",
-        "/prompts/**",
-        "/profile/**",
-        "/saved",
-        "/collections/**",
-        "/settings/**",
-        "/login"
-    })
-    public String index() {
+    private final com.sureprompt.service.PromptService promptService;
+
+    @GetMapping("/")
+    public String home(Model model) {
+        model.addAttribute("prompts", promptService.getAllPrompts());
         return "index";
     }
 }

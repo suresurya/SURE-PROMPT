@@ -20,7 +20,7 @@ public class UserController {
 
     @GetMapping("/users/{username}")
     public String userProfile(@PathVariable String username, Model model, @AuthenticationPrincipal CustomOAuth2User user) {
-        Long currentUserId = user != null ? user.getId() : null;
+        Long currentUserId = user != null ? user.getUserId() : null;
         
         UserProfileDto profile = userService.getUserProfile(username, currentUserId);
         

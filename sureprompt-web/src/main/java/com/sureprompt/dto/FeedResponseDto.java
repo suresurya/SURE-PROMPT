@@ -10,8 +10,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FeedResponseDto {
-    private List<PromptCardDto> prompts;
+    private List<PromptCardDto> content;
     private int totalPages;
     private int currentPage;
     private long totalElements;
+    private boolean last;
 }

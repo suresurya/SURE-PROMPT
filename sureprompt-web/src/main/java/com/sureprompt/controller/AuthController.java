@@ -23,7 +23,7 @@ public class AuthController {
             return ResponseEntity.status(401).build();
         }
         
-        UserProfileDto profile = userService.getUserProfile(oauthUser.getDatabaseUser().getUsername(), oauthUser.getId());
+        UserProfileDto profile = userService.getUserProfile(oauthUser.getDatabaseUser().getUsername(), oauthUser.getUserId());
         return ResponseEntity.ok(profile);
     }
 }

@@ -28,14 +28,14 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
         """)
     Page<Prompt> findFollowingFeed(@Param("userId") Long userId, Pageable pageable);
 
-    // Trending - last 7 days, ranked by likes + saves
+    // Trending - Reddit/HN style time-decay ranking
     @Query("""
         SELECT p FROM Prompt p 
         WHERE p.deleted = false 
-        AND p.createdAt >= :since
-        ORDER BY (p.likeCount + p.saveCount) DESC
+        ORDER BY (p.likeCount * 2 + p.saveCount * 3) / 
+                 POWER(EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - p.createdAt)) / 3600 + 2, 1.5) DESC
         """)
-    Page<Prompt> findTrending(@Param("since") java.time.LocalDateTime since, Pageable pageable);
+    Page<Prompt> findTrending(Pageable pageable);
 
     // User profile posts
     Page<Prompt> findByUserIdAndDeletedFalseOrderByCreatedAtDesc(Long userId, Pageable pageable);
@@ -72,4 +72,10 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
     List<Prompt> findTop5ByUserIdAndDeletedFalseOrderByLikeCountDesc(Long userId);
 
     long countByUserIdAndDeletedFalse(Long userId);
+
+    @Query("SELECT COALESCE(AVG(p.aiScore), 0) FROM Prompt p WHERE p.user.id = :userId AND p.deleted = false AND p.aiScore IS NOT NULL")
+    Double findAverageAiScoreByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(p) FROM Prompt p WHERE p.user.id = :userId AND p.deleted = false AND p.createdAt >= :since")
+    long countRecentPromptsByUserId(@Param("userId") Long userId, @Param("since") java.time.LocalDateTime since);
 }

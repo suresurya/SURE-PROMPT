@@ -16,17 +16,17 @@
             <a th:href="@{/explore}" class="nav-link"><i class="fas fa-compass"></i> Explore</a>
             
             <!-- Authenticated User Menu -->
-            <div sec:authorize="isAuthenticated()" class="user-menu">
+            <div sec:authorize="isAuthenticated()" class="user-menu" th:with="user=${#authentication.principal.databaseUser}">
                 <a th:href="@{/prompts/new}" class="btn btn-primary"><i class="fas fa-plus"></i> Post</a>
                 <a th:href="@{/saved}" class="nav-link icon-only" title="Saved"><i class="fa-regular fa-bookmark"></i></a>
                 
                 <div class="dropdown">
                     <button class="avatar-btn">
-                        <img th:if="${currentUser.avatarUrl}" th:src="${currentUser.avatarUrl}" alt="Avatar">
-                        <div th:unless="${currentUser.avatarUrl}" class="avatar-placeholder" th:text="${#strings.substring(currentUser.username,0,1).toUpperCase()}"></div>
+                        <img th:if="${user.avatarUrl}" th:src="${user.avatarUrl}" alt="Avatar">
+                        <div th:unless="${user.avatarUrl}" class="avatar-placeholder" th:text="${#strings.substring(user.username,0,1).toUpperCase()}"></div>
                     </button>
                     <div class="dropdown-content">
-                        <a th:href="@{/users/{username}(username=${currentUser.username})}"><i class="fas fa-user"></i> Profile</a>
+                        <a th:href="@{/users/{username}(username=${user.username})}"><i class="fas fa-user"></i> Profile</a>
                         <a th:href="@{/profile/edit}"><i class="fas fa-cog"></i> Settings</a>
                         <hr>
                         <form th:action="@{/logout}" method="post">

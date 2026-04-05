@@ -45,7 +45,7 @@ public class ProfileController {
             return "profile-edit";
         }
         
-        userService.updateProfile(user.getId(), request);
+        userService.updateProfile(user.getUserId(), request);
         redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully");
         
         return "redirect:/users/" + user.getName();

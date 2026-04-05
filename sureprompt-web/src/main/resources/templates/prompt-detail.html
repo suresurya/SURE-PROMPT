@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${prompt.title}">Prompt Detail - SURE PROMPT</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/prompt.css}">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        .prompt-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .prompt-section {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            white-space: pre-wrap;
+        }
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{layout/navbar :: navbar}"></div>
+    
+    <div class="container">
+        <div class="prompt-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div>
+                    <h1 th:text="${prompt.title}" style="margin:0;">Prompt Title</h1>
+                    <p style="margin: 0.5rem 0; color: #666;">
+                        By <span th:text="${prompt.authorName}">Author</span> 
+                        <button th:onclick="toggleFollow([[${prompt.authorUsername}]], this)" style="margin-left: 1rem; padding: 2px 10px; border-radius: 20px; border: 1px solid #007bff; background: none; color: #007bff; cursor: pointer;">Follow</button>
+                    </p>
+                </div>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <button th:onclick="toggleLike([[${prompt.id}]], this)" style="background:none; border:none; cursor:pointer; font-size:1.5rem;">🤍</button>
+                    <span th:text="${prompt.likeCount}">0</span>
+                    <button th:onclick="toggleSave([[${prompt.id}]], this)" style="background:none; border:none; cursor:pointer; font-size:1.5rem;">📑</button>
+                </div>
+            </div>
+            
+            <h3>Prompt:</h3>
+            <div class="prompt-section" id="promptText" th:text="${prompt.promptBody}"></div>
+            <button class="copy-btn" th:onclick="copyPrompt(document.getElementById('promptText').innerText)">Copy Prompt</button>
+            
+            <h3 style="margin-top:2rem;">AI Output:</h3>
+            <div class="prompt-section" th:text="${prompt.aiOutput}"></div>
+            
+            <hr style="margin: 2rem 0; border: 0; border-top: 1px solid #eee;">
+            
+            <h3>Comments</h3>
+            <div id="commentsList" style="margin-bottom: 2rem;">
+                <div th:each="c : ${prompt.comments}" style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #f0f0f0;">
+                    <strong th:text="${c.authorName}">User</strong>
+                    <p th:text="${c.body}" style="margin: 0.5rem 0;"></p>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem;">
+                <input type="text" id="commentInput" placeholder="Add a comment..." style="flex: 1; padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px;">
+                <button th:onclick="addComment([[${prompt.id}]])" style="padding: 0 1.5rem; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Post</button>
+            </div>
+            
+            <a th:href="@{/}" style="display:inline-block; margin-top:2rem;">&larr; Back to Feed</a>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/prompt.js}"></script>
+</body>
+</html>

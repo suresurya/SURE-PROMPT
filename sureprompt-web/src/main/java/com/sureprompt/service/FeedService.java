@@ -26,42 +26,42 @@ public class FeedService {
 
     @Transactional(readOnly = true)
     public FeedResponseDto getAllFeed(int page, Long currentUserId) {
-        Pageable pageable = PageRequest.of(page, 20);
+        Pageable pageable = PageRequest.of(page, 10);
         Page<Prompt> promptPage = promptRepository.findAllFeed(pageable);
         return mapToFeedResponse(promptPage, currentUserId);
     }
 
     @Transactional(readOnly = true)
     public FeedResponseDto getFollowingFeed(Long userId, int page) {
-        Pageable pageable = PageRequest.of(page, 20);
+        Pageable pageable = PageRequest.of(page, 10);
         Page<Prompt> promptPage = promptRepository.findFollowingFeed(userId, pageable);
         return mapToFeedResponse(promptPage, userId);
     }
 
     @Transactional(readOnly = true)
     public FeedResponseDto getTrendingFeed(int page, Long currentUserId) {
-        Pageable pageable = PageRequest.of(page, 20);
-        java.time.LocalDateTime since = java.time.LocalDateTime.now().minusDays(7);
-        Page<Prompt> promptPage = promptRepository.findTrending(since, pageable);
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<Prompt> promptPage = promptRepository.findTrending(pageable);
         return mapToFeedResponse(promptPage, currentUserId);
     }
 
     public FeedResponseDto getUserPrompts(Long userId, int page, Long currentUserId) {
-        Pageable pageable = PageRequest.of(page, 20);
+        Pageable pageable = PageRequest.of(page, 10);
         Page<Prompt> promptPage = promptRepository.findByUserIdAndDeletedFalseOrderByCreatedAtDesc(userId, pageable);
         return mapToFeedResponse(promptPage, currentUserId);
     }
 
     private FeedResponseDto mapToFeedResponse(Page<Prompt> promptPage, Long currentUserId) {
-        List<PromptCardDto> dtoList = promptPage.getContent().stream()
+        List<PromptCardDto> content = promptPage.getContent().stream()
                 .map(prompt -> mapToCardDto(prompt, currentUserId))
                 .collect(Collectors.toList());
 
         return new FeedResponseDto(
-                dtoList,
+                content,
                 promptPage.getTotalPages(),
                 promptPage.getNumber(),
-                promptPage.getTotalElements()
+                promptPage.getTotalElements(),
+                promptPage.isLast()
         );
     }
 

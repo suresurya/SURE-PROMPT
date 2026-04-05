@@ -31,45 +31,29 @@ public class PromptService {
     private final SaveRepository saveRepository;
 
     @Transactional
-    public Long createPrompt(Long userId, CreatePromptRequest request) {
+    public void createPrompt(CreatePromptRequest req, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new com.sureprompt.exception.ResourceNotFoundException("User not found"));
 
-        Prompt prompt = Prompt.builder()
-                .user(user)
-                .title(request.getTitle())
-                .promptBody(request.getPromptBody())
-                .aiOutput(request.getAiOutput())
-                .difficulty(request.getDifficulty())
-                .platform(request.getPlatform())
-                .build();
+        Prompt prompt = new Prompt();
+        prompt.setUser(user);
+        prompt.setTitle(req.getTitle());
+        prompt.setPromptBody(req.getPromptBody());
+        prompt.setAiOutput(req.getAiOutput());
+        prompt.setDifficulty(req.getDifficulty());
+        prompt.setPlatform(req.getPlatform());
 
-        prompt = promptRepository.save(prompt);
+        Prompt savedPrompt = promptRepository.save(prompt);
 
-        for (String tagName : request.getTags()) {
-            Tag tag = tagService.getOrCreateTag(tagName);
-            PromptTag pt = PromptTag.builder()
-                    .prompt(prompt)
-                    .tag(tag)
-                    .build();
-            promptTagRepository.save(pt);
-            prompt.getPromptTags().add(pt);
+        if (req.getTags() != null && !req.getTags().isEmpty()) {
+            for (String tagName : req.getTags()) {
+                Tag tag = tagService.getOrCreateTag(tagName);
+                PromptTag promptTag = new PromptTag();
+                promptTag.setPrompt(savedPrompt);
+                promptTag.setTag(tag);
+                promptTagRepository.save(promptTag);
+            }
         }
-        java.time.LocalDate today = java.time.LocalDate.now();
-        if (user.getLastPromptDate() == null) {
-            user.setStreakCount(1);
-            user.setLastPromptDate(today);
-        } else if (user.getLastPromptDate().equals(today.minusDays(1))) {
-            user.setStreakCount(user.getStreakCount() + 1);
-            user.setLastPromptDate(today);
-        } else if (user.getLastPromptDate().isBefore(today.minusDays(1))) {
-            user.setStreakCount(1);
-            user.setLastPromptDate(today);
-        }
-        
-        userRepository.save(user);
-
-        return prompt.getId();
     }
 
     public PromptDetailDto getPromptDetail(Long promptId, Long currentUserId) {
@@ -126,5 +110,9 @@ public class PromptService {
 
         prompt.setDeleted(true);
         promptRepository.save(prompt);
+    }
+
+    public List<Prompt> getAllPrompts() {
+        return promptRepository.findAll();
     }
 }

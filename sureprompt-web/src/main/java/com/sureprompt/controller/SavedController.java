@@ -28,7 +28,7 @@ public class SavedController {
     public String savedPage(Model model, @AuthenticationPrincipal CustomOAuth2User user) {
         if (user == null) return "redirect:/login";
         
-        Long userId = user.getId();
+        Long userId = user.getUserId();
         model.addAttribute("currentUser", user.getDatabaseUser());
         
         List<Collection> collections = collectionRepository.findByUserIdOrderByCreatedAtDesc(userId);

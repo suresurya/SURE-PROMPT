@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -19,8 +20,21 @@ public class UserProfileDto {
     private String bio;
     private String avatarUrl;
     private Integer streakCount;
+
+    // Stats
     private long totalLikes;
     private long totalPrompts;
+    private int followersCount;
+    private int followingCount;
+    private double averageAiScore;
+
+    // Social flags
     private boolean isFollowing;
     private boolean isOwnProfile;
+
+    // Reputation
+    private List<BadgeDto> badges;
+
+    // Meta
+    private LocalDateTime memberSince;
 }

@@ -39,7 +39,7 @@ public class ExploreController {
             @RequestParam(defaultValue = "0") int page,
             @AuthenticationPrincipal CustomOAuth2User user) {
             
-        Long userId = user != null ? user.getId() : null;
+        Long userId = user != null ? user.getUserId() : null;
         return searchService.searchPrompts(q, tags, difficulty, platform, verifiedOnly, page, userId);
     }
 }
