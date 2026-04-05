@@ -1,0 +1,92 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:processDebugNavigationResources
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:javaPreCompileDebug
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:parseDebugLocalResources
+> Task :app:desugarDebugFileDependencies
+> Task :app:checkDebugDuplicateClasses
+> Task :app:generateDebugRFile
+> Task :app:checkDebugAarMetadata
+> Task :app:compileDebugKotlin NO-SOURCE
+> Task :app:mergeExtDexDebug
+
+> Task :app:compileDebugJavaWithJavac
+D:\SURE PROMPT\sureprompt-app\app\src\main\java\com\suresurya\sureprompt\db\PromptEntity.java:19: error: Cannot find getter for field.
+    private java.util.List<String> tags;
+                                   ^
+D:\SURE PROMPT\sureprompt-app\app\src\main\java\com\suresurya\sureprompt\MainActivity.java:27: error: cannot find symbol
+    private RecyclerView recyclerView;
+            ^
+  symbol:   class RecyclerView
+  location: class MainActivity
+D:\SURE PROMPT\sureprompt-app\app\src\main\java\com\suresurya\sureprompt\MainActivity.java:29: error: cannot find symbol
+    private SwipeRefreshLayout swipeRefresh;
+            ^
+  symbol:   class SwipeRefreshLayout
+  location: class MainActivity
+D:\SURE PROMPT\sureprompt-app\app\src\main\java\com\suresurya\sureprompt\MainActivity.java:30: error: cannot find symbol
+    private PromptRepository repository;
+            ^
+  symbol:   class PromptRepository
+  location: class MainActivity
+D:\SURE PROMPT\sureprompt-app\app\src\main\java\com\suresurya\sureprompt\network\RetrofitClient.java:10: error: cannot find symbol
+    public static Retrofit getClient(Context context) {
+                                     ^
+  symbol:   class Context
+  location: class RetrofitClient
+5 errors
+
+> Task :app:compileDebugJavaWithJavac FAILED
+
+[Incubating] Problems report is available at: file:///D:/SURE%20PROMPT/sureprompt-app/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugJavaWithJavac'.
+> Compilation failed; see the compiler output below.
+  D:\SURE PROMPT\sureprompt-app\app\src\main\java\com\suresurya\sureprompt\db\PromptEntity.java:19: error: Cannot find getter for field.
+      private java.util.List<String> tags;
+                                     ^
+  D:\SURE PROMPT\sureprompt-app\app\src\main\java\com\suresurya\sureprompt\MainActivity.java:27: error: cannot find symbol
+      private RecyclerView recyclerView;
+              ^
+    symbol:   class RecyclerView
+    location: class MainActivity
+  D:\SURE PROMPT\sureprompt-app\app\src\main\java\com\suresurya\sureprompt\MainActivity.java:29: error: cannot find symbol
+      private SwipeRefreshLayout swipeRefresh;
+              ^
+    symbol:   class SwipeRefreshLayout
+    location: class MainActivity
+  D:\SURE PROMPT\sureprompt-app\app\src\main\java\com\suresurya\sureprompt\MainActivity.java:30: error: cannot find symbol
+      private PromptRepository repository;
+              ^
+    symbol:   class PromptRepository
+    location: class MainActivity
+  D:\SURE PROMPT\sureprompt-app\app\src\main\java\com\suresurya\sureprompt\network\RetrofitClient.java:10: error: cannot find symbol
+      public static Retrofit getClient(Context context) {
+                                       ^
+    symbol:   class Context
+    location: class RetrofitClient
+  5 errors
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 49s
+13 actionable tasks: 13 executed

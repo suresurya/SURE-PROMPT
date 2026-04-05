@@ -11,6 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -20,6 +21,10 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+
+        String requestId = UUID.randomUUID().toString();
+        request.setAttribute("REQ_ID", requestId);
+        response.setHeader("X-Request-ID", requestId);
 
         long startTime = System.currentTimeMillis();
 
@@ -35,7 +40,8 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
                     user = principal.getName();
                 }
 
-                log.info("API REQUEST => User: {} | Method: {} | Path: {} | Status: {} | Latency: {}ms",
+                log.info("[{}] API REQUEST => User: {} | Method: {} | Path: {} | Status: {} | Latency: {}ms",
+                        requestId,
                         user,
                         request.getMethod(),
                         request.getRequestURI(),

@@ -175,6 +175,24 @@ public class PromptService {
     }
 
     @Transactional
+    public void retryAiProcessing(Long promptId, Long userId) {
+        Prompt prompt = promptRepository.findById(promptId)
+                .orElseThrow(() -> new com.sureprompt.exception.ResourceNotFoundException("Prompt not found"));
+
+        if (!prompt.getUser().getId().equals(userId)) {
+            throw new com.sureprompt.exception.UnauthorizedException("Not authorized");
+        }
+
+        // Only retry if it actually failed to avoid spamming
+        if ("FAILED".equals(prompt.getAiStatus())) {
+            prompt.setAiStatus("PENDING");
+            promptRepository.save(prompt);
+            List<String> tags = prompt.getPromptTags().stream().map(pt -> pt.getTag().getName()).collect(Collectors.toList());
+            promptAiProcessor.processPromptAsync(prompt.getId(), userId, tags);
+        }
+    }
+
+    @Transactional
     public void updateScores(Long promptId) {
         Prompt prompt = promptRepository.findById(promptId).orElseThrow();
         

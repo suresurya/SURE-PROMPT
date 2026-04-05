@@ -40,13 +40,18 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
         // Only rate-limit API calls. Allow static assets, images, etc.
         if (request.getRequestURI().startsWith("/api/")) {
-            String clientIp = request.getRemoteAddr();
-            // Provide a fallback if remote address is null
-            if (clientIp == null) {
-                clientIp = "UNKNOWN";
+            String key;
+            if (request.getUserPrincipal() != null) {
+                key = "USER_" + request.getUserPrincipal().getName();
+            } else {
+                String clientIp = request.getRemoteAddr();
+                if (clientIp == null) {
+                    clientIp = "UNKNOWN";
+                }
+                key = "IP_" + clientIp;
             }
             
-            Bucket bucket = resolveBucket(clientIp);
+            Bucket bucket = resolveBucket(key);
 
             if (!bucket.tryConsume(1)) {
                 response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());

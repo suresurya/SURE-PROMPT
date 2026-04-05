@@ -31,6 +31,10 @@ public class AuthInterceptor implements Interceptor {
 
         Response response = chain.proceed(requestBuilder.build());
 
+        if (request.url().encodedPath().contains("/refresh")) {
+            return response; // Avoid infinite loop
+        }
+
         if (response.code() == 401) {
             synchronized (this) {
                 String currentToken = tokenManager.getToken();

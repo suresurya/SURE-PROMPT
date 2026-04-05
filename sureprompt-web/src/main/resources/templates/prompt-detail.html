@@ -132,10 +132,13 @@
                     </div>
                     
                     <!-- UI BLOCK 1: AI STATUS -->
-                    <div style="margin-bottom: 1rem; font-weight: 500;">
+                    <div style="margin-bottom: 1rem; font-weight: 500; display: flex; align-items: center; gap: 10px;">
                         <span th:if="${prompt.aiStatus == 'PENDING'}" style="color: #ff9800;">⏳ AI Processing...</span>
                         <span th:if="${prompt.aiStatus == 'COMPLETED'}" style="color: #28a745;">✅ AI Verified</span>
-                        <span th:if="${prompt.aiStatus == 'FAILED'}" style="color: #dc3545;">❌ AI Failed</span>
+                        <div th:if="${prompt.aiStatus == 'FAILED'}" style="display: flex; align-items: center; gap: 10px;">
+                            <span style="color: #dc3545;">❌ AI Failed</span>
+                            <button onclick="retryAiProcessing()" style="background: var(--accent-color); border: none; color: white; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Retry AI Processing</button>
+                        </div>
                     </div>
 
                     <!-- UI BLOCK 4: AI FEEDBACK -->
@@ -252,8 +255,23 @@
     <!-- Live Sandbox execution and Status Reloading script -->
     <script th:inline="javascript">
         const promptStatus = /*[[${prompt.aiStatus}]]*/ 'COMPLETED';
+        const promptId = /*[[${prompt.id}]]*/ 0;
+        
         if (promptStatus === "PENDING") {
             setTimeout(() => location.reload(), 4000);
+        }
+
+        async function retryAiProcessing() {
+            try {
+                const res = await fetch(`/api/v1/prompts/${promptId}/retry`, { method: "POST" });
+                if(res.ok) {
+                    location.reload();
+                } else {
+                    alert("Failed to submit retry request.");
+                }
+            } catch (e) {
+                console.error(e);
+            }
         }
 
         async function runLive() {

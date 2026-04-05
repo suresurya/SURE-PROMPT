@@ -64,6 +64,18 @@ public class AndroidApiController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/prompts/{id}/retry")
+    public ResponseEntity<?> retryPromptAi(@PathVariable Long id, @AuthenticationPrincipal CustomOAuth2User user) {
+        if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        try {
+            promptService.retryAiProcessing(id, user.getUserId());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/settings/api-key")
     public ResponseEntity<?> saveKey(@RequestParam String key, @AuthenticationPrincipal CustomOAuth2User user) {
         if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

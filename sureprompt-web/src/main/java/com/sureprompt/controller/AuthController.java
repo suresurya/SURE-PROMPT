@@ -6,7 +6,15 @@ import com.sureprompt.dto.RefreshTokenRequest;
 import com.sureprompt.dto.UserProfileDto;
 import com.sureprompt.security.JwtService;
 import com.sureprompt.service.UserService;
+import com.sureprompt.service.RefreshTokenService;
+import com.sureprompt.repository.UserRepository;
+import com.sureprompt.entity.User;
+import com.sureprompt.entity.RefreshToken;
 import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +32,8 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
+    private final UserRepository userRepository;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
@@ -38,6 +48,10 @@ public class AuthController {
         final String jwt = jwtService.generateToken(userDetails);
         final String refreshToken = jwtService.generateRefreshToken(userDetails);
 
+        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow();
+        LocalDateTime expiry = LocalDateTime.now().plusDays(7); // matching 604800000ms
+        refreshTokenService.createRefreshToken(user.getId(), refreshToken, expiry);
+
         return ResponseEntity.ok(AuthResponse.builder()
                 .token(jwt)
                 .refreshToken(refreshToken)
@@ -47,21 +61,54 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshTokenRequest request) {
-        String refreshToken = request.getRefreshToken();
-        if (refreshToken == null || refreshToken.isEmpty()) {
+        String refreshTokenStr = request.getRefreshToken();
+        if (refreshTokenStr == null || refreshTokenStr.isEmpty()) {
             return ResponseEntity.status(401).build();
         }
 
         try {
-            String username = jwtService.extractUsername(refreshToken);
+            String username = jwtService.extractUsername(refreshTokenStr);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            if (jwtService.isTokenValid(refreshToken, userDetails)) {
+            if (jwtService.isTokenValid(refreshTokenStr, userDetails)) {
+                
+                Optional<RefreshToken> tokenOpt = refreshTokenService.findByToken(refreshTokenStr);
+                if (tokenOpt.isEmpty()) {
+                    return ResponseEntity.status(401).build();
+                }
+
+                RefreshToken storedToken = tokenOpt.get();
+                if (storedToken.isRevoked()) {
+                    refreshTokenService.revokeTokensForUser(storedToken.getUser().getId());
+                    return ResponseEntity.status(401).build();
+                }
+
+                if (storedToken.getReplacedByToken() != null) {
+                    if (storedToken.getUpdatedAt().plusSeconds(60).isBefore(LocalDateTime.now())) {
+                        storedToken.setRevoked(true);
+                        refreshTokenService.revokeToken(storedToken);
+                        refreshTokenService.revokeTokensForUser(storedToken.getUser().getId());
+                        return ResponseEntity.status(401).build();
+                    } else {
+                        // In grace window
+                        String newAccessToken = jwtService.generateToken(userDetails);
+                        return ResponseEntity.ok(AuthResponse.builder()
+                                .token(newAccessToken)
+                                .refreshToken(storedToken.getReplacedByToken())
+                                .username(userDetails.getUsername())
+                                .build());
+                    }
+                }
+
                 String newAccessToken = jwtService.generateToken(userDetails);
+                String newRefreshToken = jwtService.generateRefreshToken(userDetails);
+                
+                refreshTokenService.rotateToken(storedToken, newRefreshToken);
+                refreshTokenService.createRefreshToken(storedToken.getUser().getId(), newRefreshToken, LocalDateTime.now().plusDays(7));
                 
                 return ResponseEntity.ok(AuthResponse.builder()
                         .token(newAccessToken)
-                        .refreshToken(refreshToken)
+                        .refreshToken(newRefreshToken)
                         .username(userDetails.getUsername())
                         .build());
             }
