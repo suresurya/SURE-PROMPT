@@ -41,4 +41,8 @@ public class CustomOAuth2User implements OAuth2User {
     public User getDatabaseUser() {
         return databaseUser;
     }
+
+    public boolean isBanned() {
+        return databaseUser.isBanned();
+    }
 }

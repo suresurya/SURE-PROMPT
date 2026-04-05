@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/main :: layout(~{::title}, ~{::section}, ~{::script})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Management | SurePrompt</title>
+</head>
+<body>
+    <section>
+        <div class="admin-header">
+            <a href="/admin" class="back-link"><i class="fas fa-arrow-left"></i> Dashboard</a>
+            <h1>User Management</h1>
+            <p class="text-muted">Manage user roles and restrictions.</p>
+        </div>
+
+        <div class="admin-tab-content">
+            <div class="search-panel">
+                <input type="text" id="userSearch" placeholder="Search by username or email..." class="search-input">
+            </div>
+
+            <div class="user-table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Role</th>
+                            <th>Stats</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <tr th:each="user : ${users}">
+                            <td>
+                                <div class="user-meta">
+                                    <img th:if="${user.avatarUrl}" th:src="${user.avatarUrl}" alt="">
+                                    <div th:unless="${user.avatarUrl}" class="avatar-placeholder" th:text="${#strings.substring(user.username,0,1).toUpperCase()}"></div>
+                                    <div class="user-details">
+                                        <div class="username" th:text="${user.username}">Username</div>
+                                        <div class="email text-muted" th:text="${user.email}">Email</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="role-badge" th:classappend="'role-' + ${user.role.name().toLowerCase()}" th:text="${user.role}">USER</span>
+                            </td>
+                            <td>
+                                <div class="stats-row">
+                                    <span title="Prompts"><i class="fas fa-file-code"></i> <span th:text="${user.prompts.size()}">0</span></span>
+                                    <span title="Followers"><i class="fas fa-users"></i> <span th:text="${user.followers.size()}">0</span></span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-indicator" th:classappend="${user.banned ? 'banned' : 'active'}">
+                                    <i class="fas" th:classappend="${user.banned ? 'fa-ban' : 'fa-check-circle'}"></i> 
+                                    <span th:text="${user.banned ? 'Banned' : 'Active'}">Active</span>
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm" th:classappend="${user.banned ? 'btn-outline' : 'btn-danger'}" 
+                                        th:onclick="'toggleUserBan(' + ${user.id} + ', this)'"
+                                        th:text="${user.banned ? 'Unban' : 'Ban'}">Ban</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    
+    <script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

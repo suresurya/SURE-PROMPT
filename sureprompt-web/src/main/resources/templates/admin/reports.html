@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/main :: layout(~{::title}, ~{::section}, ~{::script})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Moderation Queue | SurePrompt</title>
+</head>
+<body>
+    <section>
+        <div class="admin-header">
+            <a href="/admin" class="back-link"><i class="fas fa-arrow-left"></i> Dashboard</a>
+            <h1>Moderation Queue</h1>
+            <p class="text-muted">Review and resolve reported content.</p>
+        </div>
+
+        <div class="reports-container">
+            <div th:if="${#lists.isEmpty(reports)}" class="empty-queue">
+                <i class="fas fa-check-circle"></i>
+                <p>All clear! No pending reports.</p>
+            </div>
+
+            <div th:each="report : ${reports}" class="report-card" th:id="'report-' + ${report.id}">
+                <div class="report-header">
+                    <span class="badge" th:classappend="'badge-' + ${report.targetType.name().toLowerCase()}">
+                        <i class="fas" th:classappend="${report.targetType.name() == 'PROMPT' ? 'fa-file-code' : (report.targetType.name() == 'USER' ? 'fa-user' : 'fa-comment')}"></i>
+                        <span th:text="${report.targetType}">TARGET</span>
+                    </span>
+                    <span class="report-time" th:text="${#temporals.format(report.createdAt, 'MMM dd, HH:mm')}">Time</span>
+                </div>
+                
+                <div class="report-body">
+                    <p><strong>Reason:</strong> <span th:text="${report.reason}">Reason</span></p>
+                    <p class="text-muted">Target ID: <span th:text="${report.targetId}">0</span></p>
+                </div>
+
+                <div class="report-footer">
+                    <div class="note-input">
+                        <input type="text" th:id="'note-' + ${report.id}" placeholder="Admin note (required)..." class="admin-note">
+                    </div>
+                    <div class="action-buttons">
+                        <div class="dropdown">
+                            <button class="btn btn-primary resolve-btn">Resolve <i class="fas fa-chevron-down"></i></button>
+                            <div class="dropdown-content">
+                                <button th:if="${report.targetType.name() == 'PROMPT'}" th:onclick="'resolveReport(' + ${report.id} + ', \'DELETE_PROMPT\')'">Delete Prompt</button>
+                                <button th:if="${report.targetType.name() == 'USER' || report.targetType.name() == 'PROMPT'}" th:onclick="'resolveReport(' + ${report.id} + ', \'BAN_USER\')'">Ban User</button>
+                                <button th:if="${report.targetType.name() == 'COMMENT'}" th:onclick="'resolveReport(' + ${report.id} + ', \'DELETE_COMMENT\')'">Delete Comment</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline text-danger" th:onclick="'rejectReport(' + ${report.id} + ')'">Reject</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

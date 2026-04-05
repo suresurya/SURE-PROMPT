@@ -50,6 +50,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         User user = userService.createOrUpdateOnLogin(email, username, displayName, avatarUrl, provider, oauthSubject);
 
+        if (user.isBanned()) {
+            throw new OAuth2AuthenticationException("Your account has been banned.");
+        }
+
         return new CustomOAuth2User(oauth2User, user);
     }
 }

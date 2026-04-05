@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/main :: layout(~{::title}, ~{::section}, ~{::script})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard | SurePrompt</title>
+</head>
+<body>
+    <section>
+        <div class="admin-header">
+            <h1>Admin Control Center</h1>
+            <p class="text-muted">High-level site health and moderation statistics.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-info">
+                    <h3 th:text="${stats.totalUsers}">0</h3>
+                    <p>Total Registered Users</p>
+                </div>
+                <a href="/admin/users" class="stat-link">Manage Users <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon text-primary"><i class="fas fa-file-code"></i></div>
+                <div class="stat-info">
+                    <h3 th:text="${stats.totalPrompts}">0</h3>
+                    <p>Active Prompts</p>
+                </div>
+                <a href="/explore" class="stat-link">View Feed <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="stat-card urgent" th:classappend="${stats.pendingReports > 0 ? 'active' : ''}">
+                <div class="stat-icon"><i class="fas fa-flag"></i></div>
+                <div class="stat-info">
+                    <h3 th:text="${stats.pendingReports}">0</h3>
+                    <p>Pending Reports</p>
+                </div>
+                <a href="/admin/reports" class="stat-link">Open Queue <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+
+        <div class="admin-actions-bar">
+            <h2>Quick Moderation</h2>
+            <div class="btn-group">
+                <a href="/admin/reports" class="btn btn-primary"><i class="fas fa-shield-alt"></i> Moderation Queue</a>
+                <a href="/admin/users" class="btn btn-outline"><i class="fas fa-user-shield"></i> User List</a>
+            </div>
+        </div>
+    </section>
+    
+    <script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

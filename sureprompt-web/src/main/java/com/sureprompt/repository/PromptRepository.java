@@ -76,6 +76,11 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
     @Query("SELECT COALESCE(AVG(p.aiScore), 0) FROM Prompt p WHERE p.user.id = :userId AND p.deleted = false AND p.aiScore IS NOT NULL")
     Double findAverageAiScoreByUserId(@Param("userId") Long userId);
 
+    @Query("SELECT COUNT(p) > 0 FROM Prompt p WHERE p.user.id = :userId")
+    boolean existsByUserId(@Param("userId") Long userId);
+
+    long countByDeletedFalse();
+
     @Query("SELECT COUNT(p) FROM Prompt p WHERE p.user.id = :userId AND p.deleted = false AND p.createdAt >= :since")
     long countRecentPromptsByUserId(@Param("userId") Long userId, @Param("since") java.time.LocalDateTime since);
 }
