@@ -83,7 +83,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<AuthResponse> call, @NonNull Throwable t) {
                 btnLogin.setEnabled(true);
                 btnLogin.setText("Sign In");
-                Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                String errorMsg = "Network error: " + t.getMessage() + " (URL: " + call.request().url() + ")";
+                Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_LONG).show();
             }
         });
     }
