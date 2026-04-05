@@ -29,6 +29,8 @@ public class PromptService {
     private final CommentService commentService;
     private final LikeRepository likeRepository;
     private final SaveRepository saveRepository;
+    private final com.sureprompt.repository.PromptVersionRepository promptVersionRepository;
+    private final com.sureprompt.service.ai.PromptAiProcessor promptAiProcessor;
 
     @Transactional
     public void createPrompt(CreatePromptRequest req, Long userId) {
@@ -44,6 +46,17 @@ public class PromptService {
         prompt.setPlatform(req.getPlatform());
 
         Prompt savedPrompt = promptRepository.save(prompt);
+
+        // Save v1 Snapshot BEFORE kicking off async
+        promptVersionRepository.save(com.sureprompt.entity.PromptVersion.builder()
+                .prompt(savedPrompt)
+                .version(1)
+                .promptText(savedPrompt.getPromptBody())
+                .aiOutput(savedPrompt.getAiOutput())
+                .build());
+
+        // Process AI scoring, tagging, and cost in the background 
+        promptAiProcessor.processPromptAsync(savedPrompt.getId(), userId, req.getTags());
 
         if (req.getTags() != null && !req.getTags().isEmpty()) {
             for (String tagName : req.getTags()) {
@@ -75,6 +88,16 @@ public class PromptService {
             isSaved = saveRepository.existsByUserIdAndPromptId(currentUserId, promptId);
         }
 
+        List<com.sureprompt.dto.PromptVersionDto> versionDtos = promptVersionRepository.findAllByPromptIdOrderByVersionDesc(promptId)
+                .stream()
+                .map(v -> com.sureprompt.dto.PromptVersionDto.builder()
+                        .id(v.getId())
+                        .version(v.getVersion())
+                        .promptText(v.getPromptText())
+                        .aiOutput(v.getAiOutput())
+                        .build())
+                .collect(Collectors.toList());
+
         return PromptDetailDto.builder()
                 .id(prompt.getId())
                 .title(prompt.getTitle())
@@ -92,11 +115,14 @@ public class PromptService {
                 .aiScore(prompt.getAiScore())
                 .aiVerified(prompt.isAiVerified())
                 .aiVerificationReason(prompt.getAiVerificationReason())
+                .aiStatus(prompt.getAiStatus())
                 .isLiked(isLiked)
                 .isSaved(isSaved)
                 .isOwnPrompt(currentUserId != null && currentUserId.equals(prompt.getUser().getId()))
+                .versions(versionDtos)
                 .createdAt(prompt.getCreatedAt())
                 .build();
+
     }
 
     @Transactional
@@ -114,5 +140,49 @@ public class PromptService {
 
     public List<Prompt> getAllPrompts() {
         return promptRepository.findAll();
+    }
+
+    @Transactional
+    public void updatePrompt(Long promptId, CreatePromptRequest req, Long userId) {
+        Prompt prompt = promptRepository.findById(promptId)
+                .orElseThrow(() -> new com.sureprompt.exception.ResourceNotFoundException("Prompt not found"));
+
+        if (!prompt.getUser().getId().equals(userId)) {
+            throw new com.sureprompt.exception.UnauthorizedException("Not authorized");
+        }
+
+        // 1. Create Version Snapshot of OLD state before update
+        Integer latestVersion = promptVersionRepository.findMaxVersionByPromptId(promptId).orElse(1);
+        
+        // Update prompt
+        prompt.setTitle(req.getTitle());
+        prompt.setPromptBody(req.getPromptBody());
+        prompt.setAiOutput(req.getAiOutput());
+        prompt.setAiStatus("PENDING"); // Reset status for the async processor
+        
+        Prompt updatedPrompt = promptRepository.save(prompt);
+
+        // Save new version synchronously to prevent race conditions before async evaluates it
+        promptVersionRepository.save(com.sureprompt.entity.PromptVersion.builder()
+                .prompt(updatedPrompt)
+                .version(latestVersion + 1)
+                .promptText(updatedPrompt.getPromptBody())
+                .aiOutput(updatedPrompt.getAiOutput())
+                .build());
+
+        // Kick off async AI Re-processing
+        promptAiProcessor.processPromptAsync(updatedPrompt.getId(), userId, null);
+    }
+
+    @Transactional
+    public void updateScores(Long promptId) {
+        Prompt prompt = promptRepository.findById(promptId).orElseThrow();
+        
+        double aiPart = (prompt.getAiScore() != null ? prompt.getAiScore() : 0.0) * 0.7;
+        double communityPart = (prompt.getLikeCount() + (prompt.getSaveCount() * 2)) * 0.3; // Proper weight for saves vs likes
+        double bonus = prompt.isAiVerified() ? 1.0 : 0.0;
+        
+        prompt.setCommunityScore(aiPart + communityPart + bonus);
+        promptRepository.save(prompt);
     }
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,6 +33,13 @@ public class UserApiKey {
 
     @Column(name = "last_used_at")
     private LocalDateTime lastUsedAt;
+
+    @Column(name = "daily_calls")
+    @Builder.Default
+    private Integer dailyCalls = 0;
+
+    @Column(name = "last_call_date")
+    private LocalDate lastCallDate;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

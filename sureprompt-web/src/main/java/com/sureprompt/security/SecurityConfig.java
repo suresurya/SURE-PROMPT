@@ -7,7 +7,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.core.annotation.Order;
 
 @Configuration
 @EnableWebSecurity
@@ -16,27 +18,35 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Order(1)
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/api/**")
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**", "/api/v1/feed", "/api/v1/search/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(org.springframework.http.HttpMethod.GET, "/", "/explore", "/prompts/**", "/profile/**", "/api/feed/**", "/api/search/**", "/login", "/css/**", "/js/**", "/images/**", "/error").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/", "/explore", "/prompts/**", "/profile/**", "/login", "/css/**", "/js/**", "/images/**", "/error").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .loginProcessingUrl("/login")
-                .successHandler((request, response, authentication) -> {
-                    response.setStatus(200);
-                    response.getWriter().write("{\"message\": \"Login successful\"}");
-                })
-                .failureHandler((request, response, exception) -> {
-                    response.setStatus(401);
-                    response.getWriter().write("{\"message\": \"Invalid username or password\"}");
-                })
                 .permitAll()
             )
             .oauth2Login(oauth2 -> oauth2
@@ -51,5 +61,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/login", "/logout"));
 
         return http.build();
+    }
+
+    @Bean
+    public org.springframework.security.authentication.AuthenticationManager authenticationManager(org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }

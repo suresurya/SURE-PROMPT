@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@android:color/white">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:background="#ddd" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="AI Sandbox Playground"
+        android:textColor="#222"
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-black" />
+
+    <TextView
+        android:id="@+id/tvLiveStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Powered by Google Gemini 1.5"
+        android:textColor="#888"
+        android:textSize="12sp" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:cardBackgroundColor="#111"
+        app:cardCornerRadius="12dp"
+        app:strokeColor="#333"
+        app:strokeWidth="1dp">
+
+        <TextView
+            android:id="@+id/tvLiveResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="150dp"
+            android:padding="16dp"
+            android:textColor="#ddd"
+            android:textSize="14sp"
+            android:fontFamily="monospace"
+            android:text="Waiting for execution..." />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCloseSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Close Sandbox"
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
+
+</LinearLayout>

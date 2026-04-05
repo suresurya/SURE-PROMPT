@@ -32,7 +32,7 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
     @Query("""
         SELECT p FROM Prompt p 
         WHERE p.deleted = false 
-        ORDER BY (p.likeCount * 2 + p.saveCount * 3) / 
+        ORDER BY (COALESCE(p.aiScore, 0.0) * 0.7 + (p.likeCount + p.saveCount * 2) * 0.3) / 
                  POWER(EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - p.createdAt)) / 3600 + 2, 1.5) DESC
         """)
     Page<Prompt> findTrending(Pageable pageable);
@@ -84,3 +84,4 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
     @Query("SELECT COUNT(p) FROM Prompt p WHERE p.user.id = :userId AND p.deleted = false AND p.createdAt >= :since")
     long countRecentPromptsByUserId(@Param("userId") Long userId, @Param("since") java.time.LocalDateTime since);
 }
+

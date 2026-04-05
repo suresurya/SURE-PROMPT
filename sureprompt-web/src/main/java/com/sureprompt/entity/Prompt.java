@@ -62,6 +62,32 @@ public class Prompt {
     @Column(name = "ai_verification_reason", columnDefinition = "TEXT")
     private String aiVerificationReason;
 
+    // AI Processing State
+    @Column(name = "ai_status", length = 20)
+    @Builder.Default
+    private String aiStatus = "PENDING";
+
+    @Column(name = "cost")
+    @Builder.Default
+    private Double cost = 0.0;
+
+    // Reproducibility & Reproduction
+    @Column(name = "model_name", length = 50)
+    private String modelName;
+
+    @Column(name = "temperature")
+    @Builder.Default
+    private Double temperature = 0.7;
+
+    @Column(name = "tokens_used")
+    @Builder.Default
+    private Integer tokensUsed = 0;
+
+    // Community Feedback
+    @Column(name = "community_score")
+    @Builder.Default
+    private Double communityScore = 0.0;
+
     @Builder.Default
     private boolean pinned = false;
 

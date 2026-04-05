@@ -30,9 +30,11 @@ public class PromptDetailDto {
     private Double aiScore;
     private boolean aiVerified;
     private String aiVerificationReason;
+    private String aiStatus;
     private boolean isLiked;
     private boolean isSaved;
     private boolean isOwnPrompt;
     private List<CommentDto> comments;
+    private List<PromptVersionDto> versions;
     private LocalDateTime createdAt;
 }

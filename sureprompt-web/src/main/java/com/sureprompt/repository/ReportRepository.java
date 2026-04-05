@@ -13,4 +13,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     List<Report> findAllByStatusOrderByCreatedAtDesc(ReportStatus status);
     
     long countByStatus(ReportStatus status);
+
+    boolean existsByReporterIdAndTargetTypeAndTargetIdAndStatus(
+            Long reporterId, com.sureprompt.entity.TargetType targetType, Long targetId, ReportStatus status);
 }

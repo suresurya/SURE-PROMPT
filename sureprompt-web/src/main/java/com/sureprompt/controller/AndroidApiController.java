@@ -6,6 +6,8 @@ import com.sureprompt.security.CustomOAuth2User;
 import com.sureprompt.service.FeedService;
 import com.sureprompt.service.PromptService;
 import com.sureprompt.service.SearchService;
+import com.sureprompt.service.ai.ApiKeyService;
+import com.sureprompt.entity.AiProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ public class AndroidApiController {
     private final FeedService feedService;
     private final SearchService searchService;
     private final PromptService promptService;
+    private final ApiKeyService apiKeyService;
 
     // Mobile specific API endpoints that mirror other logic but standardized under /api/v1
     
@@ -59,6 +62,21 @@ public class AndroidApiController {
             return ResponseEntity.ok(promptService.getPromptDetail(id, userId));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+    @PostMapping("/settings/api-key")
+    public ResponseEntity<?> saveKey(@RequestParam String key, @AuthenticationPrincipal CustomOAuth2User user) {
+        if (user == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        
+        if (key == null || key.length() < 20) {
+            return ResponseEntity.badRequest().body("Invalid key length");
+        }
+
+        try {
+            apiKeyService.saveKey(user.getUserId(), AiProvider.GEMINI, key);
+            return ResponseEntity.ok("Key saved successfully");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 }

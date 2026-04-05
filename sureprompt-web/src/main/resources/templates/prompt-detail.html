@@ -5,43 +5,149 @@
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/prompt.css}">
     <style>
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 1rem;
-        }
-        .prompt-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .prompt-section {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 4px;
-            margin: 1rem 0;
-            white-space: pre-wrap;
-        }
-        .copy-btn {
-            background: #28a745;
+        .version-badge {
+            background: var(--accent-color);
             color: white;
-            border: none;
-            padding: 0.5rem 1rem;
+            padding: 2px 8px;
             border-radius: 4px;
-            cursor: pointer;
-            margin-top: 1rem;
+            font-size: 0.75rem;
+            margin-right: 10px;
         }
+        .ai-status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ai-pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .ai-completed { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .ai-failed { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        
+        #liveOutputPanel {
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background: #121212;
+        }
+        .pd-actions-btn {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .pd-actions-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+        .btn-live { background: var(--accent-color); border: none; color: white; border-radius: 20px; padding: 10px 20px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .btn-live:hover { filter: brightness(1.1); }
     </style>
 </head>
 <body>
     <div th:replace="~{layout/navbar :: navbar}"></div>
     
-    <div class="container">
-        <div class="prompt-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <div>
-                    <h1 th:text="${prompt.title}" style="margin:0;">Prompt Title</h1>
+    <main class="container">
+        <div class="prompt-detail-container">
+            <!-- Header Section -->
+            <div class="pd-header">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem;">
+                            <h1 class="pd-title" th:text="${prompt.title}" style="margin:0;">Prompt Title</h1>
+                            <!-- UI BLOCK 2: SCORE VISUAL -->
+                            <div class="ai-score-full" th:if="${prompt.aiScore != null}" style="padding: 4px 12px; min-width: auto; height: auto;">
+                                <div class="score-circle" style="font-size: 1.5rem;" th:text="${#numbers.formatDecimal(prompt.aiScore / 4, 1, 1)}">8.5</div>
+                            </div>
+                        </div>
+                        
+                        <div class="pd-meta">
+                            <div class="pd-author">
+                                <div style="width:24px; height:24px; background: #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px;" th:text="${#strings.substring(prompt.authorUsername,0,1).toUpperCase()}">U</div>
+                                <a th:href="@{/users/{username}(username=${prompt.authorUsername})}" th:text="${prompt.authorName}">Author</a>
+                            </div>
+                            <span>•</span>
+                            <span th:text="${#temporals.format(prompt.createdAt, 'MMM dd, yyyy')}">Date</span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px;">
+                        <button class="pd-actions-btn" th:onclick="toggleLike([[${prompt.id}]], this)">
+                            <i th:class="${prompt.isLiked} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'" th:style="${prompt.isLiked} ? 'color: #ff4b2b;' : ''"></i>
+                            <span th:text="${prompt.likeCount}">0</span>
+                        </button>
+                        <button class="pd-actions-btn" th:onclick="toggleSave([[${prompt.id}]], this)">
+                            <i th:class="${prompt.isSaved} ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark'" th:style="${prompt.isSaved} ? 'color: var(--accent-color);' : ''"></i>
+                            <span th:text="${prompt.saveCount}">0</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AI Insights Card (UI BLOCK 1, 4) -->
+                <div class="pd-ai-card">
+                    <div class="ai-verified-full">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <div class="ai-status-badge ai-pending" th:if="${prompt.aiStatus == 'PENDING'}">
+                                <i class="fas fa-spinner fa-spin"></i> Processing
+                            </div>
+                            <div class="ai-status-badge ai-completed" th:if="${prompt.aiStatus == 'COMPLETED'}">
+                                <i class="fas fa-check-circle"></i> AI Verified
+                            </div>
+                            <div class="ai-status-badge ai-failed" th:if="${prompt.aiStatus == 'FAILED'}">
+                                <i class="fas fa-exclamation-triangle"></i> AI Evaluation Failed
+                            </div>
+                            
+                            <!-- UI BLOCK 3: TAGS -->
+                            <span th:each="tag : ${prompt.tags}" style="background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; color: #aaa;" th:text="${tag}">Tag</span>
+                        </div>
+                        <div class="ai-reason" th:if="${prompt.aiVerificationReason}" th:text="${prompt.aiVerificationReason}">
+                            Optimization tip here...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UI BLOCK 5: VERSION SWITCH & Actions -->
+            <div class="pd-actions-bar">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div th:if="${prompt.versions != null && !prompt.versions.isEmpty()}" style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">History:</span>
+                        <select id="versionSelect" onchange="loadVersion()" style="background: var(--bg-main); border: 1px solid var(--border-color); color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem;">
+                            <option th:each="v : ${prompt.versions}" th:value="${v.id}" th:text="'v' + ${v.version} + (${vStat.index == 0} ? ' (latest)' : '')"></option>
+                        </select>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem;">
+                        <h1 th:text="${prompt.title}" style="margin:0;">Prompt Title</h1>
+                        <!-- UI BLOCK 2: SCORE VISUAL -->
+                        <div class="score-box" th:if="${prompt.aiScore != null}" style="background: #fdf1d0; border-radius: 8px; padding: 4px 10px; display: inline-flex; align-items: baseline;">
+                            <h2 th:text="${prompt.aiScore}" style="margin:0; color: #b8860b;">8.5</h2>
+                            <p style="margin:0; font-size:0.8rem; color: #888;">/10</p>
+                        </div>
+                    </div>
+                    
+                    <!-- UI BLOCK 1: AI STATUS -->
+                    <div style="margin-bottom: 1rem; font-weight: 500;">
+                        <span th:if="${prompt.aiStatus == 'PENDING'}" style="color: #ff9800;">⏳ AI Processing...</span>
+                        <span th:if="${prompt.aiStatus == 'COMPLETED'}" style="color: #28a745;">✅ AI Verified</span>
+                        <span th:if="${prompt.aiStatus == 'FAILED'}" style="color: #dc3545;">❌ AI Failed</span>
+                    </div>
+
+                    <!-- UI BLOCK 4: AI FEEDBACK -->
+                    <div th:if="${prompt.aiVerificationReason}" style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 1rem; font-size: 0.9rem;">
+                        ⚠️ <span th:text="${prompt.aiVerificationReason}"></span>
+                    </div>
+
+                    <!-- UI BLOCK 3: TAGS -->
+                    <div style="margin-bottom: 1rem;">
+                        <span th:each="tag : ${prompt.tags}" class="tag" th:text="${tag}" style="background: #e9ecef; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; margin-right: 5px; display: inline-block;"></span>
+                    </div>
+
                     <p style="margin: 0.5rem 0; color: #666;">
                         By <span th:text="${prompt.authorName}">Author</span> 
                         <button th:onclick="toggleFollow([[${prompt.authorUsername}]], this)" style="margin-left: 1rem; padding: 2px 10px; border-radius: 20px; border: 1px solid #007bff; background: none; color: #007bff; cursor: pointer;">Follow</button>
@@ -54,32 +160,146 @@
                 </div>
             </div>
             
-            <h3>Prompt:</h3>
-            <div class="prompt-section" id="promptText" th:text="${prompt.promptBody}"></div>
-            <button class="copy-btn" th:onclick="copyPrompt(document.getElementById('promptText').innerText)">Copy Prompt</button>
-            
-            <h3 style="margin-top:2rem;">AI Output:</h3>
-            <div class="prompt-section" th:text="${prompt.aiOutput}"></div>
-            
-            <hr style="margin: 2rem 0; border: 0; border-top: 1px solid #eee;">
-            
-            <h3>Comments</h3>
-            <div id="commentsList" style="margin-bottom: 2rem;">
-                <div th:each="c : ${prompt.comments}" style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #f0f0f0;">
-                    <strong th:text="${c.authorName}">User</strong>
-                    <p th:text="${c.body}" style="margin: 0.5rem 0;"></p>
+            <!-- UI BLOCK 5: VERSION SWITCH -->
+            <div style="margin-bottom: 1rem;" th:if="${prompt.versions != null && !prompt.versions.isEmpty()}">
+                <label for="versionSelect" style="font-weight: 500; margin-right: 10px;">Select Version:</label>
+                <select id="versionSelect" onchange="loadVersion()" style="padding: 5px; border-radius: 4px; border: 1px solid #ddd;">
+                    <option th:each="v : ${prompt.versions}" th:value="${v.id}" th:text="'Version ' + ${v.version} + (${vStat.index == 0} ? ' (Latest)' : '')"></option>
+                </select>
+                <!-- Hidden version data dump for JS to parse without extra network calls, or could use fetch -->
+                <script th:inline="javascript">
+                    const promptVersions = /*[[${prompt.versions}]]*/ [];
+                    function loadVersion() {
+                        const selectedId = parseInt(document.getElementById("versionSelect").value);
+                        const versionInfo = promptVersions.find(v => v.id === selectedId);
+                        if(versionInfo) {
+                            document.getElementById("promptText").innerText = versionInfo.promptText;
+                            document.getElementById("aiOutputSection").innerText = versionInfo.aiOutput || 'No baseline output';
+                        }
+                    }
+                </script>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-section">
+                <h3>Prompt Template</h3>
+                <div class="code-window">
+                    <div class="window-header">
+                        <div style="display: flex; gap: 6px;">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <span>template.txt</span>
+                    </div>
+                    <pre><code id="promptText" th:text="${prompt.promptBody}">The prompt goes here...</code></pre>
                 </div>
             </div>
-            
-            <div style="display: flex; gap: 1rem;">
-                <input type="text" id="commentInput" placeholder="Add a comment..." style="flex: 1; padding: 0.8rem; border: 1px solid #ddd; border-radius: 4px;">
-                <button th:onclick="addComment([[${prompt.id}]])" style="padding: 0 1.5rem; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Post</button>
+
+            <!-- Live Output Panel -->
+            <div id="liveOutputPanel" style="display: none;">
+                <div class="window-header" style="background: #111; border-bottom: 1px solid #222; color: var(--accent-color);">
+                    <i class="fas fa-terminal"></i> Sandbox Output (Live)
+                    <button onclick="document.getElementById('liveOutputPanel').style.display='none'" style="background:none; border:none; color:#555; cursor:pointer;"><i class="fas fa-times"></i></button>
+                </div>
+                <div style="padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #ddd; line-height: 1.6; min-height: 100px;" id="liveOutput">
+                    Executing...
+                </div>
             </div>
-            
-            <a th:href="@{/}" style="display:inline-block; margin-top:2rem;">&larr; Back to Feed</a>
+
+            <div class="content-section">
+                <h3 style="margin-bottom: 15px;">AI Verification Baseline Output</h3>
+                <div class="code-window ai-output-window">
+                    <div class="window-header">
+                        <span>gemini-1.5-pro-output.md</span>
+                    </div>
+                    <pre><code id="aiOutputSection" th:text="${prompt.aiOutput}">Generated sample output...</code></pre>
+                </div>
+            </div>
+
+            <!-- Discussion Section -->
+            <div class="comments-section">
+                <h3>Discussion (<span th:text="${prompt.comments != null ? prompt.comments.size() : 0}">0</span>)</h3>
+                
+                <div class="add-comment" sec:authorize="isAuthenticated()">
+                    <div class="comment-input-group">
+                        <input type="text" id="commentInput" placeholder="Add a technical comment or feedback...">
+                        <button class="btn btn-primary" th:onclick="addComment([[${prompt.id}]])">Post</button>
+                    </div>
+                </div>
+
+                <div id="commentsList" style="margin-top: 20px;">
+                    <div th:each="c : ${prompt.comments}" class="comment-item">
+                        <div style="width: 40px; height: 40px; background: #333; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold;" th:text="${#strings.substring(c.authorName,0,1).toUpperCase()}">U</div>
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <span class="comment-author" th:text="${c.authorName}">User</span>
+                                <span class="comment-time" th:text="${#temporals.format(c.createdAt, 'MMM dd, HH:mm')}">Time</span>
+                            </div>
+                            <div th:text="${c.body}">Comment text</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a th:href="@{/}" style="display:inline-block; margin-top:40px; color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">
+                <i class="fas fa-arrow-left"></i> Back to Feed
+            </a>
         </div>
-    </div>
+    </main>
     
     <script th:src="@{/js/prompt.js}"></script>
+    <!-- Live Sandbox execution and Status Reloading script -->
+    <script th:inline="javascript">
+        const promptStatus = /*[[${prompt.aiStatus}]]*/ 'COMPLETED';
+        if (promptStatus === "PENDING") {
+            setTimeout(() => location.reload(), 4000);
+        }
+
+        async function runLive() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerText = "⏳ Running...";
+
+            const promptText = document.getElementById("promptText").innerText;
+            const outputPanel = document.getElementById("liveOutputPanel");
+            const outputText = document.getElementById("liveOutput");
+
+            outputPanel.style.display = "block";
+            outputText.innerText = "Connecting to AI... Please wait.";
+
+            try {
+                const res = await fetch("/api/ai/live-try", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({ prompt: promptText })
+                });
+
+                if (res.status === 400) {
+                    alert("Please add your Gemini API key in Settings before running live prompts.");
+                    outputText.innerText = "Failed: Missing API Key.";
+                    btn.innerText = "▶ Try Prompt Live";
+                    btn.disabled = false;
+                    return;
+                }
+
+                if (res.status === 429) {
+                    alert("Daily AI limit reached for your account.");
+                    outputText.innerText = "Failed: Rate Limited (429).";
+                    btn.innerText = "▶ Try Prompt Live";
+                    btn.disabled = false;
+                    return;
+                }
+
+                const data = await res.text();
+                outputText.innerText = data;
+            } catch (e) {
+                outputText.innerText = "Error running prompt: " + e;
+            }
+
+            btn.innerText = "▶ Try Prompt Live";
+            btn.disabled = false;
+        }
+    </script>
 </body>
 </html>

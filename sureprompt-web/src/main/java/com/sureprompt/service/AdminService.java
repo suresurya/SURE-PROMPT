@@ -18,6 +18,7 @@ public class AdminService {
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
     private final PromptRepository promptRepository;
+    private final com.sureprompt.repository.AdminActionRepository adminActionRepository;
 
     public Map<String, Object> getDashboardStats() {
         return Map.of(
@@ -39,6 +40,15 @@ public class AdminService {
         if (report.getStatus() != ReportStatus.PENDING) {
             throw new RuntimeException("Report already processed");
         }
+
+        // Record Audit Log
+        adminActionRepository.save(com.sureprompt.entity.AdminAction.builder()
+                .adminId(adminId)
+                .action(action)
+                .targetType(report.getTargetType().name())
+                .targetId(report.getTargetId())
+                .note(note)
+                .build());
 
         switch (action) {
             case "BAN_USER":
@@ -75,6 +85,15 @@ public class AdminService {
         if (report.getStatus() != ReportStatus.PENDING) {
             throw new RuntimeException("Report already processed");
         }
+
+        // Record Audit Log
+        adminActionRepository.save(com.sureprompt.entity.AdminAction.builder()
+                .adminId(adminId)
+                .action("REJECT_REPORT")
+                .targetType(report.getTargetType().name())
+                .targetId(report.getTargetId())
+                .note(note)
+                .build());
 
         report.setAdminNote(note);
         report.setResolvedBy(adminId);

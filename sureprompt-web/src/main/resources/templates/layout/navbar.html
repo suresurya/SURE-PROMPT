@@ -45,7 +45,8 @@
                     </button>
                     <div class="dropdown-content">
                         <a th:href="@{/users/{username}(username=${user.username})}"><i class="fas fa-user"></i> Profile</a>
-                        <a th:href="@{/profile/edit}"><i class="fas fa-cog"></i> Settings</a>
+                        <a th:href="@{/profile/edit}"><i class="fas fa-user-edit"></i> Edit Profile</a>
+                        <a th:href="@{/settings}"><i class="fas fa-cog"></i> Settings</a>
                         <hr>
                         <form th:action="@{/logout}" method="post">
                             <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
