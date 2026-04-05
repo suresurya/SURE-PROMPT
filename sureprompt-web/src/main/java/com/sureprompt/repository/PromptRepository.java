@@ -33,7 +33,7 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
         SELECT p FROM Prompt p 
         WHERE p.deleted = false 
         ORDER BY (COALESCE(p.aiScore, 0.0) * 0.7 + (p.likeCount + p.saveCount * 2) * 0.3) / 
-                 POWER(EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - p.createdAt)) / 3600 + 2, 1.5) DESC
+                 POWER((EXTRACT(EPOCH FROM CURRENT_TIMESTAMP) - EXTRACT(EPOCH FROM p.createdAt)) / 3600 + 2, 1.5) DESC
         """)
     Page<Prompt> findTrending(Pageable pageable);
 
