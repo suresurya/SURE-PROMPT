@@ -20,6 +20,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PromptRepository promptRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public CommentDto addComment(Long promptId, String body, Long userId) {
@@ -35,6 +36,14 @@ public class CommentService {
                 .build();
 
         comment = commentRepository.save(comment);
+
+        // Create notification for prompt owner
+        notificationService.createNotification(
+            prompt.getUser().getId(),
+            userId,
+            com.sureprompt.entity.NotificationType.COMMENT,
+            promptId
+        );
 
         return CommentDto.builder()
                 .id(comment.getId())

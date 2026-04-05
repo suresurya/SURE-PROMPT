@@ -20,6 +20,7 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final PromptRepository promptRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public boolean toggleLike(Long promptId, Long userId) {
@@ -34,6 +35,15 @@ public class LikeService {
             User user = userRepository.findById(userId).orElseThrow();
             likeRepository.save(Like.builder().user(user).prompt(prompt).build());
             prompt.setLikeCount(prompt.getLikeCount() + 1);
+
+            // Create notification for prompt owner
+            notificationService.createNotification(
+                prompt.getUser().getId(),
+                userId,
+                com.sureprompt.entity.NotificationType.LIKE,
+                promptId
+            );
+
             return true;
         }
     }

@@ -18,6 +18,24 @@
             <!-- Authenticated User Menu -->
             <div sec:authorize="isAuthenticated()" class="user-menu" th:with="user=${#authentication.principal.databaseUser}">
                 <a th:href="@{/prompts/new}" class="btn btn-primary"><i class="fas fa-plus"></i> Post</a>
+                
+                <!-- Notification Bell -->
+                <div class="notifications-wrapper">
+                    <button id="notificationBtn" class="nav-link icon-only" title="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span id="notificationBadge" class="badge-count" style="display: none;">0</span>
+                    </button>
+                    <div id="notificationDropdown" class="notification-dropdown">
+                        <div class="notif-header">
+                            <h3>Notifications</h3>
+                            <button id="markAllReadBtn">Mark all as read</button>
+                        </div>
+                        <div id="notifList" class="notif-list">
+                            <div class="notif-loading">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+
                 <a th:href="@{/saved}" class="nav-link icon-only" title="Saved"><i class="fa-regular fa-bookmark"></i></a>
                 
                 <div class="dropdown">
@@ -34,6 +52,7 @@
                         </form>
                     </div>
                 </div>
+                <script th:src="@{/js/notifications.js}"></script>
             </div>
             
             <!-- Guest Menu -->

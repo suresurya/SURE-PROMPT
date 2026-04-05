@@ -14,6 +14,7 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public boolean toggleFollow(Long followingId, Long followerId) {
@@ -28,6 +29,15 @@ public class FollowService {
             User follower = userRepository.findById(followerId).orElseThrow();
             User following = userRepository.findById(followingId).orElseThrow();
             followRepository.save(Follow.builder().follower(follower).following(following).build());
+
+            // Create notification for the user being followed
+            notificationService.createNotification(
+                followingId,
+                followerId,
+                com.sureprompt.entity.NotificationType.FOLLOW,
+                null
+            );
+
             return true;
         }
     }
