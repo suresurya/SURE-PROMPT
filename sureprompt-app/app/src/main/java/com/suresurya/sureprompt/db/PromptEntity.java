@@ -43,4 +43,5 @@ public class PromptEntity {
     public String getAiStatus() { return aiStatus; }
     public Integer getLikeCount() { return likeCount; }
     public boolean isLiked() { return isLiked; }
+    public java.util.List<String> getTags() { return tags; }
 }
