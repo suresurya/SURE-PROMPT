@@ -30,7 +30,8 @@ public class SecurityConfig {
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .securityMatcher("/api/**")
-            .requiresChannel(channel -> channel.anyRequest().requiresSecure())
+            // Temporarily disabled for local HTTP testing
+            // .requiresChannel(channel -> channel.anyRequest().requiresSecure())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .headers(headers -> headers
                 .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"))
@@ -54,7 +55,8 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-            .requiresChannel(channel -> channel.anyRequest().requiresSecure())
+            // Temporarily disabled for local HTTP testing
+            // .requiresChannel(channel -> channel.anyRequest().requiresSecure())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .headers(headers -> headers
                 .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"))
@@ -94,7 +96,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://sureprompt.com")); // Lock down to prod domain
+        config.setAllowedOrigins(List.of("*")); // Allow all for local testing
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowCredentials(true);
         config.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "No-Authentication"));
