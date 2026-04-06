@@ -1,57 +1,266 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html th:replace="~{layout/base :: html(~{::title}, ~{::headExtras}, ~{::content}, ~{::scripts})}" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Post a Prompt - SURE PROMPT</title>
-    <link rel="stylesheet" th:href="@{/css/main.css}">
-    <style>
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 1rem;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        textarea {
-            min-height: 150px;
-        }
-        button {
-            padding: 1rem;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <title>Post a Prompt - SurePrompt</title>
+    <th:block th:fragment="headExtras">
+        <style>
+            .post-container {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            .post-header {
+                margin-bottom: 2rem;
+            }
+            .post-header h1 {
+                font-size: 2rem;
+                font-weight: 800;
+                margin-bottom: 0.5rem;
+            }
+            .post-header p {
+                color: var(--text-muted);
+            }
+            .post-form {
+                background: var(--bg-surface);
+                border: 1px solid var(--border-color);
+                border-radius: var(--border-radius-lg);
+                padding: 32px;
+            }
+            .form-section {
+                margin-bottom: 2rem;
+            }
+            .form-section-title {
+                font-size: 1rem;
+                font-weight: 700;
+                color: var(--text-main);
+                margin-bottom: 16px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .form-section-title md-icon {
+                font-size: 20px;
+                color: var(--accent-color);
+            }
+            .form-row {
+                display: flex;
+                gap: 16px;
+                margin-bottom: 16px;
+            }
+            .form-row > * {
+                flex: 1;
+            }
+            .tags-input-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                align-items: center;
+                min-height: 48px;
+                padding: 8px;
+                background: rgba(255,255,255,0.03);
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                transition: border-color 0.2s;
+            }
+            .tags-input-container:focus-within {
+                border-color: var(--accent-color);
+            }
+            .tags-input-container input {
+                background: none;
+                border: none;
+                color: var(--text-main);
+                font-size: 0.9rem;
+                padding: 4px 8px;
+                flex-grow: 1;
+                min-width: 120px;
+                outline: none;
+            }
+            .submit-section {
+                display: flex;
+                justify-content: flex-end;
+                gap: 12px;
+                padding-top: 1rem;
+            }
+            .submit-section md-filled-button {
+                --md-filled-button-container-height: 48px;
+            }
+            @media (max-width: 640px) {
+                .form-row { flex-direction: column; }
+                .post-form { padding: 20px; }
+            }
+        </style>
+    </th:block>
 </head>
 <body>
-    <div th:replace="~{layout/navbar :: navbar}"></div>
-    
-    <div class="container">
-        <h1>Post a Prompt</h1>
-        <form th:action="@{/prompts/new}" method="post">
-            <input type="text" name="title" placeholder="Title" required />
-            
-            <textarea name="promptBody" placeholder="Prompt"></textarea>
-            
-            <textarea name="aiOutput" placeholder="AI Output"></textarea>
-        
-            <!-- Added tags dropdown to avoid validation errors from CreatePromptRequest if needed, though they aren't strictly required in the user's snippet. But the request requires a List of Strings -> empty by default if not bound -->
-            <button type="submit">Post</button>
-        </form>
-    </div>
+    <th:block th:fragment="content">
+        <div class="post-container">
+            <div class="post-header">
+                <h1>Post a Prompt</h1>
+                <p>Share your best AI prompts with the community</p>
+            </div>
+
+            <form th:action="@{/prompts/new}" method="post" class="post-form" id="postPromptForm">
+                <!-- Title -->
+                <div class="form-section">
+                    <div class="form-section-title"><md-icon>title</md-icon> Title</div>
+                    <md-outlined-text-field 
+                        name="title" 
+                        label="Prompt title" 
+                        placeholder="e.g. Advanced Code Review Prompt for Java"
+                        required
+                        maxlength="200"
+                        supporting-text="Max 200 characters">
+                    </md-outlined-text-field>
+                </div>
+
+                <!-- Prompt Body -->
+                <div class="form-section">
+                    <div class="form-section-title"><md-icon>code</md-icon> Prompt Template</div>
+                    <md-outlined-text-field 
+                        name="promptBody" 
+                        label="Prompt body"
+                        type="textarea"
+                        rows="8"
+                        placeholder="Write your prompt template here. Use {placeholders} for dynamic variables..."
+                        required
+                        supporting-text="The main prompt that users will copy and use">
+                    </md-outlined-text-field>
+                </div>
+
+                <!-- AI Output -->
+                <div class="form-section">
+                    <div class="form-section-title"><md-icon>smart_toy</md-icon> AI Sample Output</div>
+                    <md-outlined-text-field 
+                        name="aiOutput" 
+                        label="AI output"
+                        type="textarea"
+                        rows="6"
+                        placeholder="Paste the AI's response when using this prompt..."
+                        required
+                        supporting-text="Show others what output this prompt generates">
+                    </md-outlined-text-field>
+                </div>
+
+                <md-divider style="margin: 8px 0 24px;"></md-divider>
+
+                <!-- Metadata -->
+                <div class="form-section">
+                    <div class="form-section-title"><md-icon>tune</md-icon> Metadata</div>
+                    <div class="form-row">
+                        <md-outlined-select name="difficulty" label="Difficulty" required>
+                            <md-select-option value="EASY">
+                                <div slot="headline">Easy</div>
+                            </md-select-option>
+                            <md-select-option value="MEDIUM" selected>
+                                <div slot="headline">Medium</div>
+                            </md-select-option>
+                            <md-select-option value="HARD">
+                                <div slot="headline">Hard</div>
+                            </md-select-option>
+                        </md-outlined-select>
+
+                        <md-outlined-select name="platform" label="Platform" required>
+                            <md-select-option value="ChatGPT">
+                                <div slot="headline">ChatGPT</div>
+                            </md-select-option>
+                            <md-select-option value="Gemini">
+                                <div slot="headline">Gemini</div>
+                            </md-select-option>
+                            <md-select-option value="Claude">
+                                <div slot="headline">Claude</div>
+                            </md-select-option>
+                            <md-select-option value="Copilot">
+                                <div slot="headline">Copilot</div>
+                            </md-select-option>
+                            <md-select-option value="Other">
+                                <div slot="headline">Other</div>
+                            </md-select-option>
+                        </md-outlined-select>
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="form-section">
+                    <div class="form-section-title"><md-icon>sell</md-icon> Tags (1-5)</div>
+                    <div class="tags-input-container" id="tagsContainer">
+                        <!-- Chips will be added dynamically -->
+                        <input type="text" id="tagInput" placeholder="Type tag and press Enter..." maxlength="30">
+                    </div>
+                    <!-- Hidden inputs for tags -->
+                    <div id="hiddenTagInputs"></div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">Press Enter or comma to add a tag. Click × to remove.</p>
+                </div>
+
+                <md-divider style="margin: 8px 0 24px;"></md-divider>
+
+                <md-linear-progress id="submitProgress" indeterminate style="display: none; margin-bottom: 16px;"></md-linear-progress>
+
+                <div class="submit-section">
+                    <md-outlined-button type="button" onclick="window.history.back()">Cancel</md-outlined-button>
+                    <md-filled-button type="submit" id="submitBtn">
+                        <md-icon slot="icon">publish</md-icon>
+                        Publish Prompt
+                    </md-filled-button>
+                </div>
+            </form>
+        </div>
+    </th:block>
+
+    <th:block th:fragment="scripts">
+        <script>
+            // Tag input with chips
+            const tagsContainer = document.getElementById('tagsContainer');
+            const tagInput = document.getElementById('tagInput');
+            const hiddenTagInputs = document.getElementById('hiddenTagInputs');
+            let tags = [];
+
+            tagInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ',') {
+                    e.preventDefault();
+                    addTag(tagInput.value.trim());
+                }
+            });
+
+            function addTag(tag) {
+                tag = tag.replace(/,/g, '').trim();
+                if (!tag || tags.includes(tag) || tags.length >= 5) return;
+                
+                tags.push(tag);
+                
+                const chip = document.createElement('md-input-chip');
+                chip.label = tag;
+                chip.addEventListener('remove', () => {
+                    tags = tags.filter(t => t !== tag);
+                    chip.remove();
+                    updateHiddenInputs();
+                });
+                tagsContainer.insertBefore(chip, tagInput);
+                
+                tagInput.value = '';
+                updateHiddenInputs();
+            }
+
+            function updateHiddenInputs() {
+                hiddenTagInputs.innerHTML = '';
+                tags.forEach(tag => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'tags';
+                    input.value = tag;
+                    hiddenTagInputs.appendChild(input);
+                });
+            }
+
+            // Form submission with progress
+            document.getElementById('postPromptForm').addEventListener('submit', function(e) {
+                if (tags.length === 0) {
+                    e.preventDefault();
+                    alert('Please add at least one tag.');
+                    return;
+                }
+                document.getElementById('submitProgress').style.display = 'block';
+                document.getElementById('submitBtn').disabled = true;
+            });
+        </script>
+    </th:block>
 </body>
 </html>

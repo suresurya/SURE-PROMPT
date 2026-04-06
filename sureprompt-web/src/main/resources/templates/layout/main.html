@@ -1,19 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" th:fragment="html(title, headExtras, content, scripts)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" th:fragment="layout(title, content, scripts)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:replace="${title}">SurePrompt</title>
-    <!-- Google Fonts: Roboto for MD3 + Material Symbols -->
+    <title th:replace="${title}">Admin - SurePrompt</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-    <!-- Material Web 3 via CDN import map -->
     <script type="importmap">
-    {
-        "imports": {
-            "@material/web/": "https://esm.run/@material/web/"
-        }
-    }
+    { "imports": { "@material/web/": "https://esm.run/@material/web/" } }
     </script>
     <script type="module">
         import '@material/web/all.js';
@@ -21,16 +15,9 @@
         document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
     </script>
     <link rel="stylesheet" th:href="@{/css/main.css}">
-    <th:block th:replace="${headExtras}"></th:block>
 </head>
 <body>
-
     <div th:replace="~{layout/navbar :: navbar}"></div>
-
-    <!-- Alert for success messages -->
-    <div th:if="${successMessage}" class="alert-success" id="successAlert">
-        <md-icon>check_circle</md-icon> <span th:text="${successMessage}"></span>
-    </div>
 
     <main class="container">
         <th:block th:replace="${content}"></th:block>

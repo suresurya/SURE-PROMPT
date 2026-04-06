@@ -11,11 +11,15 @@
 </head>
 <body>
     <th:block th:fragment="content">
-        <div class="error-container text-center" style="padding: 100px 20px;">
-            <h1 style="font-size: 5rem; color: var(--accent-color);">404</h1>
-            <h2>Prompt Not Found</h2>
-            <p class="text-muted" th:text="${error != null ? error : 'The page you are looking for does not exist.'}"></p>
-            <a th:href="@{/}" class="btn btn-primary mt-4">Go Home</a>
+        <div style="text-align: center; padding: 100px 20px;">
+            <md-icon style="font-size: 5rem; color: var(--accent-color); display: block; margin-bottom: 16px;">search_off</md-icon>
+            <h1 style="font-size: 4rem; font-weight: 800; color: var(--accent-color); margin-bottom: 8px;">404</h1>
+            <h2 style="margin-bottom: 12px;">Prompt Not Found</h2>
+            <p class="text-muted" style="margin-bottom: 32px;" th:text="${error != null ? error : 'The page you are looking for does not exist.'}"></p>
+            <md-filled-button th:href="@{/}" onclick="window.location.href='/'; return false;">
+                <md-icon slot="icon">home</md-icon>
+                Go Home
+            </md-filled-button>
         </div>
     </th:block>
     <th:block th:fragment="scripts"></th:block>

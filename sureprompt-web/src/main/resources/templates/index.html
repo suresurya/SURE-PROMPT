@@ -4,68 +4,81 @@
     <meta charset="UTF-8">
     <title>SURE PROMPT - Feed</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <!-- Material Web loaded via base layout or standalone -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script type="importmap">
+    { "imports": { "@material/web/": "https://esm.run/@material/web/" } }
+    </script>
+    <script type="module">
+        import '@material/web/all.js';
+        import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+        document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+    </script>
     <style>
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 1rem;
-        }
-        .tab-nav {
+        .feed-header {
             display: flex;
-            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 2rem;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 0.5rem;
         }
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            font-size: 1rem;
-            color: #666;
-            position: relative;
+        .feed-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0;
         }
-        .tab-btn.active {
-            color: #007bff;
-            font-weight: bold;
+        md-tabs {
+            margin-bottom: 2rem;
+            --md-primary-tab-container-color: transparent;
         }
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -0.6rem;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #007bff;
+        .feed-container {
+            max-width: 800px;
+            margin: 0 auto;
         }
         .prompt-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 1.5rem;
-            transition: transform 0.2s;
-        }
-        .prompt-card:hover {
-            transform: translateY(-2px);
         }
         .prompt-card a {
             text-decoration: none;
             color: inherit;
             display: block;
         }
+        .prompt-card h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .prompt-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
         .skeleton-card {
             height: 150px;
-            background: #eee;
+            background: linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-surface-hover) 50%, var(--bg-surface) 75%);
+            background-size: 200% 100%;
             margin-bottom: 1.5rem;
-            border-radius: 8px;
-            animation: pulse 1.5s infinite ease-in-out;
+            border-radius: var(--border-radius-lg);
+            animation: shimmer 1.5s infinite;
         }
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .empty-feed {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .empty-feed md-icon {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 16px;
+            opacity: 0.4;
         }
     </style>
 </head>
@@ -73,39 +86,82 @@
     <div th:replace="~{layout/navbar :: navbar}"></div>
 
     <div class="container">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
-            <h1 style="margin:0;">Feed</h1>
-            <a th:href="@{/prompts/new}" style="padding:10px 20px; background:#007bff; color:white; text-decoration:none; border-radius:4px; font-weight:bold;">+ Post a Prompt</a>
-        </div>
+        <div class="feed-container">
+            <div class="feed-header">
+                <h1>Feed</h1>
+            </div>
 
-        <div class="tab-nav">
-            <button class="tab-btn active" data-tab="all" onclick="switchTab('all', this)">All</button>
-            <button class="tab-btn" data-tab="following" onclick="switchTab('following', this)">Following</button>
-            <button class="tab-btn" data-tab="trending" onclick="switchTab('trending', this)">Trending</button>
-        </div>
-        
-        <div id="feedContainer">
-            <div th:each="p : ${prompts}">
-                <div class="prompt-card">
-                    <a th:href="@{/prompts/{id}(id=${p.id})}">
-                        <h2 th:text="${p.title}"></h2>
-                        <p th:text="${p.promptBody}"></p>
-                    </a>
-                    <div style="margin-top: 1rem; display: flex; gap: 1rem; align-items: center;">
-                        <button class="like-btn" th:data-id="${p.id}" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">🤍</button>
-                        <span th:text="${p.likeCount}">0</span>
-                        
-                        <button class="save-btn" th:data-id="${p.id}" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">📑</button>
+            <md-tabs id="feedTabs" aria-label="Feed tabs">
+                <md-primary-tab data-tab="all" active aria-selected="true">
+                    <md-icon slot="icon">dynamic_feed</md-icon>
+                    All
+                </md-primary-tab>
+                <md-primary-tab data-tab="following">
+                    <md-icon slot="icon">people</md-icon>
+                    Following
+                </md-primary-tab>
+                <md-primary-tab data-tab="trending">
+                    <md-icon slot="icon">trending_up</md-icon>
+                    Trending
+                </md-primary-tab>
+            </md-tabs>
+            
+            <div id="feedContainer">
+                <div th:each="p : ${prompts}">
+                    <div class="prompt-card" style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: 24px; margin-bottom: 1.5rem; position: relative; overflow: hidden; transition: all 0.3s ease;">
+                        <md-ripple></md-ripple>
+                        <a th:href="@{/prompts/{id}(id=${p.id})}">
+                            <h2 th:text="${p.title}"></h2>
+                            <p th:text="${p.promptBody}"></p>
+                        </a>
+                        <div style="margin-top: 1rem; display: flex; gap: 0.5rem; align-items: center;">
+                            <md-icon-button class="like-btn" th:data-id="${p.id}">
+                                <md-icon>favorite</md-icon>
+                            </md-icon-button>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;" th:text="${p.likeCount}">0</span>
+                            
+                            <md-icon-button class="save-btn" th:data-id="${p.id}">
+                                <md-icon>bookmark</md-icon>
+                            </md-icon-button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div th:if="${#lists.isEmpty(prompts)}">
-                <p>No prompts found. Be the first to post!</p>
+                
+                <div th:if="${#lists.isEmpty(prompts)}" class="empty-feed">
+                    <md-icon>edit_note</md-icon>
+                    <p style="font-size: 1.1rem; margin-bottom: 20px;">No prompts found. Be the first to post!</p>
+                    <md-filled-button th:href="@{/prompts/new}" onclick="window.location.href=this.getAttribute('href'); return false;">
+                        <md-icon slot="icon">add</md-icon>
+                        Post a Prompt
+                    </md-filled-button>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- FAB for posting -->
+    <div class="fab-container">
+        <md-fab label="Post" th:href="@{/prompts/new}" onclick="window.location.href='/prompts/new';" aria-label="Post a new prompt">
+            <md-icon slot="icon">add</md-icon>
+        </md-fab>
+    </div>
     
+    <script th:src="@{/js/main.js}"></script>
     <script th:src="@{/js/prompt.js}"></script>
+    <script>
+        // MD3 Tabs integration
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.getElementById('feedTabs');
+            if (tabs) {
+                tabs.addEventListener('change', (e) => {
+                    const selectedTab = tabs.tabs[tabs.activeTabIndex];
+                    const tabName = selectedTab.dataset.tab;
+                    if (typeof switchTab === 'function') {
+                        switchTab(tabName);
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

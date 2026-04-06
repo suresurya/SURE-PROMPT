@@ -6,51 +6,60 @@
     <meta name="description" th:content="${profile.bio != null ? profile.bio : profile.displayName + ' on SurePrompt'}">
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script type="importmap">
+    { "imports": { "@material/web/": "https://esm.run/@material/web/" } }
+    </script>
+    <script type="module">
+        import '@material/web/all.js';
+        import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+        document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+    </script>
 </head>
 <body>
     <div th:replace="~{layout/navbar :: navbar}"></div>
 
     <div class="container">
-
-        <!-- ============== PROFILE HEADER ============== -->
+        <!-- PROFILE HEADER -->
         <div class="profile-header">
             <div class="profile-main">
-                <!-- Avatar -->
                 <div class="avatar-wrapper">
                     <img th:if="${profile.avatarUrl}" th:src="${profile.avatarUrl}" alt="Avatar" class="avatar-lg">
                     <div th:unless="${profile.avatarUrl}" class="avatar-placeholder-lg"
                          th:text="${#strings.substring(profile.username,0,1).toUpperCase()}"></div>
                 </div>
 
-                <!-- Info -->
                 <div class="profile-info">
                     <h1 th:text="${profile.displayName}">Display Name</h1>
                     <div class="profile-meta">
-                        <span><i class="fas fa-at"></i> <span th:text="${profile.username}">username</span></span>
-                        <span th:if="${profile.college}"><i class="fas fa-graduation-cap"></i> <span th:text="${profile.college}">College</span></span>
-                        <span th:if="${profile.memberSince}"><i class="fas fa-calendar"></i> Joined <span th:text="${#temporals.format(profile.memberSince, 'MMM yyyy')}">Jan 2024</span></span>
+                        <span><md-icon style="font-size:16px;">alternate_email</md-icon> <span th:text="${profile.username}">username</span></span>
+                        <span th:if="${profile.college}"><md-icon style="font-size:16px;">school</md-icon> <span th:text="${profile.college}">College</span></span>
+                        <span th:if="${profile.memberSince}"><md-icon style="font-size:16px;">calendar_month</md-icon> Joined <span th:text="${#temporals.format(profile.memberSince, 'MMM yyyy')}">Jan 2024</span></span>
                     </div>
                     <p th:if="${profile.bio}" class="bio" th:text="${profile.bio}">User bio goes here...</p>
 
                     <!-- Follow / Edit Button -->
                     <div class="profile-actions" th:if="${!profile.ownProfile}">
-                        <button class="btn follow-btn"
-                                th:classappend="${profile.following ? 'following' : 'btn-primary'}"
-                                th:data-userid="${profile.userId}"
-                                th:text="${profile.following ? 'Following' : 'Follow'}">
+                        <md-filled-button th:if="${!profile.following}" class="follow-btn" th:data-userid="${profile.userId}">
+                            <md-icon slot="icon">person_add</md-icon>
                             Follow
-                        </button>
+                        </md-filled-button>
+                        <md-outlined-button th:if="${profile.following}" class="follow-btn following" th:data-userid="${profile.userId}">
+                            <md-icon slot="icon">check</md-icon>
+                            Following
+                        </md-outlined-button>
                     </div>
                     <div class="profile-actions" th:if="${profile.ownProfile}">
-                        <a th:href="@{/profile/edit}" class="btn btn-outline"><i class="fas fa-pen"></i> Edit Profile</a>
+                        <md-outlined-button th:href="@{/profile/edit}" onclick="window.location.href=this.getAttribute('href'); return false;">
+                            <md-icon slot="icon">edit</md-icon>
+                            Edit Profile
+                        </md-outlined-button>
                     </div>
                 </div>
             </div>
 
-            <!-- ============== STATS ROW ============== -->
+            <!-- STATS ROW -->
             <div class="profile-stats">
                 <div class="stat-box">
                     <div class="stat-value" id="followersCount" th:text="${profile.followersCount}">0</div>
@@ -74,27 +83,29 @@
                 </div>
             </div>
 
-            <!-- ============== BADGES ============== -->
+            <!-- BADGES -->
             <div class="profile-badges" th:if="${!#lists.isEmpty(profile.badges)}">
-                <h3><i class="fas fa-award"></i> Badges</h3>
+                <h3><md-icon style="font-size: 18px; color: var(--warning-color);">military_tech</md-icon> Badges</h3>
                 <div class="badges-container">
-                    <span class="badge" th:each="badge : ${profile.badges}" th:style="'border-color:' + ${badge.color} + '; color:' + ${badge.color}">
-                        <i class="fas" th:classappend="${badge.icon}"></i>
-                        <span th:text="${badge.name}">Badge</span>
-                    </span>
+                    <md-assist-chip th:each="badge : ${profile.badges}" th:label="${badge.name}" elevated>
+                    </md-assist-chip>
                 </div>
             </div>
         </div>
 
-        <!-- ============== TABS ============== -->
-        <div class="profile-tabs">
-            <button class="profile-tab active" data-tab="posts"><i class="fas fa-th-large"></i> Posts</button>
-        </div>
+        <!-- TABS -->
+        <md-tabs style="margin-bottom: 24px;">
+            <md-primary-tab active>
+                <md-icon slot="icon">grid_view</md-icon>
+                Posts
+            </md-primary-tab>
+        </md-tabs>
 
-        <!-- ============== POSTS GRID ============== -->
+        <!-- POSTS GRID -->
         <div id="postsGrid" class="prompts-grid">
             <div th:if="${userPrompts != null}" th:each="p : ${userPrompts.content}">
                 <div class="prompt-card">
+                    <md-ripple></md-ripple>
                     <div class="card-header">
                         <div class="author-info">
                             <div class="author-details">
@@ -115,41 +126,45 @@
                     </a>
 
                     <div class="tags-container" th:if="${p.tags != null && !p.tags.isEmpty()}">
-                        <span class="tag" th:each="tag : ${p.tags}" th:text="${tag}">tag</span>
+                        <md-assist-chip th:each="tag : ${p.tags}" th:label="${tag}" elevated></md-assist-chip>
                     </div>
 
                     <div class="ai-status" th:if="${p.aiVerified || p.aiScore != null}">
-                        <span class="verified-badge" th:if="${p.aiVerified}"><i class="fas fa-check-circle"></i> Verified</span>
+                        <span class="verified-badge" th:if="${p.aiVerified}"><md-icon style="font-size:16px;color:var(--success-color);">verified</md-icon> Verified</span>
                         <span class="score-badge" th:if="${p.aiScore != null}" th:text="'Score: ' + ${p.aiScore}">Score: 8.5</span>
                     </div>
 
-                    <div class="card-footer">
+                    <md-divider style="margin: 0 -24px; width: calc(100% + 48px);"></md-divider>
+
+                    <div class="card-footer" style="padding-top: 12px;">
                         <div class="actions-left">
-                            <button class="action-btn like-btn" th:data-id="${p.id}"
-                                    th:classappend="${p.liked ? 'active' : ''}">
-                                <i th:class="${p.liked ? 'fas fa-heart' : 'far fa-heart'}"></i>
-                                <span class="like-count" th:text="${p.likeCount}">0</span>
-                            </button>
-                            <button class="action-btn save-btn" th:data-id="${p.id}"
-                                    th:classappend="${p.saved ? 'active' : ''}">
-                                <i th:class="${p.saved ? 'fas fa-bookmark' : 'far fa-bookmark'}"></i>
-                            </button>
+                            <md-icon-button class="like-btn" th:data-id="${p.id}" th:classappend="${p.liked ? 'active' : ''}">
+                                <md-icon th:style="${p.liked ? 'font-variation-settings: FILL 1; color: var(--danger-color);' : ''}">favorite</md-icon>
+                            </md-icon-button>
+                            <span class="like-count" style="font-size:0.85rem;color:var(--text-muted);" th:text="${p.likeCount}">0</span>
+                            <md-icon-button class="save-btn" th:data-id="${p.id}" th:classappend="${p.saved ? 'active' : ''}">
+                                <md-icon th:style="${p.saved ? 'font-variation-settings: FILL 1; color: var(--accent-color);' : ''}">bookmark</md-icon>
+                            </md-icon-button>
                         </div>
                         <div class="actions-right">
-                            <span class="text-muted" style="font-size:0.8rem;" th:text="${#temporals.format(p.createdAt, 'dd MMM yyyy')}">01 Jan 2024</span>
+                            <span style="font-size:0.8rem; color: var(--text-muted);" th:text="${#temporals.format(p.createdAt, 'dd MMM yyyy')}">01 Jan 2024</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div th:if="${userPrompts == null || userPrompts.content.isEmpty()}" class="empty-state">
-                <i class="fas fa-file-alt"></i>
+                <md-icon style="font-size: 3rem; opacity: 0.4; display: block; margin-bottom: 16px;">description</md-icon>
                 <p>No prompts yet</p>
-                <a th:if="${profile.ownProfile}" th:href="@{/prompts/new}" class="btn btn-primary">Post your first prompt</a>
+                <md-filled-button th:if="${profile.ownProfile}" th:href="@{/prompts/new}" onclick="window.location.href=this.getAttribute('href'); return false;" style="margin-top: 16px;">
+                    <md-icon slot="icon">add</md-icon>
+                    Post your first prompt
+                </md-filled-button>
             </div>
         </div>
     </div>
 
+    <script th:src="@{/js/main.js}"></script>
     <script th:src="@{/js/profile.js}"></script>
 </body>
 </html>

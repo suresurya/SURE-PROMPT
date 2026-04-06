@@ -12,10 +12,10 @@
                 padding: 2rem 0;
             }
             .login-card {
-                background: rgba(255, 255, 255, 0.05);
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                border-radius: 20px;
+                background: rgba(24, 24, 27, 0.8);
+                backdrop-filter: blur(16px);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 24px;
                 padding: 3rem;
                 width: 100%;
                 max-width: 450px;
@@ -23,7 +23,7 @@
                 transition: transform 0.3s ease;
             }
             .login-card:hover {
-                transform: translateY(-5px);
+                transform: translateY(-4px);
             }
             .login-header {
                 text-align: center;
@@ -31,7 +31,7 @@
             }
             .login-header h1 {
                 font-size: 2.2rem;
-                font-weight: 700;
+                font-weight: 800;
                 background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
@@ -44,85 +44,67 @@
             .form-group {
                 margin-bottom: 1.5rem;
             }
-            .form-label {
-                display: block;
-                margin-bottom: 0.5rem;
-                font-weight: 500;
-                color: #e5e7eb;
-            }
-            .form-input {
+            .form-group md-outlined-text-field {
                 width: 100%;
-                padding: 0.8rem 1rem;
-                background: rgba(255, 255, 255, 0.03);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                border-radius: 12px;
-                color: white;
-                font-size: 1rem;
-                transition: all 0.3s ease;
-            }
-            .form-input:focus {
-                outline: none;
-                border-color: #6366f1;
-                box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-                background: rgba(255, 255, 255, 0.06);
-            }
-            .btn-login {
-                width: 100%;
-                padding: 1rem;
-                background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-                border: none;
-                border-radius: 12px;
-                color: white;
-                font-weight: 600;
-                font-size: 1.1rem;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                margin-top: 1rem;
-            }
-            .btn-login:hover {
-                filter: brightness(110%);
-                transform: scale(1.02);
             }
             .error-message {
                 background: rgba(239, 68, 68, 0.1);
                 border: 1px solid rgba(239, 68, 68, 0.2);
                 color: #f87171;
-                padding: 0.8rem;
-                border-radius: 10px;
+                padding: 12px 16px;
+                border-radius: 12px;
                 margin-bottom: 1.5rem;
                 font-size: 0.9rem;
                 display: flex;
                 align-items: center;
-                gap: 0.5rem;
+                gap: 8px;
+            }
+            .info-message {
+                background: rgba(99, 102, 241, 0.1);
+                border: 1px solid rgba(99, 102, 241, 0.2);
+                color: #818cf8;
+                padding: 12px 16px;
+                border-radius: 12px;
+                margin-bottom: 1.5rem;
+                font-size: 0.9rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .login-submit {
+                width: 100%;
+                margin-top: 1rem;
+            }
+            .login-submit md-filled-button {
+                width: 100%;
+                --md-filled-button-container-height: 48px;
+                --md-filled-button-label-text-size: 1.05rem;
             }
             .social-login {
                 margin-top: 2rem;
-                border-top: 1px solid rgba(255, 255, 255, 0.1);
-                padding-top: 2rem;
                 text-align: center;
+            }
+            .social-divider {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                margin-bottom: 1.5rem;
+            }
+            .social-divider md-divider {
+                flex: 1;
+            }
+            .social-divider span {
+                color: var(--text-muted);
+                font-size: 0.85rem;
+                white-space: nowrap;
             }
             .social-buttons {
                 display: flex;
-                gap: 1rem;
-                margin-top: 1rem;
+                gap: 12px;
             }
-            .btn-social {
+            .social-buttons md-outlined-button {
                 flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 0.8rem;
-                padding: 0.8rem;
-                border-radius: 12px;
-                background: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                color: white;
-                text-decoration: none;
-                font-size: 0.9rem;
-                transition: all 0.3s ease;
-            }
-            .btn-social:hover {
-                background: rgba(255, 255, 255, 0.1);
+                --md-outlined-button-container-height: 44px;
             }
         </style>
     </th:block>
@@ -137,40 +119,62 @@
                 </div>
 
                 <div th:if="${error}" class="error-message">
-                    <i class="fas fa-exclamation-circle"></i>
+                    <md-icon style="font-size: 20px;">error</md-icon>
                     <span th:text="${error}"></span>
                 </div>
 
-                <div th:if="${message}" class="alert alert-info mb-4" style="color: #60a5fa">
-                    <i class="fas fa-info-circle mr-2"></i>
+                <div th:if="${message}" class="info-message">
+                    <md-icon style="font-size: 20px;">info</md-icon>
                     <span th:text="${message}"></span>
                 </div>
 
-                <form th:action="@{/login}" method="post">
+                <form th:action="@{/login}" method="post" id="loginForm">
                     <div class="form-group">
-                        <label class="form-label" for="username">Username</label>
-                        <input type="text" id="username" name="username" class="form-input" 
-                               placeholder="e.g. admin" required autofocus>
+                        <md-outlined-text-field 
+                            label="Username" 
+                            name="username" 
+                            type="text"
+                            required 
+                            autofocus
+                            placeholder="e.g. admin">
+                            <md-icon slot="leading-icon">person</md-icon>
+                        </md-outlined-text-field>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label" for="password">Password</label>
-                        <input type="password" id="password" name="password" class="form-input" 
-                               placeholder="Your secret code" required>
+                        <md-outlined-text-field 
+                            label="Password" 
+                            name="password" 
+                            type="password"
+                            required
+                            placeholder="Your secret code">
+                            <md-icon slot="leading-icon">lock</md-icon>
+                        </md-outlined-text-field>
                     </div>
 
-                    <button type="submit" class="btn-login">Sign In</button>
+                    <div class="login-submit">
+                        <md-filled-button type="submit">
+                            <md-icon slot="icon">login</md-icon>
+                            Sign In
+                        </md-filled-button>
+                    </div>
                 </form>
 
                 <div class="social-login">
-                    <p class="text-muted">Or continue with</p>
+                    <div class="social-divider">
+                        <md-divider></md-divider>
+                        <span>Or continue with</span>
+                        <md-divider></md-divider>
+                    </div>
                     <div class="social-buttons">
-                        <a th:href="@{/oauth2/authorization/google}" class="btn-social">
-                            <i class="fab fa-google"></i> Google
-                        </a>
-                        <a th:href="@{/oauth2/authorization/github}" class="btn-social">
-                            <i class="fab fa-github"></i> GitHub
-                        </a>
+                        <md-outlined-button th:href="@{/oauth2/authorization/google}" onclick="window.location.href=this.getAttribute('href'); return false;">
+                            <md-icon slot="icon">public</md-icon>
+                            Google
+                        </md-outlined-button>
+                        <md-outlined-button th:href="@{/oauth2/authorization/github}" onclick="window.location.href=this.getAttribute('href'); return false;">
+                            <md-icon slot="icon">code</md-icon>
+                            GitHub
+                        </md-outlined-button>
                     </div>
                 </div>
             </div>
@@ -178,7 +182,7 @@
     </th:block>
     
     <th:block th:fragment="scripts">
-        <!-- Optional scripts -->
+        <!-- Login page scripts -->
     </th:block>
 </body>
 </html>

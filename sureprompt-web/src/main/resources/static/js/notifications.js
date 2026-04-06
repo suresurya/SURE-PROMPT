@@ -1,5 +1,5 @@
 /**
- * Notifications System — Client-side logic
+ * Notifications System — MD3 Edition
  * Split polling: Lightweight unread count every 5s, full data on click.
  */
 
@@ -27,6 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!isOpen) {
             notificationDropdown.classList.add("show");
             fetchNotifications();
+        } else {
+            notificationDropdown.classList.remove("show");
         }
     });
 
@@ -37,7 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch("/api/notifications/mark-read", { method: "POST" });
             if (res.ok) {
                 updateBadge(0);
-                fetchNotifications(); // Refresh list
+                fetchNotifications();
+                App.showToast("All notifications marked as read", "success");
             }
         } catch (err) {
             console.error("Failed to mark read:", err);
@@ -45,14 +48,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Close on outside click
-    document.addEventListener("click", () => {
-        notificationDropdown.classList.remove("show");
+    document.addEventListener("click", (e) => {
+        if (!notificationDropdown.contains(e.target) && !notificationBtn.contains(e.target)) {
+            notificationDropdown.classList.remove("show");
+        }
     });
 
     async function checkUnreadCount() {
         try {
             const res = await fetch("/api/notifications/unread-count");
-            if (res.status === 401) return; // Not logged in
+            if (res.status === 401) return;
             const data = await res.json();
             updateBadge(data.unreadCount);
         } catch (err) {
@@ -61,27 +66,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function fetchNotifications() {
-        notifList.innerHTML = '<div class="notif-loading">Loading...</div>';
+        notifList.innerHTML = `
+            <div class="notif-loading" style="display:flex; justify-content:center; padding: 30px;">
+                <md-circular-progress indeterminate style="--md-circular-progress-size: 32px;"></md-circular-progress>
+            </div>`;
         try {
             const res = await fetch("/api/notifications");
             if (!res.ok) throw new Error("Failed to fetch");
             const notifications = await res.json();
             renderNotifications(notifications);
         } catch (err) {
-            notifList.innerHTML = '<div class="notif-error">Failed to load notifications</div>';
+            notifList.innerHTML = `
+                <div class="notif-error">
+                    <md-icon style="font-size: 2rem; display: block; margin-bottom: 8px; opacity: 0.4;">error_outline</md-icon>
+                    Failed to load notifications
+                </div>`;
         }
     }
 
     function renderNotifications(notifications) {
         if (!notifications || notifications.length === 0) {
-            notifList.innerHTML = '<div class="notif-empty">No notifications yet</div>';
+            notifList.innerHTML = `
+                <div class="notif-empty">
+                    <md-icon style="font-size: 2rem; display: block; margin-bottom: 8px; opacity: 0.4;">notifications_none</md-icon>
+                    No notifications yet
+                </div>`;
             return;
         }
 
         notifList.innerHTML = notifications.map(n => {
-            const iconClass = n.type === 'LIKE' ? 'fa-heart text-danger' : 
-                              n.type === 'FOLLOW' ? 'fa-user-plus text-primary' : 
-                              'fa-comment text-success';
+            const iconName = n.type === 'LIKE' ? 'favorite' : 
+                             n.type === 'FOLLOW' ? 'person_add' : 
+                             'chat_bubble';
+            const iconColor = n.type === 'LIKE' ? 'var(--danger-color)' : 
+                              n.type === 'FOLLOW' ? 'var(--accent-color)' : 
+                              'var(--success-color)';
             
             const message = n.type === 'LIKE' ? `liked your prompt <strong>${n.promptTitle}</strong>` :
                             n.type === 'FOLLOW' ? `started following you` :
@@ -96,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                     <div class="notif-content">
                         <p><strong>${n.actorName}</strong> ${message}</p>
-                        <span class="notif-time"><i class="fas ${iconClass}"></i> ${n.relativeTime}</span>
+                        <span class="notif-time"><md-icon style="font-size:14px; color:${iconColor};">${iconName}</md-icon> ${n.relativeTime}</span>
                     </div>
                 </a>
             `;

@@ -1,18 +1,18 @@
 /* =========================================================================
    SurePrompt Global Design System
-   Premium Dark Theme with Glassmorphism and vibrant gradients
+   Material Design 3 Dark Theme with Glassmorphism
    ========================================================================= */
 
 :root {
-    /* Color Palette */
-    --bg-main: #09090b; /* Very dark zinc */
+    /* === Existing SurePrompt Palette === */
+    --bg-main: #09090b;
     --bg-surface: #18181b; 
     --bg-surface-hover: #27272a;
     
     --text-main: #f4f4f5;
     --text-muted: #a1a1aa;
     
-    --accent-color: #6366f1; /* Indigo */
+    --accent-color: #6366f1;
     --accent-hover: #4f46e5;
     --accent-glow: rgba(99, 102, 241, 0.5);
     
@@ -36,6 +36,161 @@
     
     /* Font */
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+    /* === Material Design 3 Theme Tokens === */
+    --md-sys-color-primary: #a4c0ff;
+    --md-sys-color-on-primary: #00315e;
+    --md-sys-color-primary-container: #6366f1;
+    --md-sys-color-on-primary-container: #ffffff;
+    --md-sys-color-secondary: #bec6dc;
+    --md-sys-color-on-secondary: #283141;
+    --md-sys-color-tertiary: #ddbce0;
+    --md-sys-color-on-tertiary: #3f2844;
+    --md-sys-color-error: #ffb4ab;
+    --md-sys-color-on-error: #690005;
+    --md-sys-color-surface: #18181b;
+    --md-sys-color-on-surface: #f4f4f5;
+    --md-sys-color-surface-container: #1e1e22;
+    --md-sys-color-surface-container-low: #141417;
+    --md-sys-color-surface-container-high: #27272a;
+    --md-sys-color-surface-container-highest: #333338;
+    --md-sys-color-on-surface-variant: #a1a1aa;
+    --md-sys-color-outline: #3f3f46;
+    --md-sys-color-outline-variant: #27272a;
+    --md-sys-color-inverse-surface: #f4f4f5;
+    --md-sys-color-inverse-on-surface: #18181b;
+    --md-sys-color-background: #09090b;
+    --md-sys-color-on-background: #f4f4f5;
+
+    /* MD3 Button theme overrides */
+    --md-filled-button-container-color: #6366f1;
+    --md-filled-button-label-text-color: #ffffff;
+    --md-filled-button-hover-container-color: #4f46e5;
+    --md-filled-button-container-shape: 12px;
+    --md-filled-button-label-text-font: 'Inter', sans-serif;
+    --md-filled-button-label-text-weight: 600;
+    
+    --md-outlined-button-outline-color: #3f3f46;
+    --md-outlined-button-label-text-color: #f4f4f5;
+    --md-outlined-button-container-shape: 12px;
+    --md-outlined-button-label-text-font: 'Inter', sans-serif;
+    --md-outlined-button-hover-label-text-color: #a4c0ff;
+    
+    --md-text-button-label-text-color: #a4c0ff;
+    --md-text-button-label-text-font: 'Inter', sans-serif;
+
+    --md-filled-tonal-button-container-color: rgba(99, 102, 241, 0.15);
+    --md-filled-tonal-button-label-text-color: #a4c0ff;
+    --md-filled-tonal-button-container-shape: 12px;
+
+    /* MD3 Icon Button overrides */
+    --md-icon-button-icon-color: #a1a1aa;
+    --md-icon-button-hover-icon-color: #f4f4f5;
+    --md-icon-button-hover-state-layer-color: rgba(255,255,255,0.08);
+
+    /* MD3 Text Field overrides */
+    --md-outlined-text-field-outline-color: #3f3f46;
+    --md-outlined-text-field-hover-outline-color: #52525b;
+    --md-outlined-text-field-focus-outline-color: #6366f1;
+    --md-outlined-text-field-input-text-color: #f4f4f5;
+    --md-outlined-text-field-label-text-color: #a1a1aa;
+    --md-outlined-text-field-focus-label-text-color: #6366f1;
+    --md-outlined-text-field-container-shape: 12px;
+    --md-outlined-text-field-input-text-font: 'Inter', sans-serif;
+    --md-outlined-text-field-label-text-font: 'Inter', sans-serif;
+
+    --md-filled-text-field-container-color: rgba(255,255,255,0.05);
+    --md-filled-text-field-input-text-color: #f4f4f5;
+    --md-filled-text-field-label-text-color: #a1a1aa;
+    --md-filled-text-field-active-indicator-color: #6366f1;
+
+    /* MD3 Tabs overrides */
+    --md-primary-tab-active-indicator-color: #6366f1;
+    --md-primary-tab-label-text-color: #a1a1aa;
+    --md-primary-tab-active-label-text-color: #6366f1;
+    --md-primary-tab-active-hover-label-text-color: #818cf8;
+    --md-primary-tab-label-text-font: 'Inter', sans-serif;
+    --md-primary-tab-label-text-weight: 600;
+    --md-primary-tab-container-color: transparent;
+    --md-primary-tab-active-focus-label-text-color: #6366f1;
+
+    /* MD3 FAB overrides */
+    --md-fab-container-color: #6366f1;
+    --md-fab-icon-color: #ffffff;
+    --md-fab-container-shape: 16px;
+    --md-fab-hover-container-elevation: 4;
+
+    /* MD3 Chip overrides */
+    --md-assist-chip-outline-color: #3f3f46;
+    --md-assist-chip-label-text-color: #a1a1aa;
+    --md-assist-chip-container-shape: 12px;
+    --md-assist-chip-label-text-font: 'Inter', sans-serif;
+    
+    --md-filter-chip-outline-color: #3f3f46;
+    --md-filter-chip-label-text-color: #a1a1aa;
+    --md-filter-chip-selected-container-color: rgba(99, 102, 241, 0.15);
+    --md-filter-chip-selected-label-text-color: #a4c0ff;
+    --md-filter-chip-container-shape: 12px;
+
+    --md-input-chip-outline-color: #3f3f46;
+    --md-input-chip-label-text-color: #f4f4f5;
+    --md-input-chip-container-shape: 12px;
+
+    /* MD3 Dialog overrides */
+    --md-dialog-container-color: #1e1e22;
+    --md-dialog-headline-color: #f4f4f5;
+    --md-dialog-supporting-text-color: #a1a1aa;
+    --md-dialog-container-shape: 20px;
+
+    /* MD3 Menu overrides */
+    --md-menu-container-color: #1e1e22;
+    --md-menu-container-shape: 12px;
+    --md-menu-item-label-text-color: #f4f4f5;
+    --md-menu-item-hover-state-layer-color: rgba(255,255,255,0.08);
+
+    /* MD3 Select overrides */
+    --md-outlined-select-text-field-outline-color: #3f3f46;
+    --md-outlined-select-text-field-input-text-color: #f4f4f5;
+    --md-outlined-select-text-field-label-text-color: #a1a1aa;
+    --md-outlined-select-text-field-container-shape: 12px;
+    --md-outlined-select-text-field-focus-outline-color: #6366f1;
+
+    /* MD3 Progress overrides */
+    --md-linear-progress-active-indicator-color: #6366f1;
+    --md-linear-progress-track-color: rgba(99, 102, 241, 0.15);
+    --md-circular-progress-active-indicator-color: #6366f1;
+
+    /* MD3 Switch overrides */
+    --md-switch-selected-track-color: #6366f1;
+    --md-switch-selected-handle-color: #ffffff;
+    --md-switch-unselected-track-color: #27272a;
+    --md-switch-unselected-handle-color: #52525b;
+
+    /* MD3 Divider overrides */
+    --md-divider-color: #27272a;
+
+    /* MD3 List overrides */
+    --md-list-container-color: transparent;
+    --md-list-item-label-text-color: #f4f4f5;
+    --md-list-item-supporting-text-color: #a1a1aa;
+    --md-list-item-hover-state-layer-color: rgba(255,255,255,0.08);
+
+    /* MD3 Checkbox overrides */
+    --md-checkbox-selected-container-color: #6366f1;
+    --md-checkbox-selected-icon-color: #ffffff;
+    --md-checkbox-outline-color: #52525b;
+
+    /* MD3 Radio overrides */
+    --md-radio-selected-icon-color: #6366f1;
+    --md-radio-icon-color: #52525b;
+
+    /* MD3 Elevation */
+    --md-elevation-level: 0;
+}
+
+/* Material Symbols sizing */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
 * {
@@ -62,15 +217,44 @@ a:hover {
     color: var(--accent-hover);
 }
 
+/* ================== MD3 Component Global Styles ================== */
+md-icon {
+    font-family: 'Material Symbols Outlined';
+    font-size: 24px;
+    color: inherit;
+}
+
+md-filled-button, md-outlined-button, md-text-button, md-filled-tonal-button {
+    --md-filled-button-label-text-size: 0.95rem;
+    --md-outlined-button-label-text-size: 0.95rem;
+    --md-text-button-label-text-size: 0.95rem;
+}
+
+md-outlined-text-field, md-filled-text-field {
+    width: 100%;
+}
+
+md-divider {
+    --md-divider-color: var(--border-color);
+}
+
+md-linear-progress {
+    width: 100%;
+}
+
+md-dialog {
+    --md-dialog-container-min-inline-size: 320px;
+}
+
 /* ================== Navbar ================== */
 .navbar {
     position: sticky;
     top: 0;
     z-index: 1000;
     height: var(--navbar-height);
-    background: rgba(24, 24, 27, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(24, 24, 27, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border-light);
 }
 
@@ -107,55 +291,43 @@ a:hover {
     position: relative;
 }
 
-.search-bar i {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-}
-
-.search-bar input {
+.search-bar md-outlined-text-field {
+    --md-outlined-text-field-container-shape: 24px;
+    --md-outlined-text-field-top-space: 8px;
+    --md-outlined-text-field-bottom-space: 8px;
     width: 100%;
-    padding: 10px 10px 10px 40px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    color: var(--text-main);
-    font-size: 0.95rem;
-    transition: all var(--transition-fast);
-}
-
-.search-bar input:focus {
-    outline: none;
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 8px;
 }
 
 .nav-link {
     color: var(--text-muted);
     font-weight: 500;
     font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all var(--transition-fast);
 }
 
 .nav-link:hover {
     color: var(--text-main);
+    background: rgba(255,255,255,0.05);
 }
 
 .user-menu, .guest-menu {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 4px;
 }
 
-/* ================== Buttons ================== */
+/* ================== Legacy Buttons (kept for backward compat) ================== */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -170,7 +342,7 @@ a:hover {
     transition: all var(--transition-fast);
 }
 
-.btn.sm {
+.btn.sm, .btn-sm {
     padding: 6px 12px;
     font-size: 0.85rem;
 }
@@ -198,17 +370,14 @@ a:hover {
     border-color: var(--text-muted);
 }
 
-.btn-icon {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 1.1rem;
-    transition: color var(--transition-fast);
+.btn-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--danger-color);
+    border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-.btn-icon:hover {
-    color: var(--text-main);
+.btn-danger:hover {
+    background: rgba(239, 68, 68, 0.25);
 }
 
 .text-danger { color: var(--danger-color); }
@@ -246,7 +415,13 @@ a:hover {
     border-color: var(--accent-color);
 }
 
-/* Dropdown */
+/* ================== MD3 Menu Dropdown ================== */
+.md3-menu-anchor {
+    position: relative;
+    display: inline-block;
+}
+
+/* Legacy Dropdown (still used in some places) */
 .dropdown {
     position: relative;
     display: inline-block;
@@ -267,7 +442,8 @@ a:hover {
     animation: fadeIn 0.2s ease;
 }
 
-.dropdown:hover .dropdown-content {
+.dropdown:hover .dropdown-content,
+.dropdown-content.show {
     display: block;
 }
 
@@ -276,15 +452,14 @@ a:hover {
     color: var(--text-main);
     padding: 12px 16px;
     text-decoration: none;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     width: 100%;
     border: none;
     background: none;
     font-size: 0.95rem;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .dropdown-content a:hover, .dropdown-content button:hover {
@@ -315,12 +490,19 @@ a:hover {
 .prompt-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 20px;
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
     display: flex;
     flex-direction: column;
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.prompt-card md-ripple {
+    --md-ripple-hover-color: rgba(99, 102, 241, 0.05);
+    --md-ripple-pressed-color: rgba(99, 102, 241, 0.1);
 }
 
 .prompt-card:hover {
@@ -355,6 +537,9 @@ a:hover {
 .college-badge {
     font-size: 0.75rem;
     color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .card-title {
@@ -376,9 +561,14 @@ a:hover {
     margin-bottom: 16px;
 }
 
+.tags-container md-assist-chip {
+    --md-assist-chip-container-height: 28px;
+    --md-assist-chip-label-text-size: 0.75rem;
+}
+
 .tag {
     background: rgba(255, 255, 255, 0.1);
-    color: var(--text-main);
+    color: var(--text-muted);
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 0.75rem;
@@ -411,6 +601,7 @@ a:hover {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    align-items: center;
 }
 
 .verified-badge {
@@ -424,7 +615,7 @@ a:hover {
 
 .score-badge {
     background: rgba(45, 212, 191, 0.15);
-    color: #2dd4bf; /* Teal */
+    color: #2dd4bf;
     border: 1px solid rgba(45, 212, 191, 0.3);
     padding: 2px 8px;
     border-radius: 6px;
@@ -434,14 +625,24 @@ a:hover {
 
 .card-footer {
     margin-top: auto;
-    border-top: 1px solid var(--border-color);
     padding-top: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.actions-left .action-btn {
+.actions-left, .actions-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.actions-left md-icon-button,
+.actions-right md-icon-button {
+    --md-icon-button-icon-size: 20px;
+}
+
+.action-btn {
     background: none;
     border: none;
     color: var(--text-muted);
@@ -456,16 +657,6 @@ a:hover {
     transition: all var(--transition-fast);
 }
 
-.actions-right .action-btn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 6px;
-    transition: all var(--transition-fast);
-}
-
 .action-btn:hover {
     background: var(--bg-surface-hover);
     color: var(--text-main);
@@ -474,11 +665,16 @@ a:hover {
 .action-btn.active.like-btn {
     color: var(--danger-color);
 }
-.action-btn.active.like-btn i {
-    animation: heartBeat 0.3s;
+.action-btn.active.like-btn md-icon {
+    font-variation-settings: 'FILL' 1;
+    color: var(--danger-color);
 }
 
 .action-btn.active.save-btn {
+    color: var(--accent-color);
+}
+.action-btn.active.save-btn md-icon {
+    font-variation-settings: 'FILL' 1;
     color: var(--accent-color);
 }
 
@@ -491,11 +687,17 @@ a:hover {
     text-align: center;
 }
 
+.footer-container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
 .footer-links {
     margin-top: 10px;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 8px;
 }
 
 /* Alerts */
@@ -510,9 +712,48 @@ a:hover {
     top: var(--navbar-height);
     z-index: 900;
     backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-/* Animations */
+/* ================== Snackbar Toast (MD3 style) ================== */
+.md3-snackbar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--md-sys-color-inverse-surface);
+    color: var(--md-sys-color-inverse-on-surface);
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+    max-width: 500px;
+}
+
+.md3-snackbar.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.md3-snackbar md-icon {
+    font-size: 20px;
+}
+
+.md3-snackbar.success md-icon { color: var(--success-color); }
+.md3-snackbar.error md-icon { color: var(--danger-color); }
+.md3-snackbar.info md-icon { color: var(--accent-color); }
+
+/* ================== Animations ================== */
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes heartBeat {
     0% { transform: scale(1); }
@@ -529,33 +770,35 @@ a:hover {
 
 .badge-count {
     position: absolute;
-    top: -5px;
-    right: -5px;
+    top: 2px;
+    right: 2px;
     background-color: var(--danger-color);
     color: white;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 700;
-    min-width: 18px;
-    height: 18px;
+    min-width: 16px;
+    height: 16px;
     padding: 0 4px;
-    border-radius: 9px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     border: 2px solid var(--bg-surface);
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 1;
+    pointer-events: none;
 }
 
 .notification-dropdown {
     display: none;
     position: absolute;
-    top: 45px;
-    right: 0;
-    width: 320px;
+    top: 50px;
+    right: -80px;
+    width: 360px;
     background-color: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
     z-index: 1001;
     overflow: hidden;
     animation: fadeIn 0.2s ease;
@@ -569,20 +812,20 @@ a:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
+    padding: 16px 20px;
     border-bottom: 1px solid var(--border-color);
 }
 
 .notif-header h3 {
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 700;
 }
 
 #markAllReadBtn {
     background: none;
     border: none;
     color: var(--accent-color);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
 }
@@ -599,9 +842,11 @@ a:hover {
 .notif-item {
     display: flex;
     gap: 12px;
-    padding: 12px 16px;
+    padding: 14px 20px;
     border-bottom: 1px solid var(--border-color);
     transition: background var(--transition-fast);
+    text-decoration: none;
+    color: var(--text-main);
 }
 
 .notif-item:last-child {
@@ -651,12 +896,9 @@ a:hover {
 .notif-time {
     font-size: 0.75rem;
     color: var(--text-muted);
-    display: block;
-}
-
-.notif-time i {
-    margin-right: 4px;
-    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .notif-loading, .notif-empty, .notif-error {
@@ -690,13 +932,19 @@ a:hover {
 .stat-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 24px;
+    border-radius: var(--border-radius-lg);
+    padding: 28px;
     display: flex;
     flex-direction: column;
     gap: 15px;
     position: relative;
     overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
 }
 
 .stat-card.urgent.active {
@@ -707,6 +955,11 @@ a:hover {
 .stat-icon {
     font-size: 2rem;
     color: var(--accent-color);
+}
+
+.stat-icon md-icon {
+    font-size: 2rem;
+    color: inherit;
 }
 
 .stat-info h3 {
@@ -720,6 +973,25 @@ a:hover {
     margin-top: 10px;
 }
 
+/* Admin Actions Bar */
+.admin-actions-bar {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 28px;
+    margin-top: 20px;
+}
+
+.admin-actions-bar h2 {
+    margin-bottom: 16px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
 /* Reports Queue */
 .reports-container {
     display: flex;
@@ -730,8 +1002,8 @@ a:hover {
 .report-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 20px;
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
     position: relative;
 }
 
@@ -741,9 +1013,9 @@ a:hover {
     margin-bottom: 15px;
 }
 
-.badge-prompt { background: rgba(99, 102, 241, 0.1); color: var(--accent-color); }
-.badge-user { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
-.badge-comment { background: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+.badge-prompt { background: rgba(99, 102, 241, 0.1); color: var(--accent-color); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+.badge-user { background: rgba(168, 85, 247, 0.1); color: #a855f7; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+.badge-comment { background: rgba(16, 185, 129, 0.1); color: var(--success-color); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
 
 .report-footer {
     margin-top: 20px;
@@ -779,7 +1051,7 @@ a:hover {
     font-weight: 700;
     font-size: 1.2rem;
     gap: 10px;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-lg);
 }
 
 .resolved-overlay { color: var(--success-color); }
@@ -790,8 +1062,9 @@ a:hover {
     width: 100%;
     border-collapse: collapse;
     background: var(--bg-surface);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-lg);
     overflow: hidden;
+    border: 1px solid var(--border-color);
 }
 
 .admin-table th, .admin-table td {
@@ -823,6 +1096,32 @@ a:hover {
     align-items: center;
     justify-content: center;
     font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.role-badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.role-admin { background: rgba(239, 68, 68, 0.15); color: var(--danger-color); }
+.role-user { background: rgba(99, 102, 241, 0.15); color: var(--accent-color); }
+.role-moderator { background: rgba(245, 158, 11, 0.15); color: var(--warning-color); }
+
+.stats-row {
+    display: flex;
+    gap: 12px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.stats-row span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .status-indicator {
@@ -836,13 +1135,49 @@ a:hover {
 .status-indicator.banned { color: var(--danger-color); }
 .status-indicator.active { color: var(--success-color); }
 
-/* Toasts */
+.search-panel {
+    margin-bottom: 24px;
+}
+
+.search-panel md-outlined-text-field {
+    max-width: 400px;
+}
+
+/* ================== Empty Queue ================== */
+.empty-queue {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+}
+
+.empty-queue md-icon {
+    font-size: 4rem;
+    color: var(--success-color);
+    margin-bottom: 16px;
+    display: block;
+}
+
+/* ================== FAB (Floating Action Button) ================== */
+.fab-container {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 100;
+}
+
+.fab-container md-fab {
+    --md-fab-container-color: #6366f1;
+    --md-fab-icon-color: #ffffff;
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+}
+
+/* ================== Toasts ================== */
 .toast {
     position: fixed;
     bottom: 20px;
     right: 20px;
     padding: 12px 24px;
-    border-radius: 8px;
+    border-radius: 12px;
     color: white;
     font-weight: 600;
     z-index: 2000;
@@ -857,4 +1192,20 @@ a:hover {
 @keyframes slideInRight {
     from { transform: translateX(100%); }
     to { transform: translateX(0); }
+}
+
+/* ================== Responsive ================== */
+@media (max-width: 768px) {
+    .search-bar {
+        display: none;
+    }
+    .nav-container {
+        padding: 0 12px;
+    }
+    .prompts-grid {
+        grid-template-columns: 1fr;
+    }
+    .container {
+        padding: 16px 12px;
+    }
 }

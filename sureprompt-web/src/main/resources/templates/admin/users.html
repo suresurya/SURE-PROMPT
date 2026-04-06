@@ -6,17 +6,22 @@
 <body>
     <section>
         <div class="admin-header">
-            <a href="/admin" class="back-link"><i class="fas fa-arrow-left"></i> Dashboard</a>
-            <h1>User Management</h1>
+            <md-text-button href="/admin" onclick="window.location.href='/admin'; return false;">
+                <md-icon slot="icon">arrow_back</md-icon>
+                Dashboard
+            </md-text-button>
+            <h1 style="margin-top: 8px;">User Management</h1>
             <p class="text-muted">Manage user roles and restrictions.</p>
         </div>
 
         <div class="admin-tab-content">
             <div class="search-panel">
-                <input type="text" id="userSearch" placeholder="Search by username or email..." class="search-input">
+                <md-outlined-text-field id="userSearch" placeholder="Search by username or email..." type="search" style="max-width: 400px;">
+                    <md-icon slot="leading-icon">search</md-icon>
+                </md-outlined-text-field>
             </div>
 
-            <div class="user-table-wrapper">
+            <div class="user-table-wrapper" style="overflow-x: auto;">
                 <table class="admin-table">
                     <thead>
                         <tr>
@@ -31,11 +36,11 @@
                         <tr th:each="user : ${users}">
                             <td>
                                 <div class="user-meta">
-                                    <img th:if="${user.avatarUrl}" th:src="${user.avatarUrl}" alt="">
+                                    <img th:if="${user.avatarUrl}" th:src="${user.avatarUrl}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
                                     <div th:unless="${user.avatarUrl}" class="avatar-placeholder" th:text="${#strings.substring(user.username,0,1).toUpperCase()}"></div>
                                     <div class="user-details">
-                                        <div class="username" th:text="${user.username}">Username</div>
-                                        <div class="email text-muted" th:text="${user.email}">Email</div>
+                                        <div class="username" style="font-weight:600;" th:text="${user.username}">Username</div>
+                                        <div class="email text-muted" style="font-size:0.8rem;" th:text="${user.email}">Email</div>
                                     </div>
                                 </div>
                             </td>
@@ -44,26 +49,44 @@
                             </td>
                             <td>
                                 <div class="stats-row">
-                                    <span title="Prompts"><i class="fas fa-file-code"></i> <span th:text="${user.prompts.size()}">0</span></span>
-                                    <span title="Followers"><i class="fas fa-users"></i> <span th:text="${user.followers.size()}">0</span></span>
+                                    <span title="Prompts"><md-icon style="font-size:16px;">code</md-icon> <span th:text="${user.prompts.size()}">0</span></span>
+                                    <span title="Followers"><md-icon style="font-size:16px;">group</md-icon> <span th:text="${user.followers.size()}">0</span></span>
                                 </div>
                             </td>
                             <td>
                                 <span class="status-indicator" th:classappend="${user.banned ? 'banned' : 'active'}">
-                                    <i class="fas" th:classappend="${user.banned ? 'fa-ban' : 'fa-check-circle'}"></i> 
+                                    <md-icon style="font-size:16px;" th:text="${user.banned ? 'block' : 'check_circle'}">check_circle</md-icon>
                                     <span th:text="${user.banned ? 'Banned' : 'Active'}">Active</span>
                                 </span>
                             </td>
                             <td>
-                                <button class="btn btn-sm" th:classappend="${user.banned ? 'btn-outline' : 'btn-danger'}" 
-                                        th:onclick="'toggleUserBan(' + ${user.id} + ', this)'"
-                                        th:text="${user.banned ? 'Unban' : 'Ban'}">Ban</button>
+                                <md-filled-tonal-button th:if="${!user.banned}" 
+                                    th:onclick="'toggleUserBan(' + ${user.id} + ', this)'"
+                                    style="--md-filled-tonal-button-container-color: rgba(239,68,68,0.15); --md-filled-tonal-button-label-text-color: var(--danger-color);">
+                                    <md-icon slot="icon">block</md-icon>
+                                    Ban
+                                </md-filled-tonal-button>
+                                <md-outlined-button th:if="${user.banned}"
+                                    th:onclick="'toggleUserBan(' + ${user.id} + ', this)'">
+                                    <md-icon slot="icon">check_circle</md-icon>
+                                    Unban
+                                </md-outlined-button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <!-- Ban Confirmation Dialog -->
+        <md-dialog id="banDialog">
+            <div slot="headline">Confirm Action</div>
+            <div slot="content" id="banDialogContent">Are you sure you want to proceed?</div>
+            <div slot="actions">
+                <md-text-button onclick="document.getElementById('banDialog').close()">Cancel</md-text-button>
+                <md-filled-button id="banDialogConfirm" style="--md-filled-button-container-color: var(--danger-color);">Confirm</md-filled-button>
+            </div>
+        </md-dialog>
     </section>
     
     <script th:src="@{/js/admin.js}"></script>

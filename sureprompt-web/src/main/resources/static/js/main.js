@@ -1,13 +1,13 @@
-// Global configuration and utilities
+// =========================================================================
+// SurePrompt Global JS — Material Design 3 Edition
+// =========================================================================
+
 const App = {
     csrfToken: '',
     
     init: function() {
-        // Find CSRF token if meta tags exist (Spring Security)
-        // Since we disabled CSRF for /api, we might just pass basic headers
-        
-        // Setup global toast notifications
         this.setupToasts();
+        this.setupAutoHideAlerts();
     },
     
     fetchAuth: async function(url, options = {}) {
@@ -43,32 +43,46 @@ const App = {
         }
     },
     
+    // Material Design 3 Snackbar Toast
     showToast: function(message, type = 'success') {
-        const toast = document.createElement('div');
-        toast.className = `alert-${type} toast-notification`;
-        toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+        // Remove existing snackbar
+        const existing = document.querySelector('.md3-snackbar');
+        if (existing) existing.remove();
+
+        const iconMap = {
+            success: 'check_circle',
+            error: 'error',
+            info: 'info'
+        };
+
+        const snackbar = document.createElement('div');
+        snackbar.className = `md3-snackbar ${type}`;
+        snackbar.innerHTML = `
+            <md-icon>${iconMap[type] || 'info'}</md-icon>
+            <span>${message}</span>
+        `;
         
-        // Simple positioning
-        toast.style.position = 'fixed';
-        toast.style.bottom = '20px';
-        toast.style.right = '20px';
-        toast.style.zIndex = '9999';
-        toast.style.padding = '15px 25px';
-        toast.style.borderRadius = '8px';
-        toast.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
-        
-        document.body.appendChild(toast);
+        document.body.appendChild(snackbar);
+
+        // Trigger animation
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                snackbar.classList.add('show');
+            });
+        });
         
         setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transition = 'opacity 0.5s';
-            setTimeout(() => toast.remove(), 500);
-        }, 3000);
+            snackbar.classList.remove('show');
+            setTimeout(() => snackbar.remove(), 300);
+        }, 4000);
     },
     
     setupToasts: function() {
-        // Auto hide server side alerts
-        const alerts = document.querySelectorAll('.alert-success');
+        // No-op, kept for backward compat
+    },
+
+    setupAutoHideAlerts: function() {
+        const alerts = document.querySelectorAll('.alert-success, #successAlert');
         alerts.forEach(alert => {
             setTimeout(() => {
                 alert.style.opacity = '0';

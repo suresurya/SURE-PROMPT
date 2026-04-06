@@ -1,4 +1,7 @@
-// Feed infinite scroll and tab logic
+// =========================================================================
+// Feed — Infinite scroll and tab logic (MD3 edition)
+// =========================================================================
+
 let currentTab = 'all';
 let currentPage = 0;
 let isLoading = false;
@@ -6,13 +9,24 @@ let hasMore = true;
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Only run if on feed page
     const feedContainer = document.getElementById('feed-container');
     if (!feedContainer) return;
 
     loadFeed(true);
 
-    // Tab switching
+    // Tab switching via MD3 tabs
+    const mdTabs = document.getElementById('feedTabs');
+    if (mdTabs) {
+        mdTabs.addEventListener('change', () => {
+            const selectedTab = mdTabs.tabs[mdTabs.activeTabIndex];
+            if (selectedTab) {
+                currentTab = selectedTab.dataset.tab || 'all';
+                loadFeed(true);
+            }
+        });
+    }
+
+    // Legacy tab button switching
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -37,7 +51,14 @@ async function loadFeed(reset) {
     if (reset) {
         currentPage = 0;
         hasMore = true;
-        document.getElementById('feed-container').innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+        const container = document.getElementById('feed-container');
+        if (container) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                    <md-circular-progress indeterminate style="--md-circular-progress-size: 40px;"></md-circular-progress>
+                    <p style="margin-top: 16px;">Loading...</p>
+                </div>`;
+        }
     }
     
     isLoading = true;
@@ -51,7 +72,11 @@ async function loadFeed(reset) {
         
         if (data.prompts.length === 0) {
             if (reset) {
-                document.getElementById('feed-container').innerHTML = '<div class="text-center py-5 text-muted">No prompts found.</div>';
+                document.getElementById('feed-container').innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
+                        <md-icon style="font-size: 3rem; display: block; margin-bottom: 12px; opacity: 0.4;">edit_note</md-icon>
+                        No prompts found.
+                    </div>`;
             }
             hasMore = false;
             return;
@@ -71,21 +96,21 @@ async function loadFeed(reset) {
 }
 
 function createCardHTML(p) {
-    const tagsHtml = p.tags.map(t => `<span class="tag">${t}</span>`).join('');
+    const tagsHtml = (p.tags || []).map(t => `<md-assist-chip label="${t}" elevated></md-assist-chip>`).join('');
     
     let aiHtml = '';
     if (p.aiVerified || p.aiScore) {
         aiHtml = `<div class="ai-status">`;
-        if (p.aiVerified) aiHtml += `<div class="verified-badge"><i class="fas fa-check-circle"></i> AI Verified</div>`;
+        if (p.aiVerified) aiHtml += `<div class="verified-badge"><md-icon style="font-size:16px;color:var(--success-color);">verified</md-icon> AI Verified</div>`;
         if (p.aiScore) aiHtml += `<div class="score-badge">AI Score: ${p.aiScore}/10</div>`;
         aiHtml += `</div>`;
     }
 
-    // Format date roughly
     const date = new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
     return `
         <div class="prompt-card">
+            <md-ripple></md-ripple>
             <div class="card-header">
                 <div class="author-info">
                     <a href="/users/${p.authorUsername}">
@@ -93,11 +118,11 @@ function createCardHTML(p) {
                     </a>
                     <div class="author-details">
                         <a href="/users/${p.authorUsername}" class="author-name">${p.authorName}</a>
-                        ${p.college ? `<span class="college-badge"><i class="fas fa-university"></i> ${p.college}</span>` : ''}
+                        ${p.college ? `<span class="college-badge"><md-icon style="font-size:14px;">school</md-icon> ${p.college}</span>` : ''}
                     </div>
                 </div>
                 <div class="card-meta">
-                    <span class="time-ago">${date}</span>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">${date}</span>
                 </div>
             </div>
             
@@ -108,30 +133,29 @@ function createCardHTML(p) {
                 
                 <div class="tags-container">
                     ${tagsHtml}
-                    <span class="difficulty-badge diff-${p.difficulty.toLowerCase()}">${p.difficulty}</span>
-                    <span class="platform-badge">${p.platform}</span>
+                    <span class="difficulty-badge diff-${(p.difficulty||'').toLowerCase()}">${p.difficulty || ''}</span>
+                    <span class="platform-badge">${p.platform || ''}</span>
                 </div>
                 
                 ${aiHtml}
             </div>
             
-            <div class="card-footer">
+            <md-divider style="margin: 0 -24px; width: calc(100% + 48px);"></md-divider>
+            
+            <div class="card-footer" style="padding-top: 12px;">
                 <div class="actions-left">
-                    <button class="action-btn like-btn ${p.liked ? 'active' : ''}" data-id="${p.id}">
-                        <i class="${p.liked ? 'fas fa-heart' : 'far fa-heart'}"></i>
-                        <span class="count">${p.likeCount}</span>
-                    </button>
-                    <button class="action-btn comment-btn" onclick="window.location.href='/prompts/${p.id}#comments'">
-                        <i class="far fa-comment"></i>
-                    </button>
-                    <button class="action-btn copy-btn" data-id="${p.id}" title="View Prompt">
-                        <i class="far fa-eye"></i>
-                    </button>
+                    <md-icon-button class="like-btn ${p.liked ? 'active' : ''}" data-id="${p.id}">
+                        <md-icon${p.liked ? ' style="font-variation-settings: \'FILL\' 1; color: var(--danger-color);"' : ''}>favorite</md-icon>
+                    </md-icon-button>
+                    <span class="count" style="font-size:0.85rem; color:var(--text-muted);">${p.likeCount}</span>
+                    <md-icon-button onclick="window.location.href='/prompts/${p.id}#comments'">
+                        <md-icon>chat_bubble_outline</md-icon>
+                    </md-icon-button>
                 </div>
                 <div class="actions-right">
-                    <button class="action-btn save-btn ${p.saved ? 'active' : ''}" data-id="${p.id}">
-                        <i class="${p.saved ? 'fas fa-bookmark' : 'far fa-bookmark'}"></i>
-                    </button>
+                    <md-icon-button class="save-btn ${p.saved ? 'active' : ''}" data-id="${p.id}">
+                        <md-icon${p.saved ? ' style="font-variation-settings: \'FILL\' 1; color: var(--accent-color);"' : ''}>bookmark</md-icon>
+                    </md-icon-button>
                 </div>
             </div>
         </div>

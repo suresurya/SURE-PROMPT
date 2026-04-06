@@ -10,6 +10,7 @@ let currentSearch = {
 
 document.addEventListener('DOMContentLoaded', () => {
     
+    // searchInput might be an MD3 text-field
     const searchInput = document.getElementById('searchInput');
     if (!searchInput) return;
 
@@ -32,20 +33,26 @@ document.addEventListener('DOMContentLoaded', () => {
         debounceSearch();
     });
 
-    diffFilter.addEventListener('change', (e) => {
-        currentSearch.difficulty = e.target.value;
-        performSearch(true);
-    });
+    if(diffFilter) {
+        diffFilter.addEventListener('change', (e) => {
+            currentSearch.difficulty = e.target.value;
+            performSearch(true);
+        });
+    }
 
-    platformFilter.addEventListener('change', (e) => {
-        currentSearch.platform = e.target.value;
-        performSearch(true);
-    });
+    if(platformFilter) {
+        platformFilter.addEventListener('change', (e) => {
+            currentSearch.platform = e.target.value;
+            performSearch(true);
+        });
+    }
 
-    verifiedOnlyToggle.addEventListener('change', (e) => {
-        currentSearch.verifiedOnly = e.target.checked;
-        performSearch(true);
-    });
+    if(verifiedOnlyToggle) {
+        verifiedOnlyToggle.addEventListener('change', (e) => {
+            currentSearch.verifiedOnly = e.target.checked || e.target.selected;
+            performSearch(true);
+        });
+    }
 
     tagChips.forEach(chip => {
         chip.addEventListener('click', (e) => {
@@ -91,7 +98,13 @@ async function performSearch(resetPage = false) {
     if (resetPage) currentSearch.page = 0;
     
     const resultsContainer = document.getElementById('searchResults');
-    resultsContainer.innerHTML = '<div class="text-center w-100 py-5"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+    if(!resultsContainer) return;
+
+    resultsContainer.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+            <md-circular-progress indeterminate style="--md-circular-progress-size: 40px;"></md-circular-progress>
+            <p style="margin-top: 16px;">Searching...</p>
+        </div>`;
     
     try {
         let url = `/api/search?page=${currentSearch.page}`;
@@ -110,12 +123,20 @@ async function performSearch(resetPage = false) {
         resultsContainer.innerHTML = '';
         
         const metaContainer = document.getElementById('resultsMeta');
-        metaContainer.style.display = 'block';
-        document.getElementById('totalResults').innerText = data.totalResults;
-        document.getElementById('appliedFilters').innerText = data.appliedFilters ? `(Filters: ${data.appliedFilters})` : '';
+        if(metaContainer) metaContainer.style.display = 'block';
+        
+        const totalElem = document.getElementById('totalResults');
+        if(totalElem) totalElem.innerText = data.totalResults;
+        
+        const filtersElem = document.getElementById('appliedFilters');
+        if(filtersElem) filtersElem.innerText = data.appliedFilters ? `(Filters: ${data.appliedFilters})` : '';
         
         if (data.results.length === 0) {
-            resultsContainer.innerHTML = '<div class="text-center w-100 py-5 text-muted">No prompts found matching your criteria.</div>';
+            resultsContainer.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
+                    <md-icon style="font-size: 3rem; display: block; margin-bottom: 12px; opacity: 0.4;">search_off</md-icon>
+                    No prompts found matching your criteria.
+                </div>`;
             return;
         }
 
@@ -127,6 +148,10 @@ async function performSearch(resetPage = false) {
         });
         
     } catch (error) {
-        resultsContainer.innerHTML = '<div class="text-center w-100 py-5 text-danger">Search failed.</div>';
+        resultsContainer.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: var(--danger-color);">
+                <md-icon style="font-size: 2rem; display: block; margin-bottom: 8px;">error_outline</md-icon>
+                Search failed.
+            </div>`;
     }
 }

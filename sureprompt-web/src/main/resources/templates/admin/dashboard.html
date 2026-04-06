@@ -12,38 +12,59 @@
 
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-icon"><md-icon style="font-size:2rem;">group</md-icon></div>
                 <div class="stat-info">
                     <h3 th:text="${stats.totalUsers}">0</h3>
                     <p>Total Registered Users</p>
                 </div>
-                <a href="/admin/users" class="stat-link">Manage Users <i class="fas fa-arrow-right"></i></a>
+                <a href="/admin/users" class="stat-link">
+                    <md-text-button>
+                        Manage Users
+                        <md-icon slot="icon">arrow_forward</md-icon>
+                    </md-text-button>
+                </a>
             </div>
             
             <div class="stat-card">
-                <div class="stat-icon text-primary"><i class="fas fa-file-code"></i></div>
+                <div class="stat-icon" style="color: var(--accent-color);"><md-icon style="font-size:2rem;">code</md-icon></div>
                 <div class="stat-info">
                     <h3 th:text="${stats.totalPrompts}">0</h3>
                     <p>Active Prompts</p>
                 </div>
-                <a href="/explore" class="stat-link">View Feed <i class="fas fa-arrow-right"></i></a>
+                <a href="/explore" class="stat-link">
+                    <md-text-button>
+                        View Feed
+                        <md-icon slot="icon">arrow_forward</md-icon>
+                    </md-text-button>
+                </a>
             </div>
 
-            <div class="stat-card urgent" th:classappend="${stats.pendingReports > 0 ? 'active' : ''}">
-                <div class="stat-icon"><i class="fas fa-flag"></i></div>
+            <div class="stat-card" th:classappend="${stats.pendingReports > 0 ? 'urgent active' : ''}">
+                <div class="stat-icon" style="color: var(--warning-color);"><md-icon style="font-size:2rem;">flag</md-icon></div>
                 <div class="stat-info">
                     <h3 th:text="${stats.pendingReports}">0</h3>
                     <p>Pending Reports</p>
                 </div>
-                <a href="/admin/reports" class="stat-link">Open Queue <i class="fas fa-arrow-right"></i></a>
+                <a href="/admin/reports" class="stat-link">
+                    <md-text-button>
+                        Open Queue
+                        <md-icon slot="icon">arrow_forward</md-icon>
+                    </md-text-button>
+                </a>
             </div>
         </div>
 
         <div class="admin-actions-bar">
             <h2>Quick Moderation</h2>
             <div class="btn-group">
-                <a href="/admin/reports" class="btn btn-primary"><i class="fas fa-shield-alt"></i> Moderation Queue</a>
-                <a href="/admin/users" class="btn btn-outline"><i class="fas fa-user-shield"></i> User List</a>
+                <md-filled-button onclick="window.location.href='/admin/reports'">
+                    <md-icon slot="icon">shield</md-icon>
+                    Moderation Queue
+                </md-filled-button>
+                <md-outlined-button onclick="window.location.href='/admin/users'">
+                    <md-icon slot="icon">admin_panel_settings</md-icon>
+                    User List
+                </md-outlined-button>
             </div>
         </div>
     </section>
