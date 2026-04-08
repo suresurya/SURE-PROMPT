@@ -49,7 +49,7 @@
             </div>
 
             <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px;" id="tagFilters">
-                <md-filter-chip th:each="tag : ${availableTags}" th:label="${tag.name}" th:data-tag="${tag.name}"></md-filter-chip>
+                <md-filter-chip th:each="tag : ${availableTags}" th:label="${tag}" th:data-tag="${tag}"></md-filter-chip>
             </div>
         </section>
 
