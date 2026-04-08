@@ -48,7 +48,7 @@
     <string name="prompt_history">History</string>
     <string name="version_label">Version %1$d</string>
     <string name="version_latest_label">Version %1$d (latest)</string>
-    <string name="prompt_try_live">Try Prompt Live</string>
+    <string name="prompt_try_live">Run Prompt Live</string>
     <string name="prompt_copy_template">Copy Template</string>
     <string name="prompt_copy_success">Prompt template copied</string>
     <string name="prompt_loaded_failed">Failed to load prompt details</string>
