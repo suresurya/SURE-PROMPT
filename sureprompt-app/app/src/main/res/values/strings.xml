@@ -30,7 +30,7 @@
     <string name="settings_network_failure">Network failure: %1$s</string>
 
     <string name="login_welcome">Welcome to SurePrompt</string>
-    <string name="login_supporting">Sign in to sync AI scores, prompt history, and sandbox rewards.</string>
+    <string name="login_supporting">Sign in to sync AI scores, prompt history, and your live sandbox sessions.</string>
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
     <string name="login_sign_in">Sign In</string>
