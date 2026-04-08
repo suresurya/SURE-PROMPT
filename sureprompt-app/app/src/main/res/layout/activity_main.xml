@@ -178,6 +178,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
             android:layout_marginBottom="56dp"
+            android:minHeight="48dp"
             android:text="@string/feed_retry"
             android:visibility="gone" />
     </FrameLayout>
