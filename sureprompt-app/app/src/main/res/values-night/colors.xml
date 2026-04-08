@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="md_theme_primary">#ADC6FF</color>
+    <color name="md_theme_on_primary">#002E6A</color>
+    <color name="md_theme_primary_container">#00429A</color>
+    <color name="md_theme_on_primary_container">#D8E2FF</color>
+
+    <color name="md_theme_secondary">#B6C7EB</color>
+    <color name="md_theme_on_secondary">#1F314F</color>
+    <color name="md_theme_secondary_container">#364764</color>
+    <color name="md_theme_on_secondary_container">#D7E3FF</color>
+
+    <color name="md_theme_tertiary">#E6B6F4</color>
+    <color name="md_theme_on_tertiary">#492158</color>
+    <color name="md_theme_tertiary_container">#62386F</color>
+    <color name="md_theme_on_tertiary_container">#F4D9FF</color>
+
+    <color name="md_theme_background">#10131B</color>
+    <color name="md_theme_on_background">#E3E8F5</color>
+    <color name="md_theme_surface">#171C28</color>
+    <color name="md_theme_on_surface">#E3E8F5</color>
+    <color name="md_theme_surface_variant">#404754</color>
+    <color name="md_theme_on_surface_variant">#C0C7D7</color>
+    <color name="md_theme_outline">#8A92A1</color>
+
+    <color name="status_success_bg">#1F3A2A</color>
+    <color name="status_success_text">#8BDEAC</color>
+    <color name="status_warning_bg">#4A371D</color>
+    <color name="status_warning_text">#F2CB84</color>
+    <color name="status_error_bg">#4C2A2A</color>
+    <color name="status_error_text">#FFB4AB</color>
+
+    <color name="tag_chip_bg">#273247</color>
+    <color name="tag_chip_text">#D4E2FF</color>
+
+    <color name="code_surface_bg">#0C1018</color>
+    <color name="code_surface_text">#D0D8EA</color>
+</resources>

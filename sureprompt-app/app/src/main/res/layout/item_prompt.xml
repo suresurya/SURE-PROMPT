@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp"
-    app:strokeColor="#eee"
+    android:layout_margin="6dp"
+    app:cardBackgroundColor="@color/md_theme_surface"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/md_theme_surface_variant"
     app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,9 +23,8 @@
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="#333"
-            android:textSize="18sp"
-            android:fontFamily="sans-serif-medium"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/md_theme_on_surface"
             app:layout_constraintEnd_toStartOf="@+id/cardScore"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -47,8 +47,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="#888"
-            android:textSize="14sp"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="@color/md_theme_on_surface_variant"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             tools:text="by suresurya" />
@@ -57,8 +57,8 @@
             android:id="@+id/cardScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="#fdf1d0"
-            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="@color/status_warning_bg"
+            app:cardCornerRadius="999dp"
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -75,7 +75,7 @@
                     android:id="@+id/tvScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#b8860b"
+                    android:textColor="@color/status_warning_text"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif-black"
                     tools:text="8.5" />
@@ -84,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="/10"
-                    android:textColor="#999"
+                    android:textColor="@color/md_theme_on_surface_variant"
                     android:textSize="10sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -94,6 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            app:singleLine="false"
             app:chipSpacing="4dp"
             app:layout_constraintTop_toBottomOf="@+id/tvAuthor" />
 

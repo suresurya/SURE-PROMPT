@@ -1,6 +1,5 @@
 package com.suresurya.sureprompt.ui;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -13,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.suresurya.sureprompt.R;
@@ -67,6 +68,12 @@ public class PromptDetailActivity extends AppCompatActivity {
         cardScore = findViewById(R.id.cardDetailScore);
         versionSpinner = findViewById(R.id.versionSpinner);
         btnTryLive = findViewById(R.id.btnTryLive);
+
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         
         btnTryLive.setOnClickListener(v -> {
             String prompt = tvPromptBody.getText().toString();
@@ -92,7 +99,8 @@ public class PromptDetailActivity extends AppCompatActivity {
 
     private void bindData(PromptDetailDto data) {
         tvTitle.setText(data.getTitle());
-        tvAuthor.setText("by " + data.getAuthorName());
+        String author = data.getAuthorName() != null ? data.getAuthorName() : "Unknown creator";
+        tvAuthor.setText("by " + author);
         tvPromptBody.setText(data.getPromptBody());
         tvAiOutput.setText(data.getAiOutput());
         
@@ -105,8 +113,14 @@ public class PromptDetailActivity extends AppCompatActivity {
             double scoreValue = data.getAiScore() / 4.0;
             tvScore.setText(String.format("%.1f", scoreValue));
             if (scoreValue >= 8.5) {
-                cardScore.setCardBackgroundColor(Color.parseColor("#e6f4ea"));
-                tvScore.setTextColor(Color.parseColor("#1e8e3e"));
+                cardScore.setCardBackgroundColor(ContextCompat.getColor(this, R.color.status_success_bg));
+                tvScore.setTextColor(ContextCompat.getColor(this, R.color.status_success_text));
+            } else if (scoreValue >= 6.0) {
+                cardScore.setCardBackgroundColor(ContextCompat.getColor(this, R.color.status_warning_bg));
+                tvScore.setTextColor(ContextCompat.getColor(this, R.color.status_warning_text));
+            } else {
+                cardScore.setCardBackgroundColor(ContextCompat.getColor(this, R.color.status_error_bg));
+                tvScore.setTextColor(ContextCompat.getColor(this, R.color.status_error_text));
             }
         } else {
             cardScore.setVisibility(View.GONE);
@@ -127,16 +141,20 @@ public class PromptDetailActivity extends AppCompatActivity {
         if (status == null) return;
         switch (status) {
             case "PENDING":
-                tvAiStatus.setText("⏳ AI Processing...");
-                tvAiStatus.setTextColor(Color.parseColor("#f59e0b"));
+                tvAiStatus.setText("AI processing in progress");
+                tvAiStatus.setTextColor(ContextCompat.getColor(this, R.color.status_warning_text));
                 break;
             case "COMPLETED":
-                tvAiStatus.setText("✅ AI Verified");
-                tvAiStatus.setTextColor(Color.parseColor("#10b981"));
+                tvAiStatus.setText("AI verification complete");
+                tvAiStatus.setTextColor(ContextCompat.getColor(this, R.color.status_success_text));
                 break;
             case "FAILED":
-                tvAiStatus.setText("❌ AI Evaluation Failed");
-                tvAiStatus.setTextColor(Color.red(255));
+                tvAiStatus.setText("AI evaluation failed");
+                tvAiStatus.setTextColor(ContextCompat.getColor(this, R.color.status_error_text));
+                break;
+            default:
+                tvAiStatus.setText(status);
+                tvAiStatus.setTextColor(ContextCompat.getColor(this, R.color.md_theme_on_surface_variant));
                 break;
         }
     }
@@ -184,5 +202,11 @@ public class PromptDetailActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopPolling();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 }

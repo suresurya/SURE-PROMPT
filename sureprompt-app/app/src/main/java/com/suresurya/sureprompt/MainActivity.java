@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,10 +13,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.annotation.NonNull;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.suresurya.sureprompt.network.TokenManager;
 import com.suresurya.sureprompt.ui.LoginActivity;
 import com.suresurya.sureprompt.ui.PromptAdapter;
-import com.suresurya.sureprompt.ui.SettingsActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private PromptAdapter adapter;
     private SwipeRefreshLayout swipeRefresh;
+    private TextView tvEmptyState;
+    private MaterialToolbar toolbar;
     private PromptRepository repository;
 
     private int currentPage = 0;
@@ -57,8 +61,19 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         recyclerView = findViewById(R.id.recyclerView);
         swipeRefresh = findViewById(R.id.swipeRefresh);
+        tvEmptyState = findViewById(R.id.tvEmptyState);
+
+        swipeRefresh.setColorSchemeResources(
+            R.color.md_theme_primary,
+            R.color.md_theme_secondary,
+            R.color.md_theme_tertiary
+        );
+
         adapter = new PromptAdapter(this);
         recyclerView.setAdapter(adapter);
 
@@ -84,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 }).collect(java.util.stream.Collectors.toList());
                 adapter.clear();
                 adapter.addPrompts(cachedDtos);
+                updateEmptyState();
             }
         });
 
@@ -112,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         
+        updateEmptyState();
         fetchFeed(0);
     }
 
@@ -138,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
     private void fetchFeed(int page) {
         isLoading = true;
         swipeRefresh.setRefreshing(true);
+        updateEmptyState();
         repository.refreshFeed("trending", page, new PromptRepository.RefreshCallback() {
             @Override
             public void onSuccess(List<PromptDetailDto> prompts) {
@@ -149,14 +167,24 @@ public class MainActivity extends AppCompatActivity {
                     if (page == 0) adapter.clear();
                     adapter.addPrompts(prompts);
                 }
+                updateEmptyState();
             }
 
             @Override
             public void onError(String error) {
                 isLoading = false;
                 swipeRefresh.setRefreshing(false);
+                updateEmptyState();
                 Toast.makeText(MainActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void updateEmptyState() {
+        if (tvEmptyState == null) {
+            return;
+        }
+        boolean showEmpty = adapter.getItemCount() == 0 && !isLoading;
+        tvEmptyState.setVisibility(showEmpty ? View.VISIBLE : View.GONE);
     }
 }

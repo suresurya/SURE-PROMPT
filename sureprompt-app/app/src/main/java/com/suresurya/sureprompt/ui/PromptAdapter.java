@@ -2,12 +2,12 @@ package com.suresurya.sureprompt.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -57,13 +57,15 @@ public class PromptAdapter extends RecyclerView.Adapter<PromptAdapter.ViewHolder
             double scoreValue = prompt.getAiScore() / 4.0; // Normalized 1-10 like on web
             holder.tvScore.setText(String.format("%.1f", scoreValue));
             
-            // Premium dynamic colors
             if (scoreValue >= 8.5) {
-                holder.cardScore.setCardBackgroundColor(Color.parseColor("#e6f4ea"));
-                holder.tvScore.setTextColor(Color.parseColor("#1e8e3e"));
+                holder.cardScore.setCardBackgroundColor(ContextCompat.getColor(context, R.color.status_success_bg));
+                holder.tvScore.setTextColor(ContextCompat.getColor(context, R.color.status_success_text));
+            } else if (scoreValue >= 6.0) {
+                holder.cardScore.setCardBackgroundColor(ContextCompat.getColor(context, R.color.status_warning_bg));
+                holder.tvScore.setTextColor(ContextCompat.getColor(context, R.color.status_warning_text));
             } else {
-                holder.cardScore.setCardBackgroundColor(Color.parseColor("#fdf1d0"));
-                holder.tvScore.setTextColor(Color.parseColor("#b8860b"));
+                holder.cardScore.setCardBackgroundColor(ContextCompat.getColor(context, R.color.status_error_bg));
+                holder.tvScore.setTextColor(ContextCompat.getColor(context, R.color.status_error_text));
             }
         } else {
             holder.cardScore.setVisibility(View.GONE);
@@ -75,8 +77,13 @@ public class PromptAdapter extends RecyclerView.Adapter<PromptAdapter.ViewHolder
             for (String tag : prompt.getTags()) {
                 Chip chip = new Chip(context);
                 chip.setText(tag);
+                chip.setChipBackgroundColorResource(R.color.tag_chip_bg);
+                chip.setTextColor(ContextCompat.getColor(context, R.color.tag_chip_text));
                 chip.setChipMinHeight(30f);
                 chip.setTextSize(12f);
+                chip.setClickable(false);
+                chip.setCheckable(false);
+                chip.setEnsureMinTouchTargetSize(false);
                 holder.chipGroup.addView(chip);
             }
         }

@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f5f5f5">
+    android:background="@color/md_theme_background">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white">
+        android:background="@color/md_theme_surface"
+        android:elevation="0dp">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:paddingHorizontal="8dp"
             app:title="Prompt Insights" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -27,16 +29,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:paddingBottom="28dp">
 
-            <!-- Header Info -->
             <TextView
                 android:id="@+id/tvDetailTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#222"
-                android:textSize="24sp"
-                android:fontFamily="sans-serif-black"
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+                android:textColor="@color/md_theme_on_surface"
                 tools:text="Ultimate React Hooks Guide" />
 
             <TextView
@@ -44,17 +45,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:textColor="#666"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:textColor="@color/md_theme_on_surface_variant"
                 tools:text="by suresurya • 2 hours ago" />
 
-            <!-- AI Insight Card (UI BLOCK 1 & 2) -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:cardCornerRadius="12dp"
+                android:layout_marginTop="18dp"
+                app:cardBackgroundColor="@color/md_theme_surface"
+                app:cardCornerRadius="18dp"
                 app:cardElevation="0dp"
-                app:strokeColor="#ddd"
+                app:strokeColor="@color/md_theme_surface_variant"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -73,17 +75,17 @@
                             android:id="@+id/tvAiStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:textSize="14sp"
-                            tools:text="⏳ AI Processing..." />
+                            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                            android:textColor="@color/md_theme_on_surface"
+                            tools:text="AI Processing" />
 
                         <TextView
                             android:id="@+id/tvAiReason"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:textColor="#888"
-                            android:textSize="12sp"
+                            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                            android:textColor="@color/md_theme_on_surface_variant"
                             tools:text="Prompt is clear and technically sound." />
                     </LinearLayout>
 
@@ -92,7 +94,7 @@
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center"
-                        app:cardBackgroundColor="#fdf1d0"
+                        app:cardBackgroundColor="@color/status_warning_bg"
                         app:cardCornerRadius="30dp"
                         app:cardElevation="0dp">
 
@@ -100,20 +102,19 @@
                             android:id="@+id/tvDetailScore"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:textColor="#b8860b"
-                            android:textSize="20sp"
                             android:fontFamily="sans-serif-black"
+                            android:gravity="center"
+                            android:textColor="@color/status_warning_text"
+                            android:textSize="20sp"
                             tools:text="8.5" />
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Version Selector (UI BLOCK 5) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -121,65 +122,67 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="History:"
-                    android:textColor="#888" />
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="@color/md_theme_on_surface_variant" />
 
                 <Spinner
                     android:id="@+id/versionSpinner"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp" />
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:minHeight="48dp"
+                    tools:listitem="Version 5"
+                    tools:ignore="TouchTargetSizeCheck" />
             </LinearLayout>
 
-            <!-- Prompt Template -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:text="Prompt Template"
-                android:textColor="#333"
-                android:fontFamily="sans-serif-medium" />
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:textColor="@color/md_theme_on_surface" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:cardBackgroundColor="#1e1e1e"
-                app:cardCornerRadius="8dp">
+                app:cardBackgroundColor="@color/code_surface_bg"
+                app:cardCornerRadius="14dp">
 
                 <TextView
                     android:id="@+id/tvPromptBody"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:textColor="#ddd"
                     android:fontFamily="monospace"
+                    android:padding="16dp"
+                    android:textColor="@color/code_surface_text"
                     tools:text="Write a clean react component for..." />
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTryLive"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="▶ Try Prompt Live"
-                app:cornerRadius="30dp" />
+                android:text="Try Prompt Live" />
 
-            <!-- AI Baseline -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:text="AI Verification Baseline"
-                android:textColor="#333"
-                android:fontFamily="sans-serif-medium" />
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:textColor="@color/md_theme_on_surface" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:cardBackgroundColor="#f8f9fa"
-                app:cardCornerRadius="8dp"
-                app:strokeColor="#eee"
+                app:cardBackgroundColor="@color/md_theme_surface"
+                app:cardCornerRadius="14dp"
+                app:strokeColor="@color/md_theme_surface_variant"
                 app:strokeWidth="1dp">
 
                 <TextView
@@ -187,7 +190,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:textColor="#444"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="@color/md_theme_on_surface"
                     tools:text="Sample output from Gemini..." />
             </com.google.android.material.card.MaterialCardView>
 

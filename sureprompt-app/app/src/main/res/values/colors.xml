@@ -2,4 +2,40 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="md_theme_primary">#0B57D0</color>
+    <color name="md_theme_on_primary">#FFFFFF</color>
+    <color name="md_theme_primary_container">#D8E2FF</color>
+    <color name="md_theme_on_primary_container">#001A45</color>
+
+    <color name="md_theme_secondary">#4D5F80</color>
+    <color name="md_theme_on_secondary">#FFFFFF</color>
+    <color name="md_theme_secondary_container">#D7E3FF</color>
+    <color name="md_theme_on_secondary_container">#081C39</color>
+
+    <color name="md_theme_tertiary">#7A4D88</color>
+    <color name="md_theme_on_tertiary">#FFFFFF</color>
+    <color name="md_theme_tertiary_container">#F4D9FF</color>
+    <color name="md_theme_on_tertiary_container">#30003B</color>
+
+    <color name="md_theme_background">#F7F9FD</color>
+    <color name="md_theme_on_background">#171C28</color>
+    <color name="md_theme_surface">#FFFFFF</color>
+    <color name="md_theme_on_surface">#171C28</color>
+    <color name="md_theme_surface_variant">#E1E7F2</color>
+    <color name="md_theme_on_surface_variant">#404754</color>
+    <color name="md_theme_outline">#707887</color>
+
+    <color name="status_success_bg">#DDF4E3</color>
+    <color name="status_success_text">#136C37</color>
+    <color name="status_warning_bg">#FFF1D7</color>
+    <color name="status_warning_text">#8B5600</color>
+    <color name="status_error_bg">#FDE1E2</color>
+    <color name="status_error_text">#B3261E</color>
+
+    <color name="tag_chip_bg">#E9EEF9</color>
+    <color name="tag_chip_text">#30426B</color>
+
+    <color name="code_surface_bg">#131722</color>
+    <color name="code_surface_text">#DFE6F6</color>
 </resources>

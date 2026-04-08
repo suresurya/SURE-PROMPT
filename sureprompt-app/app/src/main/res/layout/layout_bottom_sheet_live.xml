@@ -4,23 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp"
-    android:background="@android:color/white">
+    android:background="@color/md_theme_surface"
+    android:padding="20dp">
 
     <View
         android:layout_width="40dp"
         android:layout_height="4dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        android:background="#ddd" />
+        android:layout_marginBottom="14dp"
+        android:background="@color/md_theme_surface_variant" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="AI Sandbox Playground"
-        android:textColor="#222"
-        android:textSize="20sp"
-        android:fontFamily="sans-serif-black" />
+        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+        android:textColor="@color/md_theme_on_surface" />
 
     <TextView
         android:id="@+id/tvLiveStatus"
@@ -28,16 +27,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Powered by Google Gemini 1.5"
-        android:textColor="#888"
-        android:textSize="12sp" />
+        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+        android:textColor="@color/md_theme_on_surface_variant" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:cardBackgroundColor="#111"
-        app:cardCornerRadius="12dp"
-        app:strokeColor="#333"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="@color/code_surface_bg"
+        app:cardCornerRadius="14dp"
+        app:strokeColor="@color/md_theme_surface_variant"
         app:strokeWidth="1dp">
 
         <TextView
@@ -46,7 +45,7 @@
             android:layout_height="wrap_content"
             android:minHeight="150dp"
             android:padding="16dp"
-            android:textColor="#ddd"
+            android:textColor="@color/code_surface_text"
             android:textSize="14sp"
             android:fontFamily="monospace"
             android:text="Waiting for execution..." />
@@ -56,8 +55,8 @@
         android:id="@+id/btnCloseSheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:text="Close Sandbox"
-        style="@style/Widget.MaterialComponents.Button.TextButton" />
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
 </LinearLayout>
