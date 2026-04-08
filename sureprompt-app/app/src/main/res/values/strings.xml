@@ -18,7 +18,7 @@
 
     <string name="settings_title">Settings</string>
     <string name="settings_headline">Configure your AI gateway</string>
-    <string name="settings_supporting">Add a Gemini API key for sandbox execution and baseline generation.</string>
+    <string name="settings_supporting">Add your Gemini API key to run sandbox tests and generate baseline outputs.</string>
     <string name="settings_key_title">Google Gemini API Key</string>
     <string name="settings_key_hint">Enter your Gemini key</string>
     <string name="settings_key_helper">This key is encrypted and used only for your sandbox trials. Raw keys are never stored.</string>
