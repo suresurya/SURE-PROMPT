@@ -14,7 +14,7 @@
     <string name="feed_empty_trending">No trending prompts yet. Pull to refresh and check again.</string>
     <string name="feed_empty_all">No prompts available yet. Try again shortly.</string>
     <string name="feed_empty_following">Follow creators to populate this feed.</string>
-    <string name="feed_retry">Retry</string>
+    <string name="feed_retry">Try Again</string>
 
     <string name="settings_title">Settings</string>
     <string name="settings_headline">Configure your AI gateway</string>
