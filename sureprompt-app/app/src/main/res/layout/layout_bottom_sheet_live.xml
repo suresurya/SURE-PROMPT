@@ -72,6 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:minHeight="48dp"
         android:text="@string/live_sheet_close"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
