@@ -82,7 +82,7 @@
     <string name="item_author_format">by %1$s</string>
     <string name="item_author_fallback">by User</string>
     <string name="item_likes_format">%1$d likes</string>
-    <string name="item_prompt_open_hint">Tap to view prompt insights</string>
+    <string name="item_prompt_open_hint">Open prompt insights</string>
     <string name="item_status_processing">Processing</string>
     <string name="item_status_verified">Verified</string>
     <string name="item_status_review">Needs review</string>
