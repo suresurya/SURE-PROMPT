@@ -87,4 +87,5 @@
     <string name="item_status_verified">Verified</string>
     <string name="item_status_review">Needs review</string>
     <string name="item_status_unknown">Status unknown</string>
+    <string name="item_verified_badge">Verified prompt</string>
 </resources>
