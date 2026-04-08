@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:paddingHorizontal="8dp"
-            app:title="Prompt Insights" />
+            app:title="@string/prompt_detail_title" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -48,6 +48,15 @@
                 android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                 android:textColor="@color/md_theme_on_surface_variant"
                 tools:text="by suresurya • 2 hours ago" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupTags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:chipSpacingHorizontal="6dp"
+                app:chipSpacingVertical="6dp"
+                app:singleLine="false" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -111,6 +120,14 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressPending"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:indeterminate="true"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -118,29 +135,28 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilVersion"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="History:"
-                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                    android:textColor="@color/md_theme_on_surface_variant" />
+                    android:hint="@string/prompt_history"
+                    android:visibility="gone">
 
-                <Spinner
-                    android:id="@+id/versionSpinner"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:minHeight="48dp"
-                    tools:listitem="Version 5"
-                    tools:ignore="TouchTargetSizeCheck" />
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/versionDropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        tools:text="Version 5" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Prompt Template"
+                android:text="@string/prompt_template"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                 android:textColor="@color/md_theme_on_surface" />
 
@@ -166,13 +182,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Try Prompt Live" />
+                android:text="@string/prompt_try_live" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCopyPrompt"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/prompt_copy_template" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="AI Verification Baseline"
+                android:text="@string/ai_baseline_output"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                 android:textColor="@color/md_theme_on_surface" />
 

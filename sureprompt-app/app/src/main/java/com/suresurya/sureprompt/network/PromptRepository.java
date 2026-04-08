@@ -39,6 +39,8 @@ public class PromptRepository {
             public void onResponse(Call<FeedResponseDto> call, Response<FeedResponseDto> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<PromptDetailDto> dtos = response.body().getPrompts();
+                    int totalPages = response.body().getTotalPages();
+                    long totalElements = response.body().getTotalElements();
                     if (dtos != null && !dtos.isEmpty()) {
                         // Save to DB on background thread
                         AppDatabase.databaseWriteExecutor.execute(() -> {
@@ -61,7 +63,7 @@ public class PromptRepository {
                             promptDao.insertPrompts(entities);
                         });
                     }
-                    callback.onSuccess(dtos);
+                    callback.onSuccess(dtos, totalPages, totalElements);
                 } else {
                     callback.onError("Failed to fetch data");
                 }
@@ -75,7 +77,7 @@ public class PromptRepository {
     }
 
     public interface RefreshCallback {
-        void onSuccess(List<PromptDetailDto> prompts);
+        void onSuccess(List<PromptDetailDto> prompts, int totalPages, long totalElements);
         void onError(String error);
     }
 }

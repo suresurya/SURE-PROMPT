@@ -15,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Settings" />
+            app:title="@string/settings_title" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -33,7 +33,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Configure your AI gateway"
+                android:text="@string/settings_headline"
                 android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
                 android:textColor="@color/md_theme_on_surface" />
 
@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Add a Gemini API key for sandbox execution and baseline generation."
+                android:text="@string/settings_supporting"
                 android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                 android:textColor="@color/md_theme_on_surface_variant" />
 
@@ -64,16 +64,17 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Google Gemini API Key"
+                        android:text="@string/settings_key_title"
                         android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                         android:textColor="@color/md_theme_on_surface" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilApiKey"
                         style="@style/Widget.SUREPROMPT.TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:hint="Enter your Gemini key"
+                        android:hint="@string/settings_key_hint"
                         app:endIconMode="password_toggle"
                         app:startIconDrawable="@android:drawable/ic_lock_lock">
 
@@ -88,7 +89,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="This key is encrypted and used only for your sandbox trials. Raw keys are never stored."
+                        android:text="@string/settings_key_helper"
                         android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                         android:textColor="@color/md_theme_on_surface_variant" />
 
@@ -97,7 +98,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Save and Connect" />
+                        android:text="@string/settings_save" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
