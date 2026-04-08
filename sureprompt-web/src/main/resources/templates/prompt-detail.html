@@ -1,256 +1,241 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html th:replace="~{layout/base :: html(~{::title}, ~{::headExtras}, ~{::content}, ~{::scripts})}" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title th:text="${prompt.title}">Prompt Detail - SURE PROMPT</title>
-    <link rel="stylesheet" th:href="@{/css/main.css}">
-    <link rel="stylesheet" th:href="@{/css/prompt.css}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-    <script type="importmap">
-    { "imports": { "@material/web/": "https://esm.run/@material/web/" } }
-    </script>
-    <script type="module">
-        import '@material/web/all.js';
-        import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
-        document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
-    </script>
+    <title th:text="${prompt.title} + ' | SurePrompt'">Prompt Detail | SurePrompt</title>
+    <th:block th:fragment="headExtras"></th:block>
 </head>
 <body>
-    <div th:replace="~{layout/navbar :: navbar}"></div>
-    
-    <main class="container">
-        <div class="prompt-detail-container">
-            <!-- Header Section -->
-            <div class="pd-header">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
-                    <div>
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 0.5rem;">
-                            <h1 class="pd-title" th:text="${prompt.title}" style="margin:0;">Prompt Title</h1>
-                            <div class="ai-score-full" th:if="${prompt.aiScore != null}" style="padding: 4px 12px; min-width: auto; height: auto;">
-                                <div class="score-circle" style="font-size: 1.5rem;" th:text="${#numbers.formatDecimal(prompt.aiScore / 4, 1, 1)}">8.5</div>
-                            </div>
-                        </div>
-                        
-                        <div class="pd-meta">
-                            <div class="pd-author">
-                                <div style="width:28px; height:28px; background: linear-gradient(135deg, #a855f7, #6366f1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white;" th:text="${#strings.substring(prompt.authorUsername,0,1).toUpperCase()}">U</div>
-                                <a th:href="@{/users/{username}(username=${prompt.authorUsername})}" th:text="${prompt.authorName}">Author</a>
-                            </div>
-                            <span style="color: var(--text-muted);">•</span>
-                            <span style="color: var(--text-muted);" th:text="${#temporals.format(prompt.createdAt, 'MMM dd, yyyy')}">Date</span>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 8px;">
-                        <md-outlined-icon-button th:onclick="'toggleLike(' + ${prompt.id} + ', this)'" id="likeBtn">
-                            <md-icon th:style="${prompt.isLiked} ? 'color: #ff4b2b; font-variation-settings: FILL 1;' : ''">favorite</md-icon>
-                        </md-outlined-icon-button>
-                        <span style="display:flex; align-items:center; color: var(--text-muted); font-size: 0.9rem; margin-right: 8px;" th:text="${prompt.likeCount}">0</span>
-                        
-                        <md-outlined-icon-button th:onclick="'toggleSave(' + ${prompt.id} + ', this)'" id="saveBtn">
-                            <md-icon th:style="${prompt.isSaved} ? 'color: var(--accent-color); font-variation-settings: FILL 1;' : ''">bookmark</md-icon>
-                        </md-outlined-icon-button>
-                        <span style="display:flex; align-items:center; color: var(--text-muted); font-size: 0.9rem;" th:text="${prompt.saveCount}">0</span>
+<th:block th:fragment="content">
+    <article class="prompt-detail-container" th:attr="data-prompt-id=${prompt.id}">
+        <header class="pd-header">
+            <div style="display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; flex-wrap: wrap;">
+                <div>
+                    <h1 class="pd-title" th:text="${prompt.title}">Prompt title</h1>
+                    <div class="pd-meta">
+                        <span class="pd-author">
+                            <span class="avatar-placeholder-sm" style="width: 28px; height: 28px; font-size: 12px;"
+                                  th:text="${#strings.substring(prompt.authorUsername,0,1).toUpperCase()}"></span>
+                            <a th:href="@{/users/{username}(username=${prompt.authorUsername})}" th:text="${prompt.authorName}">Author</a>
+                        </span>
+                        <span>•</span>
+                        <span th:text="${#temporals.format(prompt.createdAt, 'MMM dd, yyyy')}">Jan 01, 2024</span>
                     </div>
                 </div>
 
-                <!-- AI Insights Card -->
-                <div class="pd-ai-card">
-                    <div class="ai-verified-full">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <div th:if="${prompt.aiStatus == 'PENDING'}" style="display: flex; align-items: center; gap: 8px;">
-                                <md-circular-progress indeterminate style="--md-circular-progress-size: 20px;"></md-circular-progress>
-                                <span style="color: var(--warning-color); font-weight: 600;">Processing</span>
-                            </div>
-                            <div th:if="${prompt.aiStatus == 'COMPLETED'}" style="display: flex; align-items: center; gap: 6px; color: var(--success-color); font-weight: 600;">
-                                <md-icon style="font-size: 20px;">verified</md-icon> AI Verified
-                            </div>
-                            <div th:if="${prompt.aiStatus == 'FAILED'}" style="display: flex; align-items: center; gap: 6px;">
-                                <md-icon style="font-size: 20px; color: var(--danger-color);">warning</md-icon>
-                                <span style="color: var(--danger-color); font-weight: 600;">AI Evaluation Failed</span>
-                                <md-filled-tonal-button onclick="retryAiProcessing()" style="margin-left: 8px;">
-                                    <md-icon slot="icon">refresh</md-icon>
-                                    Retry
-                                </md-filled-tonal-button>
-                            </div>
-                        </div>
-                        
-                        <!-- Tags -->
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
-                            <md-assist-chip th:each="tag : ${prompt.tags}" th:label="${tag}" elevated></md-assist-chip>
-                        </div>
-                        
-                        <div class="ai-reason" th:if="${prompt.aiVerificationReason}" th:text="${prompt.aiVerificationReason}">
-                            Optimization tip here...
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- AI Processing Progress -->
-                <md-linear-progress th:if="${prompt.aiStatus == 'PENDING'}" indeterminate style="margin-top: 16px;"></md-linear-progress>
-            </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <md-outlined-icon-button th:onclick="'toggleLike(' + ${prompt.id} + ', this)'" id="likeBtn">
+                        <md-icon th:style="${prompt.liked} ? 'color: var(--danger-color); font-variation-settings: FILL 1;' : ''">favorite</md-icon>
+                    </md-outlined-icon-button>
+                    <span class="like-count" th:text="${prompt.likeCount}">0</span>
 
-            <!-- Version Switch & Actions -->
-            <div class="pd-actions-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0; margin: 30px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <div th:if="${prompt.versions != null && !prompt.versions.isEmpty()}" style="display: flex; align-items: center; gap: 10px;">
-                        <md-icon style="font-size: 20px; color: var(--text-muted);">history</md-icon>
-                        <md-outlined-select id="versionSelect" label="Version" onchange="loadVersion()">
-                            <md-select-option th:each="v : ${prompt.versions}" th:value="${v.id}" th:selected="${vStat.index == 0}">
-                                <div slot="headline" th:text="'v' + ${v.version} + (${vStat.index == 0} ? ' (latest)' : '')"></div>
-                            </md-select-option>
-                        </md-outlined-select>
-                    </div>
-                </div>
-                <div style="display: flex; gap: 8px;">
-                    <md-filled-tonal-button onclick="runLive()">
-                        <md-icon slot="icon">play_arrow</md-icon>
-                        Try Prompt Live
-                    </md-filled-tonal-button>
+                    <md-outlined-icon-button th:onclick="'toggleSave(' + ${prompt.id} + ', this)'" id="saveBtn">
+                        <md-icon th:style="${prompt.saved} ? 'color: var(--accent-color); font-variation-settings: FILL 1;' : ''">bookmark</md-icon>
+                    </md-outlined-icon-button>
+                    <span class="count" id="saveCount" th:text="${prompt.saveCount}">0</span>
                 </div>
             </div>
 
-            <!-- Content Grid -->
-            <div class="content-section">
-                <h3 style="display: flex; align-items: center; gap: 8px;"><md-icon style="color: var(--accent-color);">terminal</md-icon> Prompt Template</h3>
-                <div class="code-window">
-                    <div class="window-header">
-                        <div style="display: flex; gap: 6px;">
-                            <div class="dot red"></div>
-                            <div class="dot yellow"></div>
-                            <div class="dot green"></div>
+            <section class="pd-ai-card">
+                <div class="ai-verified-full">
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <div th:if="${prompt.aiStatus == 'PENDING'}" style="display: inline-flex; align-items: center; gap: 6px; color: var(--warning-color);">
+                            <md-circular-progress indeterminate style="--md-circular-progress-size: 20px;"></md-circular-progress>
+                            <strong>AI verification in progress</strong>
                         </div>
-                        <span>template.txt</span>
-                    </div>
-                    <pre><code id="promptText" th:text="${prompt.promptBody}">The prompt goes here...</code></pre>
-                </div>
-            </div>
-
-            <!-- Live Output Panel -->
-            <div id="liveOutputPanel" style="display: none; margin-top: 20px; border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); overflow: hidden; background: #121212;">
-                <div class="window-header" style="background: #111; border-bottom: 1px solid #222; color: var(--accent-color); display: flex; justify-content: space-between; align-items: center;">
-                    <span style="display: flex; align-items: center; gap: 8px;"><md-icon style="font-size: 18px;">terminal</md-icon> Sandbox Output (Live)</span>
-                    <md-icon-button onclick="document.getElementById('liveOutputPanel').style.display='none'">
-                        <md-icon>close</md-icon>
-                    </md-icon-button>
-                </div>
-                <div style="padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #ddd; line-height: 1.6; min-height: 100px;" id="liveOutput">
-                    Executing...
-                </div>
-            </div>
-
-            <div class="content-section" style="margin-top: 40px;">
-                <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;"><md-icon style="color: var(--success-color);">smart_toy</md-icon> AI Verification Baseline Output</h3>
-                <div class="code-window ai-output-window">
-                    <div class="window-header">
-                        <span>gemini-1.5-pro-output.md</span>
-                    </div>
-                    <pre><code id="aiOutputSection" th:text="${prompt.aiOutput}">Generated sample output...</code></pre>
-                </div>
-            </div>
-
-            <md-divider style="margin: 40px 0;"></md-divider>
-
-            <!-- Discussion Section -->
-            <div class="comments-section" id="comments">
-                <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 20px;">
-                    <md-icon>forum</md-icon> Discussion (<span th:text="${prompt.comments != null ? prompt.comments.size() : 0}">0</span>)
-                </h3>
-                
-                <div class="add-comment" sec:authorize="isAuthenticated()">
-                    <div class="comment-input-group" style="display: flex; gap: 12px; margin-bottom: 30px;">
-                        <md-outlined-text-field id="commentInput" label="Add a comment" placeholder="Add a technical comment or feedback..." style="flex-grow: 1;">
-                            <md-icon slot="leading-icon">chat</md-icon>
-                        </md-outlined-text-field>
-                        <md-filled-button th:onclick="'addComment(' + ${prompt.id} + ')'">
-                            <md-icon slot="icon">send</md-icon>
-                            Post
-                        </md-filled-button>
-                    </div>
-                </div>
-
-                <div id="commentsList">
-                    <div th:each="c : ${prompt.comments}" class="comment-item">
-                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #a855f7, #6366f1); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;" th:text="${#strings.substring(c.authorName,0,1).toUpperCase()}">U</div>
-                        <div class="comment-content">
-                            <div class="comment-header">
-                                <span class="comment-author" th:text="${c.authorName}">User</span>
-                                <span class="comment-time" th:text="${#temporals.format(c.createdAt, 'MMM dd, HH:mm')}">Time</span>
-                            </div>
-                            <div th:text="${c.body}">Comment text</div>
+                        <div th:if="${prompt.aiStatus == 'COMPLETED'}" class="verified-badge" style="font-size: 0.88rem;">
+                            <md-icon style="font-size:20px;">verified</md-icon>
+                            AI verification complete
+                        </div>
+                        <div th:if="${prompt.aiStatus == 'FAILED'}" style="display: inline-flex; align-items: center; gap: 8px; color: var(--danger-color);">
+                            <md-icon style="font-size:20px;">warning</md-icon>
+                            <strong>Verification failed</strong>
+                            <md-filled-tonal-button onclick="retryAiProcessing()">
+                                <md-icon slot="icon">refresh</md-icon>
+                                Retry
+                            </md-filled-tonal-button>
                         </div>
                     </div>
+
+                    <div class="tags-container" style="margin-top: 10px;" th:if="${prompt.tags != null && !prompt.tags.isEmpty()}">
+                        <md-assist-chip th:each="tag : ${prompt.tags}" th:label="${tag}" elevated></md-assist-chip>
+                    </div>
+
+                    <p class="ai-reason" th:if="${prompt.aiVerificationReason}" th:text="${prompt.aiVerificationReason}">AI verification rationale</p>
+                </div>
+
+                <div class="ai-score-full" th:if="${prompt.aiScore != null}">
+                    <div class="score-circle" th:text="${#numbers.formatDecimal(prompt.aiScore / 4, 1, 1)}">8.5</div>
+                </div>
+            </section>
+
+            <md-linear-progress th:if="${prompt.aiStatus == 'PENDING'}" indeterminate style="margin-top: 10px;"></md-linear-progress>
+        </header>
+
+        <section class="pd-actions-bar">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <div th:if="${prompt.versions != null && !prompt.versions.isEmpty()}" style="display: inline-flex; align-items: center; gap: 10px;">
+                    <md-icon style="font-size:20px; color: var(--text-muted);">history</md-icon>
+                    <md-outlined-select id="versionSelect" label="Version" onchange="loadVersion()">
+                        <md-select-option th:each="v, vStat : ${prompt.versions}" th:value="${v.id}" th:selected="${vStat.index == 0}">
+                            <div slot="headline" th:text="'v' + ${v.version} + (${vStat.index == 0} ? ' (latest)' : '')"></div>
+                        </md-select-option>
+                    </md-outlined-select>
                 </div>
             </div>
+            <md-filled-tonal-button onclick="runLive(this)">
+                <md-icon slot="icon">play_arrow</md-icon>
+                Try Prompt Live
+            </md-filled-tonal-button>
+        </section>
 
-            <md-text-button th:href="@{/}" onclick="window.location.href=this.getAttribute('href'); return false;" style="margin-top: 40px;">
-                <md-icon slot="icon">arrow_back</md-icon>
-                Back to Feed
-            </md-text-button>
-        </div>
-    </main>
-    
-    <script th:src="@{/js/main.js}"></script>
+        <section class="content-section">
+            <h3><md-icon style="color: var(--accent-color);">terminal</md-icon>Prompt Template</h3>
+            <div class="code-window">
+                <div class="window-header">
+                    <div style="display: flex; gap: 6px;">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <span>template.txt</span>
+                </div>
+                <pre><code id="promptText" th:text="${prompt.promptBody}">Prompt body</code></pre>
+            </div>
+        </section>
+
+        <section id="liveOutputPanel" class="code-window" style="display: none; margin-bottom: 20px;">
+            <div class="window-header">
+                <span style="display: inline-flex; align-items: center; gap: 6px;"><md-icon style="font-size: 18px;">terminal</md-icon>Sandbox Output</span>
+                <md-icon-button onclick="document.getElementById('liveOutputPanel').style.display='none'">
+                    <md-icon>close</md-icon>
+                </md-icon-button>
+            </div>
+            <pre id="liveOutput" style="min-height: 110px;">Executing...</pre>
+        </section>
+
+        <section class="content-section">
+            <h3><md-icon style="color: var(--secondary-color);">smart_toy</md-icon>AI Baseline Output</h3>
+            <div class="code-window">
+                <div class="window-header">
+                    <span>baseline-output.md</span>
+                </div>
+                <pre><code id="aiOutputSection" th:text="${prompt.aiOutput}">AI output</code></pre>
+            </div>
+        </section>
+
+        <md-divider style="margin: 16px 0 20px;"></md-divider>
+
+        <section class="comments-section" id="comments">
+            <h3 style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <md-icon>forum</md-icon>
+                Discussion (<span th:text="${prompt.comments != null ? prompt.comments.size() : 0}">0</span>)
+            </h3>
+
+            <div sec:authorize="isAuthenticated()" style="display: flex; gap: 10px; margin-bottom: 16px;">
+                <md-outlined-text-field id="commentInput" label="Add feedback" placeholder="Share improvements or caveats" style="flex: 1;">
+                    <md-icon slot="leading-icon">chat</md-icon>
+                </md-outlined-text-field>
+                <md-filled-button th:onclick="'addComment(' + ${prompt.id} + ')'"><md-icon slot="icon">send</md-icon>Post</md-filled-button>
+            </div>
+
+            <div sec:authorize="!isAuthenticated()" class="empty-state" style="margin-bottom: 16px;">
+                <p>Login to participate in discussion.</p>
+                <md-outlined-button th:href="@{/login}" onclick="window.location.href=this.getAttribute('href'); return false;">Log in</md-outlined-button>
+            </div>
+
+            <div id="commentsList">
+                <article th:each="c : ${prompt.comments}" class="comment-item">
+                    <div class="avatar-placeholder-sm" style="width: 40px; height: 40px;" th:text="${#strings.substring(c.authorName,0,1).toUpperCase()}">U</div>
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <span class="comment-author" th:text="${c.authorName}">User</span>
+                            <span class="comment-time" th:text="${#temporals.format(c.createdAt, 'MMM dd, HH:mm')}">Time</span>
+                        </div>
+                        <p th:text="${c.body}">Comment body</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <md-text-button th:href="@{/}" onclick="window.location.href=this.getAttribute('href'); return false;" style="margin-top: 20px;">
+            <md-icon slot="icon">arrow_back</md-icon>
+            Back to Feed
+        </md-text-button>
+    </article>
+</th:block>
+
+<th:block th:fragment="scripts">
     <script th:src="@{/js/prompt.js}"></script>
     <script th:inline="javascript">
         const promptStatus = /*[[${prompt.aiStatus}]]*/ 'COMPLETED';
         const promptId = /*[[${prompt.id}]]*/ 0;
-        
-        if (promptStatus === "PENDING") {
+        const promptVersions = /*[[${prompt.versions}]]*/ [];
+
+        if (promptStatus === 'PENDING') {
             setTimeout(() => location.reload(), 4000);
         }
 
-        // Version data
-        const promptVersions = /*[[${prompt.versions}]]*/ [];
         function loadVersion() {
-            const select = document.getElementById("versionSelect");
-            const selectedId = parseInt(select.value);
-            const versionInfo = promptVersions.find(v => v.id === selectedId);
-            if(versionInfo) {
-                document.getElementById("promptText").innerText = versionInfo.promptText;
-                document.getElementById("aiOutputSection").innerText = versionInfo.aiOutput || 'No baseline output';
+            const select = document.getElementById('versionSelect');
+            if (!select) {
+                return;
+            }
+            const selectedId = parseInt(select.value, 10);
+            const versionInfo = promptVersions.find((version) => version.id === selectedId);
+            if (versionInfo) {
+                document.getElementById('promptText').innerText = versionInfo.promptText;
+                document.getElementById('aiOutputSection').innerText = versionInfo.aiOutput || 'No baseline output';
             }
         }
 
         async function retryAiProcessing() {
             try {
-                const res = await fetch(`/api/v1/prompts/${promptId}/retry`, { method: "POST" });
-                if(res.ok) { location.reload(); }
-                else { App.showToast("Failed to submit retry request.", "error"); }
-            } catch (e) { console.error(e); }
+                const res = await fetch(`/api/v1/prompts/${promptId}/retry`, { method: 'POST' });
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    App.showToast('Failed to submit retry request.', 'error');
+                }
+            } catch (error) {
+                App.showToast('Retry failed. Please try again.', 'error');
+            }
         }
 
-        async function runLive() {
-            const btn = event.target.closest('md-filled-tonal-button');
-            btn.disabled = true;
-            const promptText = document.getElementById("promptText").innerText;
-            const outputPanel = document.getElementById("liveOutputPanel");
-            const outputText = document.getElementById("liveOutput");
-            outputPanel.style.display = "block";
-            outputText.innerText = "Connecting to AI... Please wait.";
+        async function runLive(button) {
+            button.disabled = true;
+            const promptText = document.getElementById('promptText').innerText;
+            const outputPanel = document.getElementById('liveOutputPanel');
+            const outputText = document.getElementById('liveOutput');
+            outputPanel.style.display = 'block';
+            outputText.innerText = 'Connecting to AI...';
+
             try {
-                const res = await fetch("/api/ai/live-try", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
+                const res = await fetch('/api/ai/live-try', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt: promptText })
                 });
+
                 if (res.status === 400) {
-                    App.showToast("Please add your Gemini API key in Settings.", "error");
-                    outputText.innerText = "Failed: Missing API Key.";
-                    btn.disabled = false; return;
+                    App.showToast('Add your Gemini API key in Settings.', 'error');
+                    outputText.innerText = 'Failed: missing API key.';
+                    return;
                 }
+
                 if (res.status === 429) {
-                    App.showToast("Daily AI limit reached.", "error");
-                    outputText.innerText = "Failed: Rate Limited (429).";
-                    btn.disabled = false; return;
+                    App.showToast('Daily AI limit reached.', 'error');
+                    outputText.innerText = 'Failed: rate limited (429).';
+                    return;
                 }
-                const data = await res.text();
-                outputText.innerText = data;
-            } catch (e) {
-                outputText.innerText = "Error running prompt: " + e;
+
+                outputText.innerText = await res.text();
+            } catch (error) {
+                outputText.innerText = `Error running prompt: ${error}`;
+            } finally {
+                button.disabled = false;
             }
-            btn.disabled = false;
         }
     </script>
+</th:block>
 </body>
 </html>

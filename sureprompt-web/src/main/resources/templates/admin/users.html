@@ -4,91 +4,88 @@
     <title>User Management | SurePrompt</title>
 </head>
 <body>
-    <section>
-        <div class="admin-header">
-            <md-text-button href="/admin" onclick="window.location.href='/admin'; return false;">
-                <md-icon slot="icon">arrow_back</md-icon>
-                Dashboard
-            </md-text-button>
-            <h1 style="margin-top: 8px;">User Management</h1>
-            <p class="text-muted">Manage user roles and restrictions.</p>
+<section>
+    <header class="admin-header">
+        <md-text-button href="/admin" onclick="window.location.href='/admin'; return false;">
+            <md-icon slot="icon">arrow_back</md-icon>
+            Dashboard
+        </md-text-button>
+        <h1>User Management</h1>
+        <p class="text-muted">Review user status, role, and moderation eligibility.</p>
+    </header>
+
+    <section class="admin-tab-content">
+        <div class="search-panel">
+            <md-outlined-text-field id="userSearch" placeholder="Search username or email" type="search">
+                <md-icon slot="leading-icon">search</md-icon>
+            </md-outlined-text-field>
         </div>
 
-        <div class="admin-tab-content">
-            <div class="search-panel">
-                <md-outlined-text-field id="userSearch" placeholder="Search by username or email..." type="search" style="max-width: 400px;">
-                    <md-icon slot="leading-icon">search</md-icon>
-                </md-outlined-text-field>
-            </div>
-
-            <div class="user-table-wrapper" style="overflow-x: auto;">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>User</th>
-                            <th>Role</th>
-                            <th>Stats</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userTableBody">
-                        <tr th:each="user : ${users}">
-                            <td>
-                                <div class="user-meta">
-                                    <img th:if="${user.avatarUrl}" th:src="${user.avatarUrl}" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
-                                    <div th:unless="${user.avatarUrl}" class="avatar-placeholder" th:text="${#strings.substring(user.username,0,1).toUpperCase()}"></div>
-                                    <div class="user-details">
-                                        <div class="username" style="font-weight:600;" th:text="${user.username}">Username</div>
-                                        <div class="email text-muted" style="font-size:0.8rem;" th:text="${user.email}">Email</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="role-badge" th:classappend="'role-' + ${user.role.name().toLowerCase()}" th:text="${user.role}">USER</span>
-                            </td>
-                            <td>
-                                <div class="stats-row">
-                                    <span title="Prompts"><md-icon style="font-size:16px;">code</md-icon> <span th:text="${user.prompts.size()}">0</span></span>
-                                    <span title="Followers"><md-icon style="font-size:16px;">group</md-icon> <span th:text="${user.followers.size()}">0</span></span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="status-indicator" th:classappend="${user.banned ? 'banned' : 'active'}">
-                                    <md-icon style="font-size:16px;" th:text="${user.banned ? 'block' : 'check_circle'}">check_circle</md-icon>
-                                    <span th:text="${user.banned ? 'Banned' : 'Active'}">Active</span>
-                                </span>
-                            </td>
-                            <td>
-                                <md-filled-tonal-button th:if="${!user.banned}" 
-                                    th:onclick="'toggleUserBan(' + ${user.id} + ', this)'"
-                                    style="--md-filled-tonal-button-container-color: rgba(239,68,68,0.15); --md-filled-tonal-button-label-text-color: var(--danger-color);">
-                                    <md-icon slot="icon">block</md-icon>
-                                    Ban
-                                </md-filled-tonal-button>
-                                <md-outlined-button th:if="${user.banned}"
-                                    th:onclick="'toggleUserBan(' + ${user.id} + ', this)'">
-                                    <md-icon slot="icon">check_circle</md-icon>
-                                    Unban
-                                </md-outlined-button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="user-table-wrapper" style="overflow-x: auto;">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Stats</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="userTableBody">
+                <tr th:each="user : ${users}">
+                    <td>
+                        <div class="user-meta">
+                            <img th:if="${user.avatarUrl}" th:src="${user.avatarUrl}" alt="Avatar" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
+                            <div th:unless="${user.avatarUrl}" class="avatar-placeholder" th:text="${#strings.substring(user.username,0,1).toUpperCase()}"></div>
+                            <div class="user-details">
+                                <div style="font-weight:700;" th:text="${user.username}">Username</div>
+                                <div class="text-muted" style="font-size:0.82rem;" th:text="${user.email}">Email</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="role-badge" th:classappend="'role-' + ${user.role.name().toLowerCase()}" th:text="${user.role}">USER</span>
+                    </td>
+                    <td>
+                        <div class="stats-row">
+                            <span><md-icon style="font-size:16px;">code</md-icon><span th:text="${user.prompts.size()}">0</span></span>
+                            <span><md-icon style="font-size:16px;">group</md-icon><span th:text="${user.followers.size()}">0</span></span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-indicator" th:classappend="${user.banned ? 'banned' : 'active'}">
+                            <md-icon style="font-size:16px;" th:text="${user.banned ? 'block' : 'check_circle'}">check_circle</md-icon>
+                            <span th:text="${user.banned ? 'Banned' : 'Active'}">Active</span>
+                        </span>
+                    </td>
+                    <td>
+                        <md-filled-tonal-button th:if="${!user.banned}" th:onclick="'toggleUserBan(' + ${user.id} + ', this)'"
+                                                style="--md-filled-tonal-button-container-color: rgba(203, 63, 79, 0.14); --md-filled-tonal-button-label-text-color: var(--danger-color);">
+                            <md-icon slot="icon">block</md-icon>
+                            Ban
+                        </md-filled-tonal-button>
+                        <md-outlined-button th:if="${user.banned}" th:onclick="'toggleUserBan(' + ${user.id} + ', this)'">
+                            <md-icon slot="icon">check_circle</md-icon>
+                            Unban
+                        </md-outlined-button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-
-        <!-- Ban Confirmation Dialog -->
-        <md-dialog id="banDialog">
-            <div slot="headline">Confirm Action</div>
-            <div slot="content" id="banDialogContent">Are you sure you want to proceed?</div>
-            <div slot="actions">
-                <md-text-button onclick="document.getElementById('banDialog').close()">Cancel</md-text-button>
-                <md-filled-button id="banDialogConfirm" style="--md-filled-button-container-color: var(--danger-color);">Confirm</md-filled-button>
-            </div>
-        </md-dialog>
     </section>
-    
-    <script th:src="@{/js/admin.js}"></script>
+
+    <md-dialog id="banDialog">
+        <div slot="headline">Confirm Action</div>
+        <div slot="content" id="banDialogContent">Are you sure you want to proceed?</div>
+        <div slot="actions">
+            <md-text-button onclick="document.getElementById('banDialog').close()">Cancel</md-text-button>
+            <md-filled-button id="banDialogConfirm" style="--md-filled-button-container-color: var(--danger-color);">Confirm</md-filled-button>
+        </div>
+    </md-dialog>
+</section>
+
+<script th:src="@{/js/admin.js}"></script>
 </body>
 </html>

@@ -4,83 +4,82 @@
     <title>Moderation Queue | SurePrompt</title>
 </head>
 <body>
-    <section>
-        <div class="admin-header">
-            <md-text-button href="/admin" onclick="window.location.href='/admin'; return false;">
-                <md-icon slot="icon">arrow_back</md-icon>
-                Dashboard
-            </md-text-button>
-            <h1 style="margin-top: 8px;">Moderation Queue</h1>
-            <p class="text-muted">Review and resolve reported content.</p>
+<section>
+    <header class="admin-header">
+        <md-text-button href="/admin" onclick="window.location.href='/admin'; return false;">
+            <md-icon slot="icon">arrow_back</md-icon>
+            Dashboard
+        </md-text-button>
+        <h1>Moderation Queue</h1>
+        <p class="text-muted">Review reports, record internal notes, and resolve with a clear action trail.</p>
+    </header>
+
+    <div class="reports-container">
+        <div th:if="${#lists.isEmpty(reports)}" class="empty-queue">
+            <md-icon style="font-size: 42px; color: var(--success-color);">task_alt</md-icon>
+            <p style="margin-top: 8px;">No pending reports.</p>
         </div>
 
-        <div class="reports-container">
-            <div th:if="${#lists.isEmpty(reports)}" class="empty-queue">
-                <md-icon>task_alt</md-icon>
-                <p>All clear! No pending reports.</p>
+        <article th:each="report : ${reports}" class="report-card" th:id="'report-' + ${report.id}">
+            <div class="report-header">
+                <span class="badge" th:classappend="'badge-' + ${report.targetType.name().toLowerCase()}">
+                    <md-icon style="font-size:16px;" th:text="${report.targetType.name() == 'PROMPT' ? 'code' : (report.targetType.name() == 'USER' ? 'person' : 'chat')}">code</md-icon>
+                    <span th:text="${report.targetType}">TARGET</span>
+                </span>
+                <span class="text-muted" style="font-size: 0.82rem;" th:text="${#temporals.format(report.createdAt, 'MMM dd, HH:mm')}">Time</span>
             </div>
 
-            <div th:each="report : ${reports}" class="report-card" th:id="'report-' + ${report.id}">
-                <div class="report-header">
-                    <span class="badge" th:classappend="'badge-' + ${report.targetType.name().toLowerCase()}">
-                        <md-icon style="font-size:16px;" th:text="${report.targetType.name() == 'PROMPT' ? 'code' : (report.targetType.name() == 'USER' ? 'person' : 'chat')}">code</md-icon>
-                        <span th:text="${report.targetType}">TARGET</span>
-                    </span>
-                    <span class="text-muted" style="font-size: 0.85rem;" th:text="${#temporals.format(report.createdAt, 'MMM dd, HH:mm')}">Time</span>
-                </div>
-                
-                <div class="report-body" style="margin-bottom: 12px;">
-                    <p><strong>Reason:</strong> <span th:text="${report.reason}">Reason</span></p>
-                    <p class="text-muted" style="font-size: 0.85rem; margin-top: 4px;">Target ID: <span th:text="${report.targetId}">0</span></p>
-                </div>
+            <div class="report-body">
+                <p><strong>Reason:</strong> <span th:text="${report.reason}">Reason text</span></p>
+                <p class="text-muted" style="font-size: 0.84rem; margin-top: 4px;">Target ID: <span th:text="${report.targetId}">0</span></p>
+            </div>
 
-                <div class="report-footer">
-                    <div class="note-input" style="flex: 1;">
-                        <md-outlined-text-field th:id="'note-' + ${report.id}" placeholder="Admin note (required)..." label="Admin Note" style="width: 100%;">
-                            <md-icon slot="leading-icon">edit_note</md-icon>
-                        </md-outlined-text-field>
+            <div class="report-footer">
+                <div class="note-input">
+                    <md-outlined-text-field th:id="'note-' + ${report.id}" label="Admin note" placeholder="Required for audit trail"></md-outlined-text-field>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <div class="md3-menu-anchor">
+                        <md-filled-button th:id="'resolve-btn-' + ${report.id}" th:onclick="'document.getElementById(\'resolve-menu-\' + ' + ${report.id} + ').open = true'">
+                            Resolve
+                            <md-icon slot="icon">gavel</md-icon>
+                        </md-filled-button>
+                        <md-menu th:id="'resolve-menu-' + ${report.id}" th:attr="anchor=${'resolve-btn-' + report.id}">
+                            <md-menu-item th:if="${report.targetType.name() == 'PROMPT'}" th:onclick="'resolveReport(' + ${report.id} + ', \'DELETE_PROMPT\')'">
+                                <md-icon slot="start">delete</md-icon>
+                                <div slot="headline">Delete prompt</div>
+                            </md-menu-item>
+                            <md-menu-item th:if="${report.targetType.name() == 'USER' || report.targetType.name() == 'PROMPT'}" th:onclick="'resolveReport(' + ${report.id} + ', \'BAN_USER\')'">
+                                <md-icon slot="start">block</md-icon>
+                                <div slot="headline">Ban user</div>
+                            </md-menu-item>
+                            <md-menu-item th:if="${report.targetType.name() == 'COMMENT'}" th:onclick="'resolveReport(' + ${report.id} + ', \'DELETE_COMMENT\')'">
+                                <md-icon slot="start">delete</md-icon>
+                                <div slot="headline">Delete comment</div>
+                            </md-menu-item>
+                        </md-menu>
                     </div>
-                    <div class="action-buttons" style="display: flex; gap: 8px; margin-left: 16px;">
-                        <div class="md3-menu-anchor">
-                            <md-filled-button th:id="'resolve-btn-' + ${report.id}" th:onclick="'document.getElementById(\'resolve-menu-\' + ' + ${report.id} + ').open = true'">
-                                Resolve
-                                <md-icon slot="icon">gavel</md-icon>
-                            </md-filled-button>
-                            <md-menu th:id="'resolve-menu-' + ${report.id}" th:attr="anchor=${'resolve-btn-' + report.id}">
-                                <md-menu-item th:if="${report.targetType.name() == 'PROMPT'}" th:onclick="'resolveReport(' + ${report.id} + ', \'DELETE_PROMPT\')'">
-                                    <md-icon slot="start">delete</md-icon>
-                                    <div slot="headline">Delete Prompt</div>
-                                </md-menu-item>
-                                <md-menu-item th:if="${report.targetType.name() == 'USER' || report.targetType.name() == 'PROMPT'}" th:onclick="'resolveReport(' + ${report.id} + ', \'BAN_USER\')'">
-                                    <md-icon slot="start">block</md-icon>
-                                    <div slot="headline">Ban User</div>
-                                </md-menu-item>
-                                <md-menu-item th:if="${report.targetType.name() == 'COMMENT'}" th:onclick="'resolveReport(' + ${report.id} + ', \'DELETE_COMMENT\')'">
-                                    <md-icon slot="start">delete</md-icon>
-                                    <div slot="headline">Delete Comment</div>
-                                </md-menu-item>
-                            </md-menu>
-                        </div>
-                        <md-outlined-button th:onclick="'rejectReport(' + ${report.id} + ')'" style="--md-outlined-button-label-text-color: var(--danger-color); --md-outlined-button-outline-color: rgba(239,68,68,0.3);">
-                            <md-icon slot="icon">close</md-icon>
-                            Reject
-                        </md-outlined-button>
-                    </div>
+
+                    <md-outlined-button th:onclick="'rejectReport(' + ${report.id} + ')'"
+                                        style="--md-outlined-button-label-text-color: var(--danger-color); --md-outlined-button-outline-color: rgba(203, 63, 79, 0.35);">
+                        <md-icon slot="icon">close</md-icon>
+                        Reject
+                    </md-outlined-button>
                 </div>
             </div>
+        </article>
+    </div>
+
+    <md-dialog id="confirmDialog">
+        <div slot="headline" id="confirmHeadline">Confirm Action</div>
+        <div slot="content" id="confirmContent">Are you sure?</div>
+        <div slot="actions">
+            <md-text-button onclick="document.getElementById('confirmDialog').close()">Cancel</md-text-button>
+            <md-filled-button id="confirmAction">Confirm</md-filled-button>
         </div>
+    </md-dialog>
+</section>
 
-        <!-- Confirmation Dialog -->
-        <md-dialog id="confirmDialog">
-            <div slot="headline" id="confirmHeadline">Confirm Action</div>
-            <div slot="content" id="confirmContent">Are you sure?</div>
-            <div slot="actions">
-                <md-text-button onclick="document.getElementById('confirmDialog').close()">Cancel</md-text-button>
-                <md-filled-button id="confirmAction">Confirm</md-filled-button>
-            </div>
-        </md-dialog>
-    </section>
-    
-    <script th:src="@{/js/admin.js}"></script>
+<script th:src="@{/js/admin.js}"></script>
 </body>
 </html>

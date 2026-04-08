@@ -1,36 +1,29 @@
 <!DOCTYPE html>
-<html th:replace="~{layout/base :: html(~{::title}, ~{::headExtras}, ~{::content}, ~{::scripts})}" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html th:replace="~{layout/base :: html(~{::title}, ~{::headExtras}, ~{::content}, ~{::scripts})}" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>SurePrompt Feed</title>
+    <title>Saved Prompts | SurePrompt</title>
     <th:block th:fragment="headExtras"></th:block>
 </head>
 <body>
 <th:block th:fragment="content">
-    <div class="feed-shell">
-        <header class="page-header feed-header">
-            <div>
-                <h1>Prompt Engineering Feed</h1>
-                <p>Discover practical prompts that teams are shipping to production.</p>
-            </div>
+    <div class="saved-shell">
+        <header class="page-header">
+            <h1>Saved Prompt Workspace</h1>
+            <p>Your private shortlist for reuse, experimentation, and team playbooks.</p>
         </header>
 
-        <md-tabs id="feedTabs" class="feed-tabs" aria-label="Feed tabs">
-            <md-primary-tab data-tab="all" active>
-                <md-icon slot="icon">dynamic_feed</md-icon>
-                All
-            </md-primary-tab>
-            <md-primary-tab data-tab="following">
-                <md-icon slot="icon">group</md-icon>
-                Following
-            </md-primary-tab>
-            <md-primary-tab data-tab="trending">
-                <md-icon slot="icon">trending_up</md-icon>
-                Trending
-            </md-primary-tab>
-        </md-tabs>
+        <section class="saved-panel" style="padding: 16px; margin-bottom: 14px;" th:if="${collections != null && !collections.isEmpty()}">
+            <h3 style="font-size: 1rem; margin-bottom: 10px; display: inline-flex; align-items: center; gap: 6px;">
+                <md-icon>folder</md-icon>
+                Collections
+            </h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <md-assist-chip th:each="collection : ${collections}" th:label="${collection.name}" elevated></md-assist-chip>
+            </div>
+        </section>
 
-        <section id="feedContainer" class="feed-grid feed-list">
-            <article th:each="p : ${prompts}" class="prompt-card">
+        <section class="prompts-grid">
+            <article th:each="p : ${savedPrompts}" class="prompt-card">
                 <md-ripple></md-ripple>
                 <div class="card-header">
                     <div class="author-info">
@@ -62,11 +55,8 @@
                 </div>
 
                 <div class="ai-status" th:if="${p.aiVerified || p.aiScore != null}">
-                    <span class="verified-badge" th:if="${p.aiVerified}">
-                        <md-icon style="font-size:16px;">verified</md-icon>
-                        Verified
-                    </span>
-                    <span class="score-badge" th:if="${p.aiScore != null}" th:text="'AI Score ' + ${p.aiScore}">AI Score 8.7</span>
+                    <span class="verified-badge" th:if="${p.aiVerified}"><md-icon style="font-size:16px;">verified</md-icon>Verified</span>
+                    <span class="score-badge" th:if="${p.aiScore != null}" th:text="'AI Score ' + ${p.aiScore}">AI Score 8.0</span>
                 </div>
 
                 <div class="card-footer">
@@ -75,9 +65,6 @@
                             <md-icon th:style="${p.liked ? 'font-variation-settings: FILL 1; color: var(--danger-color);' : ''}">favorite</md-icon>
                         </md-icon-button>
                         <span class="like-count" th:text="${p.likeCount}">0</span>
-                        <md-icon-button th:onclick="'window.location.href=\'/prompts/' + ${p.id} + '#comments\''">
-                            <md-icon>chat_bubble_outline</md-icon>
-                        </md-icon-button>
                     </div>
                     <div class="actions-right">
                         <md-icon-button class="save-btn" th:data-id="${p.id}" th:classappend="${p.saved ? 'active' : ''}">
@@ -87,21 +74,15 @@
                 </div>
             </article>
 
-            <div th:if="${#lists.isEmpty(prompts)}" class="empty-state">
-                <md-icon style="font-size:48px;">edit_note</md-icon>
-                <p style="margin: 10px 0 14px;">No prompts in your feed yet.</p>
-                <md-filled-button th:href="@{/prompts/new}" onclick="window.location.href=this.getAttribute('href'); return false;">
-                    <md-icon slot="icon">add</md-icon>
-                    Publish the first prompt
+            <div th:if="${savedPrompts == null || savedPrompts.isEmpty()}" class="empty-state" style="grid-column: 1 / -1;">
+                <md-icon style="font-size:48px;">bookmark</md-icon>
+                <p style="margin-top: 10px;">You have not saved any prompts yet.</p>
+                <md-filled-button th:href="@{/explore}" onclick="window.location.href=this.getAttribute('href'); return false;" style="margin-top: 10px;">
+                    <md-icon slot="icon">travel_explore</md-icon>
+                    Explore prompts
                 </md-filled-button>
             </div>
         </section>
-    </div>
-
-    <div class="fab-container" sec:authorize="isAuthenticated()">
-        <md-fab label="Post" th:href="@{/prompts/new}" onclick="window.location.href='/prompts/new';" aria-label="Post a new prompt">
-            <md-icon slot="icon">add</md-icon>
-        </md-fab>
     </div>
 </th:block>
 

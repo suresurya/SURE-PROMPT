@@ -1,188 +1,74 @@
 <!DOCTYPE html>
 <html th:replace="~{layout/base :: html(~{::title}, ~{::headExtras}, ~{::content}, ~{::scripts})}" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Login - SurePrompt</title>
-    <th:block th:fragment="headExtras">
-        <style>
-            .login-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                min-height: 80vh;
-                padding: 2rem 0;
-            }
-            .login-card {
-                background: rgba(24, 24, 27, 0.8);
-                backdrop-filter: blur(16px);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 24px;
-                padding: 3rem;
-                width: 100%;
-                max-width: 450px;
-                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-                transition: transform 0.3s ease;
-            }
-            .login-card:hover {
-                transform: translateY(-4px);
-            }
-            .login-header {
-                text-align: center;
-                margin-bottom: 2.5rem;
-            }
-            .login-header h1 {
-                font-size: 2.2rem;
-                font-weight: 800;
-                background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                margin-bottom: 0.5rem;
-            }
-            .login-header p {
-                color: var(--text-muted);
-                font-size: 1rem;
-            }
-            .form-group {
-                margin-bottom: 1.5rem;
-            }
-            .form-group md-outlined-text-field {
-                width: 100%;
-            }
-            .error-message {
-                background: rgba(239, 68, 68, 0.1);
-                border: 1px solid rgba(239, 68, 68, 0.2);
-                color: #f87171;
-                padding: 12px 16px;
-                border-radius: 12px;
-                margin-bottom: 1.5rem;
-                font-size: 0.9rem;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .info-message {
-                background: rgba(99, 102, 241, 0.1);
-                border: 1px solid rgba(99, 102, 241, 0.2);
-                color: #818cf8;
-                padding: 12px 16px;
-                border-radius: 12px;
-                margin-bottom: 1.5rem;
-                font-size: 0.9rem;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .login-submit {
-                width: 100%;
-                margin-top: 1rem;
-            }
-            .login-submit md-filled-button {
-                width: 100%;
-                --md-filled-button-container-height: 48px;
-                --md-filled-button-label-text-size: 1.05rem;
-            }
-            .social-login {
-                margin-top: 2rem;
-                text-align: center;
-            }
-            .social-divider {
-                display: flex;
-                align-items: center;
-                gap: 16px;
-                margin-bottom: 1.5rem;
-            }
-            .social-divider md-divider {
-                flex: 1;
-            }
-            .social-divider span {
-                color: var(--text-muted);
-                font-size: 0.85rem;
-                white-space: nowrap;
-            }
-            .social-buttons {
-                display: flex;
-                gap: 12px;
-            }
-            .social-buttons md-outlined-button {
-                flex: 1;
-                --md-outlined-button-container-height: 44px;
-            }
-        </style>
-    </th:block>
+    <title>Login | SurePrompt</title>
+    <th:block th:fragment="headExtras"></th:block>
 </head>
 <body>
-    <th:block th:fragment="content">
-        <div class="login-container">
-            <div class="login-card">
-                <div class="login-header">
-                    <h1>Welcome Back</h1>
-                    <p>Elevate your AI productivity</p>
+<th:block th:fragment="content">
+    <div class="auth-shell">
+        <div class="auth-card">
+            <h1 class="auth-title">Welcome Back</h1>
+            <p class="auth-subtitle">Sign in to manage your prompts, benchmarks, and saved workflows.</p>
+
+            <div th:if="${error}" class="alert alert-danger">
+                <md-icon>error</md-icon>
+                <span th:text="${error}"></span>
+            </div>
+
+            <div th:if="${message}" class="alert" style="border-color: rgba(10, 138, 143, 0.3); background: rgba(10, 138, 143, 0.1); color: var(--accent-hover);">
+                <md-icon>info</md-icon>
+                <span th:text="${message}"></span>
+            </div>
+
+            <form th:action="@{/login}" method="post" id="loginForm">
+                <div class="form-group">
+                    <md-outlined-text-field
+                        label="Username"
+                        name="username"
+                        type="text"
+                        required
+                        autofocus
+                        autocomplete="username">
+                        <md-icon slot="leading-icon">person</md-icon>
+                    </md-outlined-text-field>
                 </div>
 
-                <div th:if="${error}" class="error-message">
-                    <md-icon style="font-size: 20px;">error</md-icon>
-                    <span th:text="${error}"></span>
+                <div class="form-group">
+                    <md-outlined-text-field
+                        label="Password"
+                        name="password"
+                        type="password"
+                        required
+                        autocomplete="current-password">
+                        <md-icon slot="leading-icon">lock</md-icon>
+                    </md-outlined-text-field>
                 </div>
 
-                <div th:if="${message}" class="info-message">
-                    <md-icon style="font-size: 20px;">info</md-icon>
-                    <span th:text="${message}"></span>
+                <div class="form-actions" style="justify-content: stretch;">
+                    <md-filled-button type="submit" style="width: 100%;">
+                        <md-icon slot="icon">login</md-icon>
+                        Sign In
+                    </md-filled-button>
                 </div>
+            </form>
 
-                <form th:action="@{/login}" method="post" id="loginForm">
-                    <div class="form-group">
-                        <md-outlined-text-field 
-                            label="Username" 
-                            name="username" 
-                            type="text"
-                            required 
-                            autofocus
-                            placeholder="e.g. admin">
-                            <md-icon slot="leading-icon">person</md-icon>
-                        </md-outlined-text-field>
-                    </div>
-                    
-                    <div class="form-group">
-                        <md-outlined-text-field 
-                            label="Password" 
-                            name="password" 
-                            type="password"
-                            required
-                            placeholder="Your secret code">
-                            <md-icon slot="leading-icon">lock</md-icon>
-                        </md-outlined-text-field>
-                    </div>
+            <md-divider style="margin: 20px 0 14px;"></md-divider>
 
-                    <div class="login-submit">
-                        <md-filled-button type="submit">
-                            <md-icon slot="icon">login</md-icon>
-                            Sign In
-                        </md-filled-button>
-                    </div>
-                </form>
-
-                <div class="social-login">
-                    <div class="social-divider">
-                        <md-divider></md-divider>
-                        <span>Or continue with</span>
-                        <md-divider></md-divider>
-                    </div>
-                    <div class="social-buttons">
-                        <md-outlined-button th:href="@{/oauth2/authorization/google}" onclick="window.location.href=this.getAttribute('href'); return false;">
-                            <md-icon slot="icon">public</md-icon>
-                            Google
-                        </md-outlined-button>
-                        <md-outlined-button th:href="@{/oauth2/authorization/github}" onclick="window.location.href=this.getAttribute('href'); return false;">
-                            <md-icon slot="icon">code</md-icon>
-                            GitHub
-                        </md-outlined-button>
-                    </div>
-                </div>
+            <div class="form-row" style="grid-template-columns: 1fr 1fr;">
+                <md-outlined-button th:href="@{/oauth2/authorization/google}" onclick="window.location.href=this.getAttribute('href'); return false;">
+                    <md-icon slot="icon">public</md-icon>
+                    Google
+                </md-outlined-button>
+                <md-outlined-button th:href="@{/oauth2/authorization/github}" onclick="window.location.href=this.getAttribute('href'); return false;">
+                    <md-icon slot="icon">code</md-icon>
+                    GitHub
+                </md-outlined-button>
             </div>
         </div>
-    </th:block>
-    
-    <th:block th:fragment="scripts">
-        <!-- Login page scripts -->
-    </th:block>
+    </div>
+</th:block>
+
+<th:block th:fragment="scripts"></th:block>
 </body>
 </html>

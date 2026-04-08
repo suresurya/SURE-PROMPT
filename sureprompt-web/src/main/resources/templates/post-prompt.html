@@ -1,266 +1,156 @@
 <!DOCTYPE html>
 <html th:replace="~{layout/base :: html(~{::title}, ~{::headExtras}, ~{::content}, ~{::scripts})}" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Post a Prompt - SurePrompt</title>
-    <th:block th:fragment="headExtras">
-        <style>
-            .post-container {
-                max-width: 800px;
-                margin: 0 auto;
-            }
-            .post-header {
-                margin-bottom: 2rem;
-            }
-            .post-header h1 {
-                font-size: 2rem;
-                font-weight: 800;
-                margin-bottom: 0.5rem;
-            }
-            .post-header p {
-                color: var(--text-muted);
-            }
-            .post-form {
-                background: var(--bg-surface);
-                border: 1px solid var(--border-color);
-                border-radius: var(--border-radius-lg);
-                padding: 32px;
-            }
-            .form-section {
-                margin-bottom: 2rem;
-            }
-            .form-section-title {
-                font-size: 1rem;
-                font-weight: 700;
-                color: var(--text-main);
-                margin-bottom: 16px;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .form-section-title md-icon {
-                font-size: 20px;
-                color: var(--accent-color);
-            }
-            .form-row {
-                display: flex;
-                gap: 16px;
-                margin-bottom: 16px;
-            }
-            .form-row > * {
-                flex: 1;
-            }
-            .tags-input-container {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 8px;
-                align-items: center;
-                min-height: 48px;
-                padding: 8px;
-                background: rgba(255,255,255,0.03);
-                border: 1px solid var(--border-color);
-                border-radius: 12px;
-                transition: border-color 0.2s;
-            }
-            .tags-input-container:focus-within {
-                border-color: var(--accent-color);
-            }
-            .tags-input-container input {
-                background: none;
-                border: none;
-                color: var(--text-main);
-                font-size: 0.9rem;
-                padding: 4px 8px;
-                flex-grow: 1;
-                min-width: 120px;
-                outline: none;
-            }
-            .submit-section {
-                display: flex;
-                justify-content: flex-end;
-                gap: 12px;
-                padding-top: 1rem;
-            }
-            .submit-section md-filled-button {
-                --md-filled-button-container-height: 48px;
-            }
-            @media (max-width: 640px) {
-                .form-row { flex-direction: column; }
-                .post-form { padding: 20px; }
-            }
-        </style>
-    </th:block>
+    <title>Publish Prompt | SurePrompt</title>
+    <th:block th:fragment="headExtras"></th:block>
 </head>
 <body>
-    <th:block th:fragment="content">
-        <div class="post-container">
-            <div class="post-header">
-                <h1>Post a Prompt</h1>
-                <p>Share your best AI prompts with the community</p>
+<th:block th:fragment="content">
+    <div class="editor-layout">
+        <header class="page-header">
+            <h1>Publish a Prompt Blueprint</h1>
+            <p>Create a reusable prompt workflow with baseline output and quality metadata.</p>
+        </header>
+
+        <form th:action="@{/prompts/new}" method="post" class="editor-card" id="postPromptForm">
+            <div class="form-group">
+                <md-outlined-text-field
+                    name="title"
+                    label="Prompt title"
+                    maxlength="200"
+                    required
+                    supporting-text="Use a specific outcome-focused title.">
+                    <md-icon slot="leading-icon">title</md-icon>
+                </md-outlined-text-field>
             </div>
 
-            <form th:action="@{/prompts/new}" method="post" class="post-form" id="postPromptForm">
-                <!-- Title -->
-                <div class="form-section">
-                    <div class="form-section-title"><md-icon>title</md-icon> Title</div>
-                    <md-outlined-text-field 
-                        name="title" 
-                        label="Prompt title" 
-                        placeholder="e.g. Advanced Code Review Prompt for Java"
-                        required
-                        maxlength="200"
-                        supporting-text="Max 200 characters">
-                    </md-outlined-text-field>
+            <div class="form-group">
+                <md-outlined-text-field
+                    name="promptBody"
+                    label="Prompt template"
+                    type="textarea"
+                    rows="9"
+                    required
+                    supporting-text="Use placeholders like {context}, {audience}, and {constraints}.">
+                    <md-icon slot="leading-icon">terminal</md-icon>
+                </md-outlined-text-field>
+            </div>
+
+            <div class="form-group">
+                <md-outlined-text-field
+                    name="aiOutput"
+                    label="Sample AI output"
+                    type="textarea"
+                    rows="7"
+                    required
+                    supporting-text="Paste a representative output from the target model.">
+                    <md-icon slot="leading-icon">smart_toy</md-icon>
+                </md-outlined-text-field>
+            </div>
+
+            <md-divider style="margin: 8px 0 18px;"></md-divider>
+
+            <div class="field-grid">
+                <md-outlined-select name="difficulty" label="Difficulty" required>
+                    <md-select-option value="EASY">
+                        <div slot="headline">Easy</div>
+                    </md-select-option>
+                    <md-select-option value="MEDIUM" selected>
+                        <div slot="headline">Medium</div>
+                    </md-select-option>
+                    <md-select-option value="HARD">
+                        <div slot="headline">Hard</div>
+                    </md-select-option>
+                </md-outlined-select>
+
+                <md-outlined-select name="platform" label="Platform" required>
+                    <md-select-option value="ChatGPT"><div slot="headline">ChatGPT</div></md-select-option>
+                    <md-select-option value="Gemini"><div slot="headline">Gemini</div></md-select-option>
+                    <md-select-option value="Claude"><div slot="headline">Claude</div></md-select-option>
+                    <md-select-option value="Copilot"><div slot="headline">Copilot</div></md-select-option>
+                    <md-select-option value="Other"><div slot="headline">Other</div></md-select-option>
+                </md-outlined-select>
+            </div>
+
+            <div class="form-group" style="margin-top: 16px;">
+                <label style="font-weight: 700; display: block; margin-bottom: 8px;">Tags (1-5)</label>
+                <div class="tag-chip-wrap" id="tagsContainer">
+                    <input type="text" id="tagInput" placeholder="Type a tag and press Enter" maxlength="30">
                 </div>
+                <div id="hiddenTagInputs"></div>
+                <p class="helper-text">Press Enter or comma to add a tag, then backspace to adjust quickly.</p>
+            </div>
 
-                <!-- Prompt Body -->
-                <div class="form-section">
-                    <div class="form-section-title"><md-icon>code</md-icon> Prompt Template</div>
-                    <md-outlined-text-field 
-                        name="promptBody" 
-                        label="Prompt body"
-                        type="textarea"
-                        rows="8"
-                        placeholder="Write your prompt template here. Use {placeholders} for dynamic variables..."
-                        required
-                        supporting-text="The main prompt that users will copy and use">
-                    </md-outlined-text-field>
-                </div>
+            <md-linear-progress id="submitProgress" indeterminate class="hidden" style="margin-top: 4px;"></md-linear-progress>
 
-                <!-- AI Output -->
-                <div class="form-section">
-                    <div class="form-section-title"><md-icon>smart_toy</md-icon> AI Sample Output</div>
-                    <md-outlined-text-field 
-                        name="aiOutput" 
-                        label="AI output"
-                        type="textarea"
-                        rows="6"
-                        placeholder="Paste the AI's response when using this prompt..."
-                        required
-                        supporting-text="Show others what output this prompt generates">
-                    </md-outlined-text-field>
-                </div>
+            <div class="submit-section">
+                <md-outlined-button type="button" onclick="window.history.back()">Cancel</md-outlined-button>
+                <md-filled-button type="submit" id="submitBtn">
+                    <md-icon slot="icon">publish</md-icon>
+                    Publish Prompt
+                </md-filled-button>
+            </div>
+        </form>
+    </div>
+</th:block>
 
-                <md-divider style="margin: 8px 0 24px;"></md-divider>
+<th:block th:fragment="scripts">
+    <script>
+        const tagsContainer = document.getElementById('tagsContainer');
+        const tagInput = document.getElementById('tagInput');
+        const hiddenTagInputs = document.getElementById('hiddenTagInputs');
+        let tags = [];
 
-                <!-- Metadata -->
-                <div class="form-section">
-                    <div class="form-section-title"><md-icon>tune</md-icon> Metadata</div>
-                    <div class="form-row">
-                        <md-outlined-select name="difficulty" label="Difficulty" required>
-                            <md-select-option value="EASY">
-                                <div slot="headline">Easy</div>
-                            </md-select-option>
-                            <md-select-option value="MEDIUM" selected>
-                                <div slot="headline">Medium</div>
-                            </md-select-option>
-                            <md-select-option value="HARD">
-                                <div slot="headline">Hard</div>
-                            </md-select-option>
-                        </md-outlined-select>
-
-                        <md-outlined-select name="platform" label="Platform" required>
-                            <md-select-option value="ChatGPT">
-                                <div slot="headline">ChatGPT</div>
-                            </md-select-option>
-                            <md-select-option value="Gemini">
-                                <div slot="headline">Gemini</div>
-                            </md-select-option>
-                            <md-select-option value="Claude">
-                                <div slot="headline">Claude</div>
-                            </md-select-option>
-                            <md-select-option value="Copilot">
-                                <div slot="headline">Copilot</div>
-                            </md-select-option>
-                            <md-select-option value="Other">
-                                <div slot="headline">Other</div>
-                            </md-select-option>
-                        </md-outlined-select>
-                    </div>
-                </div>
-
-                <!-- Tags -->
-                <div class="form-section">
-                    <div class="form-section-title"><md-icon>sell</md-icon> Tags (1-5)</div>
-                    <div class="tags-input-container" id="tagsContainer">
-                        <!-- Chips will be added dynamically -->
-                        <input type="text" id="tagInput" placeholder="Type tag and press Enter..." maxlength="30">
-                    </div>
-                    <!-- Hidden inputs for tags -->
-                    <div id="hiddenTagInputs"></div>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">Press Enter or comma to add a tag. Click × to remove.</p>
-                </div>
-
-                <md-divider style="margin: 8px 0 24px;"></md-divider>
-
-                <md-linear-progress id="submitProgress" indeterminate style="display: none; margin-bottom: 16px;"></md-linear-progress>
-
-                <div class="submit-section">
-                    <md-outlined-button type="button" onclick="window.history.back()">Cancel</md-outlined-button>
-                    <md-filled-button type="submit" id="submitBtn">
-                        <md-icon slot="icon">publish</md-icon>
-                        Publish Prompt
-                    </md-filled-button>
-                </div>
-            </form>
-        </div>
-    </th:block>
-
-    <th:block th:fragment="scripts">
-        <script>
-            // Tag input with chips
-            const tagsContainer = document.getElementById('tagsContainer');
-            const tagInput = document.getElementById('tagInput');
-            const hiddenTagInputs = document.getElementById('hiddenTagInputs');
-            let tags = [];
-
-            tagInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ',') {
-                    e.preventDefault();
-                    addTag(tagInput.value.trim());
-                }
+        function updateHiddenInputs() {
+            hiddenTagInputs.innerHTML = '';
+            tags.forEach((tag) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'tags';
+                input.value = tag;
+                hiddenTagInputs.appendChild(input);
             });
+        }
 
-            function addTag(tag) {
-                tag = tag.replace(/,/g, '').trim();
-                if (!tag || tags.includes(tag) || tags.length >= 5) return;
-                
-                tags.push(tag);
-                
-                const chip = document.createElement('md-input-chip');
-                chip.label = tag;
-                chip.addEventListener('remove', () => {
-                    tags = tags.filter(t => t !== tag);
-                    chip.remove();
-                    updateHiddenInputs();
-                });
-                tagsContainer.insertBefore(chip, tagInput);
-                
-                tagInput.value = '';
-                updateHiddenInputs();
+        function removeTag(tag, chip) {
+            tags = tags.filter((t) => t !== tag);
+            chip.remove();
+            updateHiddenInputs();
+        }
+
+        function addTag(rawTag) {
+            const tag = rawTag.replace(/,/g, '').trim();
+            if (!tag || tags.includes(tag) || tags.length >= 5) {
+                return;
             }
 
-            function updateHiddenInputs() {
-                hiddenTagInputs.innerHTML = '';
-                tags.forEach(tag => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'tags';
-                    input.value = tag;
-                    hiddenTagInputs.appendChild(input);
-                });
+            tags.push(tag);
+            const chip = document.createElement('md-input-chip');
+            chip.label = tag;
+            chip.addEventListener('remove', () => removeTag(tag, chip));
+            tagsContainer.insertBefore(chip, tagInput);
+            tagInput.value = '';
+            updateHiddenInputs();
+        }
+
+        tagInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ',') {
+                event.preventDefault();
+                addTag(tagInput.value);
+            }
+        });
+
+        document.getElementById('postPromptForm').addEventListener('submit', (event) => {
+            if (tags.length === 0) {
+                event.preventDefault();
+                App.showToast('Add at least one tag before publishing.', 'error');
+                return;
             }
 
-            // Form submission with progress
-            document.getElementById('postPromptForm').addEventListener('submit', function(e) {
-                if (tags.length === 0) {
-                    e.preventDefault();
-                    alert('Please add at least one tag.');
-                    return;
-                }
-                document.getElementById('submitProgress').style.display = 'block';
-                document.getElementById('submitBtn').disabled = true;
-            });
-        </script>
-    </th:block>
+            document.getElementById('submitProgress').classList.remove('hidden');
+            document.getElementById('submitBtn').disabled = true;
+        });
+    </script>
+</th:block>
 </body>
 </html>

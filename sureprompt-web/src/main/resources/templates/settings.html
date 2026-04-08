@@ -1,156 +1,87 @@
 <!DOCTYPE html>
 <html th:replace="~{layout/base :: html(~{::title}, ~{::headExtras}, ~{::content}, ~{::scripts})}" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Settings - SurePrompt</title>
-    <th:block th:fragment="headExtras">
-        <style>
-            .settings-container {
-                max-width: 640px;
-                margin: 2rem auto;
-            }
-            .settings-header {
-                margin-bottom: 2rem;
-            }
-            .settings-header h1 {
-                font-size: 2rem;
-                font-weight: 800;
-                margin-bottom: 0.5rem;
-            }
-            .settings-card {
-                background: var(--bg-surface);
-                border: 1px solid var(--border-color);
-                border-radius: var(--border-radius-lg);
-                padding: 32px;
-                margin-bottom: 24px;
-            }
-            .settings-card h3 {
-                font-size: 1.1rem;
-                font-weight: 700;
-                margin-bottom: 20px;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .settings-card h3 md-icon {
-                color: var(--accent-color);
-            }
-            .status-chip {
-                margin-bottom: 20px;
-            }
-            .setting-row {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 16px 0;
-                border-bottom: 1px solid var(--border-color);
-            }
-            .setting-row:last-child {
-                border-bottom: none;
-            }
-            .setting-info h4 {
-                font-weight: 600;
-                margin-bottom: 4px;
-            }
-            .setting-info p {
-                font-size: 0.85rem;
-                color: var(--text-muted);
-            }
-            .alert {
-                padding: 12px 16px;
-                border-radius: 12px;
-                margin-bottom: 1rem;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                font-size: 0.9rem;
-            }
-            .alert-success {
-                background: rgba(16, 185, 129, 0.1);
-                border: 1px solid rgba(16, 185, 129, 0.2);
-                color: var(--success-color);
-            }
-            .alert-danger {
-                background: rgba(239, 68, 68, 0.1);
-                border: 1px solid rgba(239, 68, 68, 0.2);
-                color: var(--danger-color);
-            }
-        </style>
-    </th:block>
+    <title>Settings | SurePrompt</title>
+    <th:block th:fragment="headExtras"></th:block>
 </head>
 <body>
-    <th:block th:fragment="content">
-        <div class="settings-container">
-            <div class="settings-header">
-                <h1>Settings</h1>
-                <p style="color: var(--text-muted);">Manage your API integrations and platform preferences.</p>
+<th:block th:fragment="content">
+    <div class="settings-container">
+        <header class="page-header">
+            <h1>Workspace Settings</h1>
+            <p>Manage provider keys, automation preferences, and account-level behavior.</p>
+        </header>
+
+        <div th:if="${success}" class="alert" style="border-color: rgba(31, 155, 88, 0.35); background: rgba(31, 155, 88, 0.12); color: #1d8f52;">
+            <md-icon>check_circle</md-icon>
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="alert alert-danger">
+            <md-icon>error</md-icon>
+            <span th:text="${error}"></span>
+        </div>
+
+        <section class="settings-card" style="margin-bottom: 14px;">
+            <h3 style="margin-bottom: 14px; display: inline-flex; align-items: center; gap: 8px;">
+                <md-icon>smart_toy</md-icon>
+                AI Provider Integration
+            </h3>
+
+            <div style="margin-bottom: 14px;">
+                <md-assist-chip th:if="${hasKey}" label="Gemini API key connected" elevated>
+                    <md-icon slot="icon" style="color: var(--success-color);">check_circle</md-icon>
+                </md-assist-chip>
+                <md-assist-chip th:unless="${hasKey}" label="No Gemini API key configured" elevated>
+                    <md-icon slot="icon" style="color: var(--danger-color);">cancel</md-icon>
+                </md-assist-chip>
             </div>
 
-            <div th:if="${success}" class="alert alert-success">
-                <md-icon style="font-size: 20px;">check_circle</md-icon>
-                <span th:text="${success}"></span>
-            </div>
-            <div th:if="${error}" class="alert alert-danger">
-                <md-icon style="font-size: 20px;">error</md-icon>
-                <span th:text="${error}"></span>
-            </div>
-
-            <!-- AI Integration -->
-            <div class="settings-card">
-                <h3><md-icon>smart_toy</md-icon> AI Integration</h3>
-                
-                <div class="status-chip">
-                    <md-assist-chip th:if="${hasKey}" label="Gemini API Key Connected" elevated>
-                        <md-icon slot="icon" style="color: var(--success-color);">check_circle</md-icon>
-                    </md-assist-chip>
-                    <md-assist-chip th:unless="${hasKey}" label="No API Key Connected" elevated>
-                        <md-icon slot="icon" style="color: var(--danger-color);">cancel</md-icon>
-                    </md-assist-chip>
-                </div>
-
-                <form method="post" th:action="@{/settings/api-key}">
-                    <md-outlined-text-field 
-                        name="key" 
-                        label="Google Gemini API Key"
-                        placeholder="Enter your Gemini API Key starting with AIza..."
-                        required
-                        minlength="20"
+            <form method="post" th:action="@{/settings/api-key}">
+                <div class="form-group">
+                    <md-outlined-text-field
+                        name="key"
+                        label="Google Gemini API key"
                         type="password"
-                        supporting-text="Keys are locally encrypted using AES-256 before storage. We cannot see your raw key."
-                        style="margin-bottom: 20px;">
+                        minlength="20"
+                        required
+                        supporting-text="Stored encrypted at rest. Only your runtime can decrypt it.">
                         <md-icon slot="leading-icon">key</md-icon>
                     </md-outlined-text-field>
-                    
+                </div>
+                <div class="form-actions">
                     <md-filled-button type="submit">
                         <md-icon slot="icon">save</md-icon>
                         <span th:text="${hasKey ? 'Update Key' : 'Save Key'}">Save Key</span>
                     </md-filled-button>
-                </form>
+                </div>
+            </form>
+        </section>
+
+        <section class="settings-card">
+            <h3 style="margin-bottom: 14px; display: inline-flex; align-items: center; gap: 8px;">
+                <md-icon>tune</md-icon>
+                Preferences
+            </h3>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h4>Auto verification</h4>
+                    <p>Run AI verification after posting to attach quality score and reasoning.</p>
+                </div>
+                <md-switch selected></md-switch>
             </div>
 
-            <!-- Preferences -->
-            <div class="settings-card">
-                <h3><md-icon>tune</md-icon> Preferences</h3>
-                
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>AI Auto-Verification</h4>
-                        <p>Automatically verify your prompts with AI when posting</p>
-                    </div>
-                    <md-switch selected></md-switch>
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h4>Email notifications</h4>
+                    <p>Get updates for follows, prompt comments, and moderation actions.</p>
                 </div>
-                
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Email Notifications</h4>
-                        <p>Receive email notifications for likes, comments, and follows</p>
-                    </div>
-                    <md-switch></md-switch>
-                </div>
+                <md-switch></md-switch>
             </div>
-        </div>
-    </th:block>
-    
-    <th:block th:fragment="scripts">
-    </th:block>
+        </section>
+    </div>
+</th:block>
+
+<th:block th:fragment="scripts"></th:block>
 </body>
 </html>

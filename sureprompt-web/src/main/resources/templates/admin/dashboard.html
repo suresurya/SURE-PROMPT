@@ -4,71 +4,71 @@
     <title>Admin Dashboard | SurePrompt</title>
 </head>
 <body>
-    <section>
-        <div class="admin-header">
-            <h1>Admin Control Center</h1>
-            <p class="text-muted">High-level site health and moderation statistics.</p>
-        </div>
+<section>
+    <header class="admin-header">
+        <h1>Admin Control Center</h1>
+        <p class="text-muted">Monitor platform health and take moderation action quickly.</p>
+    </header>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon"><md-icon style="font-size:2rem;">group</md-icon></div>
-                <div class="stat-info">
-                    <h3 th:text="${stats.totalUsers}">0</h3>
-                    <p>Total Registered Users</p>
-                </div>
-                <a href="/admin/users" class="stat-link">
-                    <md-text-button>
-                        Manage Users
-                        <md-icon slot="icon">arrow_forward</md-icon>
-                    </md-text-button>
-                </a>
+    <div class="stats-grid">
+        <article class="stat-card">
+            <div class="stat-icon"><md-icon style="font-size:2rem;">group</md-icon></div>
+            <div class="stat-info">
+                <h3 th:text="${stats.totalUsers}">0</h3>
+                <p>Total registered users</p>
             </div>
-            
-            <div class="stat-card">
-                <div class="stat-icon" style="color: var(--accent-color);"><md-icon style="font-size:2rem;">code</md-icon></div>
-                <div class="stat-info">
-                    <h3 th:text="${stats.totalPrompts}">0</h3>
-                    <p>Active Prompts</p>
-                </div>
-                <a href="/explore" class="stat-link">
-                    <md-text-button>
-                        View Feed
-                        <md-icon slot="icon">arrow_forward</md-icon>
-                    </md-text-button>
-                </a>
-            </div>
+            <a href="/admin/users" class="stat-link">
+                <md-text-button>
+                    Manage users
+                    <md-icon slot="icon">arrow_forward</md-icon>
+                </md-text-button>
+            </a>
+        </article>
 
-            <div class="stat-card" th:classappend="${stats.pendingReports > 0 ? 'urgent active' : ''}">
-                <div class="stat-icon" style="color: var(--warning-color);"><md-icon style="font-size:2rem;">flag</md-icon></div>
-                <div class="stat-info">
-                    <h3 th:text="${stats.pendingReports}">0</h3>
-                    <p>Pending Reports</p>
-                </div>
-                <a href="/admin/reports" class="stat-link">
-                    <md-text-button>
-                        Open Queue
-                        <md-icon slot="icon">arrow_forward</md-icon>
-                    </md-text-button>
-                </a>
+        <article class="stat-card">
+            <div class="stat-icon" style="color: var(--secondary-color);"><md-icon style="font-size:2rem;">code</md-icon></div>
+            <div class="stat-info">
+                <h3 th:text="${stats.totalPrompts}">0</h3>
+                <p>Active prompts</p>
             </div>
-        </div>
+            <a href="/explore" class="stat-link">
+                <md-text-button>
+                    View feed
+                    <md-icon slot="icon">arrow_forward</md-icon>
+                </md-text-button>
+            </a>
+        </article>
 
-        <div class="admin-actions-bar">
-            <h2>Quick Moderation</h2>
-            <div class="btn-group">
-                <md-filled-button onclick="window.location.href='/admin/reports'">
-                    <md-icon slot="icon">shield</md-icon>
-                    Moderation Queue
-                </md-filled-button>
-                <md-outlined-button onclick="window.location.href='/admin/users'">
-                    <md-icon slot="icon">admin_panel_settings</md-icon>
-                    User List
-                </md-outlined-button>
+        <article class="stat-card" th:classappend="${stats.pendingReports > 0 ? 'urgent active' : ''}">
+            <div class="stat-icon" style="color: var(--warning-color);"><md-icon style="font-size:2rem;">flag</md-icon></div>
+            <div class="stat-info">
+                <h3 th:text="${stats.pendingReports}">0</h3>
+                <p>Pending reports</p>
             </div>
+            <a href="/admin/reports" class="stat-link">
+                <md-text-button>
+                    Open queue
+                    <md-icon slot="icon">arrow_forward</md-icon>
+                </md-text-button>
+            </a>
+        </article>
+    </div>
+
+    <section class="admin-actions-bar">
+        <h2 style="margin-bottom: 12px;">Quick moderation</h2>
+        <div class="btn-group">
+            <md-filled-button onclick="window.location.href='/admin/reports'">
+                <md-icon slot="icon">shield</md-icon>
+                Moderation queue
+            </md-filled-button>
+            <md-outlined-button onclick="window.location.href='/admin/users'">
+                <md-icon slot="icon">admin_panel_settings</md-icon>
+                User list
+            </md-outlined-button>
         </div>
     </section>
-    
-    <script th:src="@{/js/admin.js}"></script>
+</section>
+
+<script th:src="@{/js/admin.js}"></script>
 </body>
 </html>

@@ -1,12 +1,20 @@
 <footer class="footer" th:fragment="footer" xmlns:th="http://www.thymeleaf.org">
     <div class="footer-container">
         <md-divider></md-divider>
-        <div style="padding-top: 24px;">
-            <p style="font-size: 0.95rem; font-weight: 600;">Sure<span style="color: var(--accent-color);">Prompt</span> — The Free Technical Prompt Community</p>
+        <div class="footer-body">
+            <p>
+                Sure<span class="logo-accent">Prompt</span>
+                <span class="footer-note">Build, test, and share production-ready prompt workflows.</span>
+            </p>
             <div class="footer-links">
-                <md-text-button href="#">About</md-text-button>
-                <md-text-button href="#">Terms</md-text-button>
-                <md-text-button href="#">Privacy</md-text-button>
+                <md-text-button href="/explore">
+                    <md-icon slot="icon">travel_explore</md-icon>
+                    Explore
+                </md-text-button>
+                <md-text-button href="/prompts/new">
+                    <md-icon slot="icon">add</md-icon>
+                    Submit
+                </md-text-button>
                 <md-text-button href="https://github.com/sureprompt" target="_blank">
                     <md-icon slot="icon">code</md-icon>
                     Open Source

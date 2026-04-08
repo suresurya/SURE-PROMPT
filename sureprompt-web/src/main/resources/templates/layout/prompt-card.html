@@ -1,47 +1,43 @@
-<div class="prompt-card" th:fragment="prompt-card(prompt)" xmlns:th="http://www.thymeleaf.org">
+<article class="prompt-card" th:fragment="prompt-card(prompt)" xmlns:th="http://www.thymeleaf.org">
     <md-ripple></md-ripple>
     <div class="card-header">
         <div class="author-info">
             <a th:href="@{/users/{username}(username=${prompt.authorUsername})}">
-                <img th:if="${prompt.authorAvatar}" th:src="${prompt.authorAvatar}" class="avatar-sm">
+                <img th:if="${prompt.authorAvatar}" th:src="${prompt.authorAvatar}" class="avatar-sm" alt="Avatar">
                 <div th:unless="${prompt.authorAvatar}" class="avatar-placeholder-sm" th:text="${#strings.substring(prompt.authorUsername,0,1).toUpperCase()}"></div>
             </a>
             <div class="author-details">
-                <a th:href="@{/users/{username}(username=${prompt.authorUsername})}" class="author-name" th:text="${prompt.authorName}">Name</a>
-                <span class="college-badge" th:if="${prompt.college}"><md-icon style="font-size:14px;">school</md-icon> <span th:text="${prompt.college}"></span></span>
+                <a th:href="@{/users/{username}(username=${prompt.authorUsername})}" class="author-name" th:text="${prompt.authorName}">Author</a>
+                <span class="college-badge" th:if="${prompt.college}">
+                    <md-icon style="font-size:14px;">school</md-icon>
+                    <span th:text="${prompt.college}"></span>
+                </span>
             </div>
         </div>
-        <div class="card-meta">
-            <span class="time-ago" style="color: var(--text-muted); font-size: 0.85rem;" th:text="${#temporals.format(prompt.createdAt, 'MMM dd')}"></span>
-        </div>
+        <div class="card-meta" th:text="${#temporals.format(prompt.createdAt, 'MMM dd')}">Jan 01</div>
     </div>
-    
-    <div class="card-body">
-        <a th:href="@{/prompts/{id}(id=${prompt.id})}" class="card-title-link">
-            <h3 class="card-title" th:text="${prompt.title}">Title</h3>
-        </a>
-        
-        <div class="tags-container">
-            <md-assist-chip th:each="tag : ${prompt.tags}" th:label="${tag}" elevated></md-assist-chip>
-            <span class="difficulty-badge" th:classappend="'diff-' + ${#strings.toLowerCase(prompt.difficulty)}" th:text="${prompt.difficulty}"></span>
-            <span class="platform-badge" th:text="${prompt.platform}"></span>
-        </div>
-        
-        <div class="ai-status" th:if="${prompt.aiVerified || prompt.aiScore != null}">
-            <div th:if="${prompt.aiVerified}" class="verified-badge"><md-icon style="font-size:16px; color: var(--success-color);">verified</md-icon> AI Verified</div>
-            <div th:if="${prompt.aiScore}" class="score-badge">AI Score: <span th:text="${prompt.aiScore}"></span>/10</div>
-        </div>
+
+    <a th:href="@{/prompts/{id}(id=${prompt.id})}" class="card-title-link">
+        <h3 class="card-title" th:text="${prompt.title}">Title</h3>
+    </a>
+
+    <div class="tags-container">
+        <md-assist-chip th:each="tag : ${prompt.tags}" th:label="${tag}" elevated></md-assist-chip>
+        <span class="difficulty-badge" th:if="${prompt.difficulty}" th:classappend="'diff-' + ${#strings.toLowerCase(prompt.difficulty)}" th:text="${prompt.difficulty}"></span>
+        <span class="platform-badge" th:if="${prompt.platform}" th:text="${prompt.platform}"></span>
     </div>
-    
-    <md-divider style="margin: 0 -24px; width: calc(100% + 48px);"></md-divider>
-    
-    <div class="card-footer" style="padding-top: 12px;">
+
+    <div class="ai-status" th:if="${prompt.aiVerified || prompt.aiScore != null}">
+        <span th:if="${prompt.aiVerified}" class="verified-badge"><md-icon style="font-size:16px;">verified</md-icon>Verified</span>
+        <span th:if="${prompt.aiScore}" class="score-badge">AI Score <span th:text="${prompt.aiScore}"></span></span>
+    </div>
+
+    <div class="card-footer">
         <div class="actions-left">
-            <md-icon-button class="like-btn" th:classappend="${prompt.isLiked ? 'active' : ''}" th:data-id="${prompt.id}" toggle th:attr="selected=${prompt.isLiked}">
+            <md-icon-button class="like-btn" th:classappend="${prompt.isLiked ? 'active' : ''}" th:data-id="${prompt.id}">
                 <md-icon>favorite</md-icon>
-                <md-icon slot="selected">favorite</md-icon>
             </md-icon-button>
-            <span class="count" style="font-size: 0.85rem; color: var(--text-muted);" th:text="${prompt.likeCount}">0</span>
+            <span class="count" th:text="${prompt.likeCount}">0</span>
             <md-icon-button th:onclick="'window.location.href=\'/prompts/' + ${prompt.id} + '#comments\''">
                 <md-icon>chat_bubble_outline</md-icon>
             </md-icon-button>
@@ -50,10 +46,9 @@
             </md-icon-button>
         </div>
         <div class="actions-right">
-            <md-icon-button class="save-btn" th:classappend="${prompt.isSaved ? 'active' : ''}" th:data-id="${prompt.id}" toggle th:attr="selected=${prompt.isSaved}">
+            <md-icon-button class="save-btn" th:classappend="${prompt.isSaved ? 'active' : ''}" th:data-id="${prompt.id}">
                 <md-icon>bookmark</md-icon>
-                <md-icon slot="selected">bookmark</md-icon>
             </md-icon-button>
         </div>
     </div>
-</div>
+</article>

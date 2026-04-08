@@ -1,25 +1,37 @@
 <!DOCTYPE html>
-<html lang="en" th:fragment="layout(title, content, scripts)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html
+    lang="en"
+    th:fragment="layout(title, content, scripts)"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:replace="${title}">Admin - SurePrompt</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
     <script type="importmap">
-    { "imports": { "@material/web/": "https://esm.run/@material/web/" } }
+    {
+        "imports": {
+            "@material/web/": "https://esm.run/@material/web/"
+        }
+    }
     </script>
     <script type="module">
         import '@material/web/all.js';
-        import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
-        document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
     </script>
+
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
+    <div class="ambient-grid" aria-hidden="true"></div>
+    <div class="ambient-glow" aria-hidden="true"></div>
+
     <div th:replace="~{layout/navbar :: navbar}"></div>
 
-    <main class="container">
+    <main class="container page-enter">
         <th:block th:replace="${content}"></th:block>
     </main>
 

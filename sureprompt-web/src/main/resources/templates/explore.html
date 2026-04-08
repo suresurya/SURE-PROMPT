@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: html(~{::title}, ~{::headExtras}, ~{::content}, ~{::scripts})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Explore Prompts | SurePrompt</title>
+    <th:block th:fragment="headExtras"></th:block>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div class="explore-shell">
+        <header class="page-header">
+            <h1>Explore Prompt Library</h1>
+            <p>Search by objective, model platform, difficulty, and verification confidence.</p>
+        </header>
+
+        <section class="explore-panel" style="padding: 18px; margin-bottom: 16px;">
+            <div class="form-group">
+                <md-outlined-text-field id="queryInput" label="Search query" th:value="${param.q}" placeholder="ex: code review prompt for Java microservices">
+                    <md-icon slot="leading-icon">search</md-icon>
+                </md-outlined-text-field>
+            </div>
+
+            <div class="field-grid">
+                <md-outlined-select id="difficultyFilter" label="Difficulty">
+                    <md-select-option value=""><div slot="headline">All</div></md-select-option>
+                    <md-select-option value="EASY"><div slot="headline">Easy</div></md-select-option>
+                    <md-select-option value="MEDIUM"><div slot="headline">Medium</div></md-select-option>
+                    <md-select-option value="HARD"><div slot="headline">Hard</div></md-select-option>
+                </md-outlined-select>
+
+                <md-outlined-select id="platformFilter" label="Platform">
+                    <md-select-option value=""><div slot="headline">All</div></md-select-option>
+                    <md-select-option value="ChatGPT"><div slot="headline">ChatGPT</div></md-select-option>
+                    <md-select-option value="Gemini"><div slot="headline">Gemini</div></md-select-option>
+                    <md-select-option value="Claude"><div slot="headline">Claude</div></md-select-option>
+                    <md-select-option value="Copilot"><div slot="headline">Copilot</div></md-select-option>
+                    <md-select-option value="Other"><div slot="headline">Other</div></md-select-option>
+                </md-outlined-select>
+            </div>
+
+            <div style="margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                <label style="display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.9rem;">
+                    <md-switch id="verifiedOnly"></md-switch>
+                    Verified only
+                </label>
+                <md-filled-button id="searchButton">
+                    <md-icon slot="icon">search</md-icon>
+                    Search
+                </md-filled-button>
+            </div>
+
+            <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px;" id="tagFilters">
+                <md-filter-chip th:each="tag : ${availableTags}" th:label="${tag.name}" th:data-tag="${tag.name}"></md-filter-chip>
+            </div>
+        </section>
+
+        <div class="text-muted" id="resultsMeta" style="margin-bottom: 10px;"></div>
+
+        <section id="searchResults" class="feed-grid feed-list"></section>
+
+        <div style="margin-top: 14px; display: flex; justify-content: center;">
+            <md-outlined-button id="loadMoreBtn" class="hidden">
+                <md-icon slot="icon">expand_more</md-icon>
+                Load more
+            </md-outlined-button>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="scripts">
+    <script th:src="@{/js/prompt.js}"></script>
+    <script>
+        const queryInput = document.getElementById('queryInput');
+        const difficultyFilter = document.getElementById('difficultyFilter');
+        const platformFilter = document.getElementById('platformFilter');
+        const verifiedOnly = document.getElementById('verifiedOnly');
+        const searchButton = document.getElementById('searchButton');
+        const searchResults = document.getElementById('searchResults');
+        const resultsMeta = document.getElementById('resultsMeta');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+        const selectedTags = new Set();
+        let currentPage = 0;
+        let totalPages = 0;
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function toDate(value) {
+            if (!value) {
+                return '';
+            }
+            const date = new Date(value);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function renderCard(prompt) {
+            const difficulty = (prompt.difficulty || '').toLowerCase();
+            const tags = (prompt.tags || []).map((tag) => `<md-assist-chip label="${escapeHtml(tag)}" elevated></md-assist-chip>`).join('');
+            const aiHtml = (prompt.aiVerified || prompt.aiScore)
+                ? `<div class="ai-status">
+                        ${prompt.aiVerified ? '<span class="verified-badge"><md-icon style="font-size:16px;">verified</md-icon>Verified</span>' : ''}
+                        ${prompt.aiScore ? `<span class="score-badge">AI Score ${escapeHtml(prompt.aiScore)}</span>` : ''}
+                   </div>`
+                : '';
+
+            return `
+                <article class="prompt-card">
+                    <md-ripple></md-ripple>
+                    <div class="card-header">
+                        <div class="author-info">
+                            <a href="/users/${encodeURIComponent(prompt.authorUsername || '')}">
+                                ${prompt.authorAvatar
+                                    ? `<img src="${escapeHtml(prompt.authorAvatar)}" class="avatar-sm" alt="Avatar">`
+                                    : `<div class="avatar-placeholder-sm">${escapeHtml((prompt.authorUsername || 'u').charAt(0).toUpperCase())}</div>`}
+                            </a>
+                            <div class="author-details">
+                                <a href="/users/${encodeURIComponent(prompt.authorUsername || '')}" class="author-name">${escapeHtml(prompt.authorName || 'Unknown')}</a>
+                                ${prompt.college ? `<span class="college-badge"><md-icon style="font-size:14px;">school</md-icon>${escapeHtml(prompt.college)}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="card-meta">${toDate(prompt.createdAt)}</div>
+                    </div>
+
+                    <a href="/prompts/${prompt.id}" class="card-title-link">
+                        <h3 class="card-title">${escapeHtml(prompt.title)}</h3>
+                    </a>
+
+                    <div class="tags-container">
+                        ${tags}
+                        ${prompt.difficulty ? `<span class="difficulty-badge diff-${difficulty}">${escapeHtml(prompt.difficulty)}</span>` : ''}
+                        ${prompt.platform ? `<span class="platform-badge">${escapeHtml(prompt.platform)}</span>` : ''}
+                    </div>
+
+                    ${aiHtml}
+
+                    <div class="card-footer">
+                        <div class="actions-left">
+                            <md-icon-button class="like-btn ${prompt.liked ? 'active' : ''}" data-id="${prompt.id}">
+                                <md-icon ${prompt.liked ? 'style="font-variation-settings: \'FILL\' 1; color: var(--danger-color);"' : ''}>favorite</md-icon>
+                            </md-icon-button>
+                            <span class="like-count">${prompt.likeCount || 0}</span>
+                            <md-icon-button onclick="window.location.href='/prompts/${prompt.id}#comments'">
+                                <md-icon>chat_bubble_outline</md-icon>
+                            </md-icon-button>
+                        </div>
+                        <div class="actions-right">
+                            <md-icon-button class="save-btn ${prompt.saved ? 'active' : ''}" data-id="${prompt.id}">
+                                <md-icon ${prompt.saved ? 'style="font-variation-settings: \'FILL\' 1; color: var(--accent-color);"' : ''}>bookmark</md-icon>
+                            </md-icon-button>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function updateTagSelection() {
+            document.querySelectorAll('#tagFilters md-filter-chip').forEach((chip) => {
+                const tag = chip.dataset.tag;
+                chip.selected = selectedTags.has(tag);
+            });
+        }
+
+        async function runSearch(reset = true) {
+            if (reset) {
+                currentPage = 0;
+                searchResults.innerHTML = '<div class="skeleton-card"></div><div class="skeleton-card"></div>';
+            }
+
+            const params = new URLSearchParams();
+            const q = queryInput.value?.trim();
+            if (q) params.set('q', q);
+            if (selectedTags.size > 0) params.set('tags', Array.from(selectedTags).join(','));
+            if (difficultyFilter.value) params.set('difficulty', difficultyFilter.value);
+            if (platformFilter.value) params.set('platform', platformFilter.value);
+            params.set('verifiedOnly', verifiedOnly.selected ? 'true' : 'false');
+            params.set('page', String(currentPage));
+
+            const response = await fetch(`/api/search?${params.toString()}`);
+            if (!response.ok) {
+                searchResults.innerHTML = '<div class="empty-state"><md-icon style="font-size:40px;">error</md-icon><p style="margin-top: 8px;">Search request failed.</p></div>';
+                loadMoreBtn.classList.add('hidden');
+                return;
+            }
+
+            const data = await response.json();
+            totalPages = data.totalPages || 0;
+            const results = data.results || [];
+
+            if (reset) {
+                searchResults.innerHTML = '';
+            }
+
+            if (results.length === 0 && currentPage === 0) {
+                searchResults.innerHTML = '<div class="empty-state"><md-icon style="font-size:40px;">travel_explore</md-icon><p style="margin-top: 8px;">No prompts matched your filters.</p></div>';
+            } else {
+                searchResults.insertAdjacentHTML('beforeend', results.map(renderCard).join(''));
+            }
+
+            resultsMeta.textContent = `${data.totalResults || 0} results`;
+            loadMoreBtn.classList.toggle('hidden', currentPage + 1 >= totalPages);
+        }
+
+        document.querySelectorAll('#tagFilters md-filter-chip').forEach((chip) => {
+            chip.addEventListener('click', () => {
+                const tag = chip.dataset.tag;
+                if (selectedTags.has(tag)) {
+                    selectedTags.delete(tag);
+                } else {
+                    selectedTags.add(tag);
+                }
+                updateTagSelection();
+            });
+        });
+
+        searchButton.addEventListener('click', () => runSearch(true));
+        queryInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                runSearch(true);
+            }
+        });
+
+        loadMoreBtn.addEventListener('click', () => {
+            currentPage += 1;
+            runSearch(false);
+        });
+
+        updateTagSelection();
+        runSearch(true);
+    </script>
+</th:block>
+</body>
+</html>

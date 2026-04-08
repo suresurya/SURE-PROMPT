@@ -1,29 +1,34 @@
 <nav class="navbar" th:fragment="navbar" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <div class="nav-container">
-        <a th:href="@{/}" class="brand-logo" style="display: flex; align-items: center; gap: 10px;">
-            <img th:src="@{/assets/logo.png}" alt="SurePrompt Logo" width="32" height="32" style="border-radius: 8px;" onerror="this.style.display='none'">
+        <a th:href="@{/}" class="brand-logo" aria-label="SurePrompt home">
+            <span class="brand-mark">SP</span>
             <span class="logo-text">Sure<span class="logo-accent">Prompt</span></span>
         </a>
-        
+
         <div class="search-bar">
             <form th:action="@{/explore}" method="get">
-                <md-outlined-text-field name="q" placeholder="Search prompts, topics..." autocomplete="off" type="search">
+                <md-outlined-text-field name="q" placeholder="Search prompts, tags, platforms" autocomplete="off" type="search">
                     <md-icon slot="leading-icon">search</md-icon>
                 </md-outlined-text-field>
             </form>
         </div>
 
         <div class="nav-links">
-            <a th:href="@{/explore}" class="nav-link"><md-icon style="font-size:20px;">explore</md-icon> Explore</a>
-            
-            <!-- Authenticated User Menu -->
+            <a th:href="@{/}" class="nav-link">
+                <md-icon>dynamic_feed</md-icon>
+                Feed
+            </a>
+            <a th:href="@{/explore}" class="nav-link">
+                <md-icon>travel_explore</md-icon>
+                Explore
+            </a>
+
             <div sec:authorize="isAuthenticated()" class="user-menu" th:with="user=${#authentication.principal.databaseUser}">
                 <md-filled-button th:href="@{/prompts/new}" onclick="window.location.href=this.getAttribute('href'); return false;">
                     <md-icon slot="icon">add</md-icon>
-                    Post
+                    New Prompt
                 </md-filled-button>
-                
-                <!-- Notification Bell -->
+
                 <div class="notifications-wrapper">
                     <md-icon-button id="notificationBtn" title="Notifications">
                         <md-icon>notifications</md-icon>
@@ -32,7 +37,7 @@
                     <div id="notificationDropdown" class="notification-dropdown">
                         <div class="notif-header">
                             <h3>Notifications</h3>
-                            <button id="markAllReadBtn">Mark all as read</button>
+                            <button id="markAllReadBtn" type="button">Mark all read</button>
                         </div>
                         <div id="notifList" class="notif-list">
                             <div class="notif-loading">
@@ -42,22 +47,23 @@
                     </div>
                 </div>
 
-                <md-icon-button th:href="@{/saved}" onclick="window.location.href=this.getAttribute('href'); return false;" title="Saved">
+                <md-icon-button th:href="@{/saved}" onclick="window.location.href=this.getAttribute('href'); return false;" title="Saved prompts">
                     <md-icon>bookmark</md-icon>
                 </md-icon-button>
-                
+
                 <div class="md3-menu-anchor">
-                    <button class="avatar-btn" id="avatarMenuBtn">
+                    <button class="avatar-btn" id="avatarMenuBtn" aria-label="Open account menu">
                         <img th:if="${user.avatarUrl}" th:src="${user.avatarUrl}" alt="Avatar" class="avatar-sm">
                         <div th:unless="${user.avatarUrl}" class="avatar-placeholder-sm" th:text="${#strings.substring(user.username,0,1).toUpperCase()}"></div>
                     </button>
+
                     <md-menu id="avatarMenu" anchor="avatarMenuBtn">
                         <md-menu-item th:href="@{/users/{username}(username=${user.username})}" onclick="window.location.href=this.getAttribute('href');">
                             <md-icon slot="start">person</md-icon>
                             <div slot="headline">Profile</div>
                         </md-menu-item>
                         <md-menu-item th:href="@{/profile/edit}" onclick="window.location.href=this.getAttribute('href');">
-                            <md-icon slot="start">edit</md-icon>
+                            <md-icon slot="start">badge</md-icon>
                             <div slot="headline">Edit Profile</div>
                         </md-menu-item>
                         <md-menu-item th:href="@{/settings}" onclick="window.location.href=this.getAttribute('href');">
@@ -67,36 +73,39 @@
                         <md-divider></md-divider>
                         <md-menu-item id="logoutMenuItem" style="--md-menu-item-label-text-color: var(--danger-color);">
                             <md-icon slot="start" style="color: var(--danger-color);">logout</md-icon>
-                            <div slot="headline">Logout</div>
+                            <div slot="headline">Log out</div>
                         </md-menu-item>
                     </md-menu>
-                    <!-- Hidden logout form -->
-                    <form th:action="@{/logout}" method="post" id="logoutForm" style="display:none;"></form>
                 </div>
+
+                <form th:action="@{/logout}" method="post" id="logoutForm" style="display:none;"></form>
                 <script th:src="@{/js/notifications.js}"></script>
             </div>
-            
-            <!-- Guest Menu -->
+
             <div sec:authorize="!isAuthenticated()" class="guest-menu">
                 <md-outlined-button th:href="@{/login}" onclick="window.location.href=this.getAttribute('href'); return false;">Log in</md-outlined-button>
-                <md-filled-button th:href="@{/login}" onclick="window.location.href=this.getAttribute('href'); return false;">Sign up</md-filled-button>
+                <md-filled-button th:href="@{/login}" onclick="window.location.href=this.getAttribute('href'); return false;">Create account</md-filled-button>
             </div>
         </div>
     </div>
 </nav>
+
 <script>
-    // Avatar menu toggle
     document.addEventListener('DOMContentLoaded', () => {
         const avatarBtn = document.getElementById('avatarMenuBtn');
         const avatarMenu = document.getElementById('avatarMenu');
         if (avatarBtn && avatarMenu) {
-            avatarBtn.addEventListener('click', () => { avatarMenu.open = !avatarMenu.open; });
+            avatarBtn.addEventListener('click', () => {
+                avatarMenu.open = !avatarMenu.open;
+            });
         }
-        // Logout handler
+
         const logoutItem = document.getElementById('logoutMenuItem');
         const logoutForm = document.getElementById('logoutForm');
         if (logoutItem && logoutForm) {
-            logoutItem.addEventListener('click', () => { logoutForm.submit(); });
+            logoutItem.addEventListener('click', () => {
+                logoutForm.submit();
+            });
         }
     });
 </script>

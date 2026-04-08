@@ -1,45 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html th:replace="~{layout/base :: html(~{::title}, ~{::headExtras}, ~{::content}, ~{::scripts})}" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title th:text="${profile.displayName} + ' — SurePrompt'">Profile — SurePrompt</title>
-    <meta name="description" th:content="${profile.bio != null ? profile.bio : profile.displayName + ' on SurePrompt'}">
-    <link rel="stylesheet" th:href="@{/css/main.css}">
-    <link rel="stylesheet" th:href="@{/css/profile.css}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-    <script type="importmap">
-    { "imports": { "@material/web/": "https://esm.run/@material/web/" } }
-    </script>
-    <script type="module">
-        import '@material/web/all.js';
-        import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
-        document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
-    </script>
+    <title th:text="${profile.displayName} + ' | SurePrompt'">Profile | SurePrompt</title>
+    <th:block th:fragment="headExtras"></th:block>
 </head>
 <body>
-    <div th:replace="~{layout/navbar :: navbar}"></div>
-
-    <div class="container">
-        <!-- PROFILE HEADER -->
-        <div class="profile-header">
+<th:block th:fragment="content">
+    <div class="feed-shell">
+        <section class="surface profile-hero">
             <div class="profile-main">
                 <div class="avatar-wrapper">
                     <img th:if="${profile.avatarUrl}" th:src="${profile.avatarUrl}" alt="Avatar" class="avatar-lg">
-                    <div th:unless="${profile.avatarUrl}" class="avatar-placeholder-lg"
-                         th:text="${#strings.substring(profile.username,0,1).toUpperCase()}"></div>
+                    <div th:unless="${profile.avatarUrl}" class="avatar-placeholder-lg" th:text="${#strings.substring(profile.username,0,1).toUpperCase()}"></div>
                 </div>
 
                 <div class="profile-info">
                     <h1 th:text="${profile.displayName}">Display Name</h1>
                     <div class="profile-meta">
-                        <span><md-icon style="font-size:16px;">alternate_email</md-icon> <span th:text="${profile.username}">username</span></span>
-                        <span th:if="${profile.college}"><md-icon style="font-size:16px;">school</md-icon> <span th:text="${profile.college}">College</span></span>
-                        <span th:if="${profile.memberSince}"><md-icon style="font-size:16px;">calendar_month</md-icon> Joined <span th:text="${#temporals.format(profile.memberSince, 'MMM yyyy')}">Jan 2024</span></span>
+                        <span><md-icon style="font-size:16px;">alternate_email</md-icon><span th:text="${profile.username}">username</span></span>
+                        <span th:if="${profile.college}"><md-icon style="font-size:16px;">school</md-icon><span th:text="${profile.college}">College</span></span>
+                        <span th:if="${profile.memberSince}"><md-icon style="font-size:16px;">calendar_month</md-icon>Joined <span th:text="${#temporals.format(profile.memberSince, 'MMM yyyy')}">Jan 2024</span></span>
                     </div>
-                    <p th:if="${profile.bio}" class="bio" th:text="${profile.bio}">User bio goes here...</p>
+                    <p th:if="${profile.bio}" class="bio" th:text="${profile.bio}">Profile biography</p>
 
-                    <!-- Follow / Edit Button -->
                     <div class="profile-actions" th:if="${!profile.ownProfile}">
                         <md-filled-button th:if="${!profile.following}" class="follow-btn" th:data-userid="${profile.userId}">
                             <md-icon slot="icon">person_add</md-icon>
@@ -59,7 +42,6 @@
                 </div>
             </div>
 
-            <!-- STATS ROW -->
             <div class="profile-stats">
                 <div class="stat-box">
                     <div class="stat-value" id="followersCount" th:text="${profile.followersCount}">0</div>
@@ -83,88 +65,81 @@
                 </div>
             </div>
 
-            <!-- BADGES -->
             <div class="profile-badges" th:if="${!#lists.isEmpty(profile.badges)}">
-                <h3><md-icon style="font-size: 18px; color: var(--warning-color);">military_tech</md-icon> Badges</h3>
+                <h3><md-icon style="font-size:18px; color: var(--warning-color);">military_tech</md-icon>Badges</h3>
                 <div class="badges-container">
-                    <md-assist-chip th:each="badge : ${profile.badges}" th:label="${badge.name}" elevated>
-                    </md-assist-chip>
+                    <md-assist-chip th:each="badge : ${profile.badges}" th:label="${badge.name}" elevated></md-assist-chip>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- TABS -->
-        <md-tabs style="margin-bottom: 24px;">
-            <md-primary-tab active>
-                <md-icon slot="icon">grid_view</md-icon>
-                Posts
-            </md-primary-tab>
-        </md-tabs>
+        <header class="page-header" style="margin-top: 18px;">
+            <h2 style="font-size: 1.45rem;">Published Prompts</h2>
+            <p>Reusable prompts authored by this profile.</p>
+        </header>
 
-        <!-- POSTS GRID -->
-        <div id="postsGrid" class="prompts-grid">
-            <div th:if="${userPrompts != null}" th:each="p : ${userPrompts.content}">
-                <div class="prompt-card">
-                    <md-ripple></md-ripple>
-                    <div class="card-header">
-                        <div class="author-info">
-                            <div class="author-details">
-                                <span class="author-name" th:text="${p.authorName}">Author</span>
-                                <span class="college-badge" th:if="${p.college}" th:text="${p.college}">College</span>
-                            </div>
-                        </div>
-                        <div style="display:flex; gap:8px;">
-                            <span class="difficulty-badge" th:if="${p.difficulty}"
-                                  th:classappend="${p.difficulty.name() == 'EASY' ? 'diff-easy' : (p.difficulty.name() == 'MEDIUM' ? 'diff-medium' : 'diff-hard')}"
-                                  th:text="${p.difficulty}">EASY</span>
-                            <span class="platform-badge" th:if="${p.platform}" th:text="${p.platform}">ChatGPT</span>
+        <section id="postsGrid" class="prompts-grid">
+            <article th:if="${userPrompts != null}" th:each="p : ${userPrompts.content}" class="prompt-card">
+                <md-ripple></md-ripple>
+                <div class="card-header">
+                    <div class="author-info">
+                        <div class="author-details">
+                            <span class="author-name" th:text="${p.authorName}">Author</span>
+                            <span class="college-badge" th:if="${p.college}" th:text="${p.college}">College</span>
                         </div>
                     </div>
-
-                    <a th:href="@{/prompts/{id}(id=${p.id})}" class="card-title-link">
-                        <h3 class="card-title" th:text="${p.title}">Prompt Title</h3>
-                    </a>
-
-                    <div class="tags-container" th:if="${p.tags != null && !p.tags.isEmpty()}">
-                        <md-assist-chip th:each="tag : ${p.tags}" th:label="${tag}" elevated></md-assist-chip>
-                    </div>
-
-                    <div class="ai-status" th:if="${p.aiVerified || p.aiScore != null}">
-                        <span class="verified-badge" th:if="${p.aiVerified}"><md-icon style="font-size:16px;color:var(--success-color);">verified</md-icon> Verified</span>
-                        <span class="score-badge" th:if="${p.aiScore != null}" th:text="'Score: ' + ${p.aiScore}">Score: 8.5</span>
-                    </div>
-
-                    <md-divider style="margin: 0 -24px; width: calc(100% + 48px);"></md-divider>
-
-                    <div class="card-footer" style="padding-top: 12px;">
-                        <div class="actions-left">
-                            <md-icon-button class="like-btn" th:data-id="${p.id}" th:classappend="${p.liked ? 'active' : ''}">
-                                <md-icon th:style="${p.liked ? 'font-variation-settings: FILL 1; color: var(--danger-color);' : ''}">favorite</md-icon>
-                            </md-icon-button>
-                            <span class="like-count" style="font-size:0.85rem;color:var(--text-muted);" th:text="${p.likeCount}">0</span>
-                            <md-icon-button class="save-btn" th:data-id="${p.id}" th:classappend="${p.saved ? 'active' : ''}">
-                                <md-icon th:style="${p.saved ? 'font-variation-settings: FILL 1; color: var(--accent-color);' : ''}">bookmark</md-icon>
-                            </md-icon-button>
-                        </div>
-                        <div class="actions-right">
-                            <span style="font-size:0.8rem; color: var(--text-muted);" th:text="${#temporals.format(p.createdAt, 'dd MMM yyyy')}">01 Jan 2024</span>
-                        </div>
+                    <div class="tags-container" style="margin-bottom: 0;">
+                        <span class="difficulty-badge" th:if="${p.difficulty}"
+                              th:classappend="${p.difficulty.name() == 'EASY' ? 'diff-easy' : (p.difficulty.name() == 'MEDIUM' ? 'diff-medium' : 'diff-hard')}"
+                              th:text="${p.difficulty}">EASY</span>
+                        <span class="platform-badge" th:if="${p.platform}" th:text="${p.platform}">ChatGPT</span>
                     </div>
                 </div>
-            </div>
+
+                <a th:href="@{/prompts/{id}(id=${p.id})}" class="card-title-link">
+                    <h3 class="card-title" th:text="${p.title}">Prompt title</h3>
+                </a>
+
+                <div class="tags-container" th:if="${p.tags != null && !p.tags.isEmpty()}">
+                    <md-assist-chip th:each="tag : ${p.tags}" th:label="${tag}" elevated></md-assist-chip>
+                </div>
+
+                <div class="ai-status" th:if="${p.aiVerified || p.aiScore != null}">
+                    <span class="verified-badge" th:if="${p.aiVerified}">
+                        <md-icon style="font-size:16px;">verified</md-icon>
+                        Verified
+                    </span>
+                    <span class="score-badge" th:if="${p.aiScore != null}" th:text="'AI Score ' + ${p.aiScore}">AI Score 8.5</span>
+                </div>
+
+                <div class="card-footer">
+                    <div class="actions-left">
+                        <md-icon-button class="like-btn" th:data-id="${p.id}" th:classappend="${p.liked ? 'active' : ''}">
+                            <md-icon th:style="${p.liked ? 'font-variation-settings: FILL 1; color: var(--danger-color);' : ''}">favorite</md-icon>
+                        </md-icon-button>
+                        <span class="like-count" th:text="${p.likeCount}">0</span>
+                        <md-icon-button class="save-btn" th:data-id="${p.id}" th:classappend="${p.saved ? 'active' : ''}">
+                            <md-icon th:style="${p.saved ? 'font-variation-settings: FILL 1; color: var(--accent-color);' : ''}">bookmark</md-icon>
+                        </md-icon-button>
+                    </div>
+                    <span class="card-meta" th:text="${#temporals.format(p.createdAt, 'dd MMM yyyy')}">01 Jan 2024</span>
+                </div>
+            </article>
 
             <div th:if="${userPrompts == null || userPrompts.content.isEmpty()}" class="empty-state">
-                <md-icon style="font-size: 3rem; opacity: 0.4; display: block; margin-bottom: 16px;">description</md-icon>
-                <p>No prompts yet</p>
-                <md-filled-button th:if="${profile.ownProfile}" th:href="@{/prompts/new}" onclick="window.location.href=this.getAttribute('href'); return false;" style="margin-top: 16px;">
+                <md-icon style="font-size:48px;">description</md-icon>
+                <p style="margin: 10px 0 12px;">No prompts published yet.</p>
+                <md-filled-button th:if="${profile.ownProfile}" th:href="@{/prompts/new}" onclick="window.location.href=this.getAttribute('href'); return false;">
                     <md-icon slot="icon">add</md-icon>
                     Post your first prompt
                 </md-filled-button>
             </div>
-        </div>
+        </section>
     </div>
+</th:block>
 
-    <script th:src="@{/js/main.js}"></script>
+<th:block th:fragment="scripts">
     <script th:src="@{/js/profile.js}"></script>
+</th:block>
 </body>
 </html>

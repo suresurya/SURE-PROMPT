@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: html(~{::title}, ~{::headExtras}, ~{::content}, ~{::scripts})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Profile | SurePrompt</title>
+    <th:block th:fragment="headExtras"></th:block>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div class="profile-edit-shell">
+        <header class="page-header">
+            <h1>Edit Profile</h1>
+            <p>Keep your profile clear and useful for teams exploring your prompt work.</p>
+        </header>
+
+        <form class="profile-edit-card" th:action="@{/profile/edit}" th:object="${updateProfileRequest}" method="post">
+            <div class="form-group">
+                <md-outlined-text-field label="Display name" name="displayName" th:value="*{displayName}" maxlength="100" required>
+                    <md-icon slot="leading-icon">badge</md-icon>
+                </md-outlined-text-field>
+                <p class="helper-text" th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}" style="color: var(--danger-color);"></p>
+            </div>
+
+            <div class="form-group">
+                <md-outlined-text-field label="College" name="college" th:value="*{college}" maxlength="150">
+                    <md-icon slot="leading-icon">school</md-icon>
+                </md-outlined-text-field>
+                <p class="helper-text" th:if="${#fields.hasErrors('college')}" th:errors="*{college}" style="color: var(--danger-color);"></p>
+            </div>
+
+            <div class="form-group">
+                <md-outlined-text-field label="Avatar URL" name="avatarUrl" th:value="*{avatarUrl}">
+                    <md-icon slot="leading-icon">image</md-icon>
+                </md-outlined-text-field>
+            </div>
+
+            <div class="form-group">
+                <md-outlined-text-field label="Bio" name="bio" th:value="*{bio}" type="textarea" rows="7" maxlength="500"
+                                       supporting-text="Keep it short: expertise, niche, and what you test.">
+                    <md-icon slot="leading-icon">description</md-icon>
+                </md-outlined-text-field>
+                <p class="helper-text" th:if="${#fields.hasErrors('bio')}" th:errors="*{bio}" style="color: var(--danger-color);"></p>
+            </div>
+
+            <div class="form-actions">
+                <md-outlined-button type="button" onclick="window.history.back()">Cancel</md-outlined-button>
+                <md-filled-button type="submit">
+                    <md-icon slot="icon">save</md-icon>
+                    Save changes
+                </md-filled-button>
+            </div>
+        </form>
+    </div>
+</th:block>
+
+<th:block th:fragment="scripts"></th:block>
+</body>
+</html>
