@@ -6,7 +6,7 @@
     <string name="feed_subtitle_all">All community prompts</string>
     <string name="feed_subtitle_following">Prompts from creators you follow</string>
     <string name="feed_header">Discover prompt blueprints</string>
-    <string name="feed_header_supporting">Switch between trending, all, and following feeds using Material filter controls.</string>
+    <string name="feed_header_supporting">Switch between Trending, All, and Following to discover the right prompts faster.</string>
     <string name="feed_tab_all">All</string>
     <string name="feed_tab_following">Following</string>
     <string name="feed_tab_trending">Trending</string>
